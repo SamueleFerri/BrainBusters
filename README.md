@@ -25,3 +25,5 @@ Idee:
 2. Il grafico sarà all'interno del profilo (es. grafico a torta con le precentuali di quiz per categoria)
 3. Al termine di un quiz è possibile condividerne il risultato e salvarlo sul dispositovo (pt. folder)
 4. I questionari hanno un punteggio (es. 0-100) puoi farli più volte e verrà salvato il tentativo con punteggio maggiore (es. primo tentativo 70pt. secondo 80pt), in caso di questionari speciali invece, avranno un singolo tentativo (superato un certo punteggio si avrà la ricompensa, quale può essere bedge colorato o altro).
+5. Nella classifica ci sarà la possibilità di interagire con i profili degli user in classifica per poter vedere le informazioni di gioco (badge ottenuti, percentuali per categoria, ecc..)
+6. Il progfilo utente avrà una barra che indica il livello attuale (aggiornato in base ai quiz svolti), una medaglia a scelta dell'utente (in base a quelle ottenute) e un count del numero di quiz svolti e completati.
