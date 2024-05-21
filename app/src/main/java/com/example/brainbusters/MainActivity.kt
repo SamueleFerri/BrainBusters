@@ -10,7 +10,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.sp/*
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -18,13 +18,15 @@ import androidx.navigation.compose.rememberNavController
 import com.example.brainbusters.ui.AppBar
 import com.example.brainbusters.ui.Categories
 import com.example.brainbusters.ui.Quiz
-import com.example.brainbusters.ui.theme.BrainBustersTheme
+import com.example.brainbusters.ui.theme.BrainBustersTheme*/
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            LoginScreen()
+/*
             BrainBustersTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -38,7 +40,7 @@ class MainActivity : ComponentActivity() {
                         NavGraph(navController, modifier = Modifier.padding(contentPadding))
                     }
                 }
-            }
+            }*/
         }
     }
 }
@@ -52,15 +54,15 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
         fontSize = 18.sp
     )
 }
-
+/*
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     BrainBustersTheme {
         Greeting("Android")
     }
-}
-
+}*/
+/*
 sealed class NavigationRoute(
     val route: String
 ) {
@@ -90,3 +92,4 @@ fun NavGraph(
         }
     }
 }
+*/

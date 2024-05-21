@@ -19,8 +19,9 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.brainbusters.NavigationRoute
+//import com.example.brainbusters.NavigationRoute
 
+/*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppBar(navController: NavHostController) {
@@ -79,3 +80,4 @@ fun Quiz(navController: NavHostController) {
         }
     }
 }
+*/
