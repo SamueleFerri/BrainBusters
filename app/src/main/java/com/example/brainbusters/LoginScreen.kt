@@ -50,7 +50,7 @@ fun LoginScreen(){
         Spacer(modifier = Modifier.height((4.dp)))
 
         Text(text = "Login to your account", fontSize = 16. sp, fontWeight = FontWeight.Normal)
-        Spacer(modifier = Modifier.height((16.dp)))
+        Spacer(modifier = Modifier.height((30.dp)))
         OutlinedTextField(value = email, onValueChange = {
             email = it
         }, label = {
