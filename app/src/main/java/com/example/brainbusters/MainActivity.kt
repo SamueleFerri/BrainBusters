@@ -14,19 +14,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val navController = rememberNavController()
+            BrainBustersNavigation()
 
-            NavHost(navController = navController, startDestination = Routes.loginScreen, builder = {
-                composable(Routes.loginScreen) {
-                    LoginScreen(navController)
-                }
-                composable(Routes.homeScreen+"/{email}") {
-                    val email = it.arguments?.getString("email")    //take the email from the backstack, and pass it to the home screen
-                    HomeScreen(navController, email?:"No email")
-                }
-            })
-
-/*
+            /*
             BrainBustersTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
