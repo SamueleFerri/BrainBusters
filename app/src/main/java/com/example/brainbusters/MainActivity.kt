@@ -15,12 +15,14 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val navController = rememberNavController()
-            NavHost(navController = navController, startDestination = "loginScreen", builder = {
-                composable("loginScreen") {
+
+            NavHost(navController = navController, startDestination = Routes.loginScreen, builder = {
+                composable(Routes.loginScreen) {
                     LoginScreen(navController)
                 }
-                composable("homeScreen") {
-                    HomeScreen(navController)
+                composable(Routes.homeScreen+"/{email}") {
+                    val email = it.arguments?.getString("email")    //take the email from the backstack, and pass it to the home screen
+                    HomeScreen(navController, email?:"No email")
                 }
             })
 

@@ -11,17 +11,20 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 
 @Composable
-fun HomeScreen(navController: NavController){
+fun HomeScreen(navController: NavController, email: String){
     Column (
         Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ){
         Text(text = "home screen")
-        Button(onClick = { /*TODO*/ }) {
+        Button(onClick = {
+            navController.navigate(Routes.loginScreen)
+        }) {
             Text(text = "go to login")
-            navController.navigate("loginScreen")
         }
+        
+        Text(text = "email is $email")
     }
 
 }
