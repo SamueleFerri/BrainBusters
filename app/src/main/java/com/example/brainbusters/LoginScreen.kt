@@ -24,9 +24,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 
 @Composable
-fun LoginScreen(){
+fun LoginScreen(navController: NavController){
 
     var email by remember {
         mutableStateOf("")
@@ -67,6 +68,7 @@ fun LoginScreen(){
         Spacer(modifier = Modifier.height((16.dp)))
         Button(onClick = {
             Log.i("Credential", "Email: $email Password: $password")
+            navController.navigate("homeScreen")
         }){
             Text(text = "Login")
         }
