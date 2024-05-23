@@ -17,5 +17,14 @@ fun BrainBustersNavigation(){
             val email = it.arguments?.getString("email")    //take the email from the backstack, and pass it to the home screen
             HomeScreen(navController, email?:"No email")
         }
+        composable(Routes.profile){
+            Profile(navController)
+        }
+        composable(Routes.settings){
+            Settings(navController)
+        }
+        composable(Routes.scoreboard){
+            Scoreboard(navController)
+        }
     })
 }
