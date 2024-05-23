@@ -12,8 +12,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -26,7 +28,7 @@ import com.example.brainbusters.ui.theme.GreenJC
 @Composable
 fun BrainBustersNavigation() {
     val navController = rememberNavController()
-    val context = LocalContext.current.applicationContext
+    var isLoggedIn by remember { mutableStateOf(false) }  // Manage logged-in state here
     val selected = remember {
         mutableStateOf(Icons.Default.Home)
     }
@@ -101,7 +103,7 @@ fun BrainBustersNavigation() {
             startDestination = if (isLoggedIn) Routes.homeScreen else Routes.loginScreen,
             modifier = Modifier.padding(paddingValues)
         ) {
-            composable(Routes.loginScreen) { LoginScreen(navController = navController)}
+            composable(Routes.loginScreen) { LoginScreen(navController = navController, onLoginSuccessful = { isLoggedIn = true })}
             composable(Routes.homeScreen) { HomeScreen(navController = navController) }
             composable(Routes.scoreboard) { Scoreboard(navController = navController) }
             composable(Routes.profile) { Profile(navController = navController) }

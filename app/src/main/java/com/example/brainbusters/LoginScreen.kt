@@ -28,7 +28,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 
 @Composable
-fun LoginScreen(navController: NavController){
+fun LoginScreen(navController: NavController, onLoginSuccessful: () -> Unit){
     var email by remember {
         mutableStateOf("")
     }
@@ -68,7 +68,7 @@ fun LoginScreen(navController: NavController){
         Spacer(modifier = Modifier.height((16.dp)))
         Button(onClick = {
             Log.i("Credential", "Email: $email Password: $password")
-            isLoggedIn = true
+            onLoginSuccessful()
             navController.navigate(Routes.homeScreen)
         }){
             Text(text = "Login")

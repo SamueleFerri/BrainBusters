@@ -3,7 +3,6 @@ package com.example.brainbusters
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,11 +17,5 @@ fun HomeScreen(navController: NavController){
         verticalArrangement = Arrangement.Center
     ){
         Text(text = "home screen")
-        Button(onClick = {
-            isLoggedIn = false
-            navController.navigate(Routes.loginScreen)
-        }) {
-            Text(text = "go to login")
-        }
     }
 }
