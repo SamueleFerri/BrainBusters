@@ -23,8 +23,8 @@ fun HomeScreen(navController: NavController, email: String){
         }) {
             Text(text = "go to login")
         }
-        
-        Text(text = "email is $email")
+
+
     }
 
 }
