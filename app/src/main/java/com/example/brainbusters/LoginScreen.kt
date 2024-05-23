@@ -68,7 +68,8 @@ fun LoginScreen(navController: NavController){
         Spacer(modifier = Modifier.height((16.dp)))
         Button(onClick = {
             Log.i("Credential", "Email: $email Password: $password")
-            navController.navigate(Routes.homeScreen+"/$email")
+            isLoggedIn = true
+            navController.navigate(Routes.homeScreen+"/$email®®")
         }){
             Text(text = "Login")
         }

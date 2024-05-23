@@ -23,8 +23,5 @@ fun HomeScreen(navController: NavController, email: String){
         }) {
             Text(text = "go to login")
         }
-
-
     }
-
 }
