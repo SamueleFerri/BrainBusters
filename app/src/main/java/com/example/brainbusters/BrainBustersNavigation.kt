@@ -24,12 +24,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.brainbusters.ui.theme.GreenJC
 
 @Composable
-fun BrainBustersNavigation(){
-    NavBar()
-}
-
-@Composable
-fun NavBar() {
+fun BrainBustersNavigation() {
     val navController = rememberNavController()
     val context = LocalContext.current.applicationContext
     val selected = remember {
@@ -107,7 +102,7 @@ fun NavBar() {
             modifier = Modifier.padding(paddingValues)
         ) {
             composable(Routes.loginScreen) { LoginScreen(navController = navController)}
-            composable(Routes.homeScreen) { HomeScreen(navController = navController, email = "") }
+            composable(Routes.homeScreen) { HomeScreen(navController = navController) }
             composable(Routes.scoreboard) { Scoreboard(navController = navController) }
             composable(Routes.profile) { Profile(navController = navController) }
             composable(Routes.settings) { Settings(navController = navController) }

@@ -10,7 +10,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.example.brainbusters.ui.theme.BrainBustersTheme
 
-public var isLoggedIn = false
+var isLoggedIn = false
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

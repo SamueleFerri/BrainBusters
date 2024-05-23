@@ -24,11 +24,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 
 @Composable
 fun LoginScreen(navController: NavController){
-
     var email by remember {
         mutableStateOf("")
     }
@@ -69,7 +69,7 @@ fun LoginScreen(navController: NavController){
         Button(onClick = {
             Log.i("Credential", "Email: $email Password: $password")
             isLoggedIn = true
-            navController.navigate(Routes.homeScreen+"/$email®®")
+            navController.navigate(Routes.homeScreen)
         }){
             Text(text = "Login")
         }

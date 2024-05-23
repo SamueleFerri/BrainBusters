@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 
 @Composable
-fun HomeScreen(navController: NavController, email: String){
+fun HomeScreen(navController: NavController){
     Column (
         Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -19,6 +19,7 @@ fun HomeScreen(navController: NavController, email: String){
     ){
         Text(text = "home screen")
         Button(onClick = {
+            isLoggedIn = false
             navController.navigate(Routes.loginScreen)
         }) {
             Text(text = "go to login")
