@@ -6,4 +6,5 @@ object Routes {
     val settings = "settings"
     val profile = "profile"
     val scoreboard = "scoreboard"
+    val notifications = "notifications"
 }

@@ -1,4 +1,4 @@
-package com.example.brainbusters
+package com.example.brainbusters.ui.views
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
