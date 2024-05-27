@@ -1,4 +1,4 @@
-package com.example.brainbusters
+package com.example.brainbusters.ui.views
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -7,15 +7,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 
 @Composable
-fun HomeScreen(navController: NavController){
+fun NotificationsScreen(navController: NavHostController) {
     Column (
         Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ){
-        Text(text = "home screen")
+        Text(text = "notifications")
     }
 }
+
