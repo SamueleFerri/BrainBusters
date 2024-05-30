@@ -17,7 +17,6 @@ import androidx.navigation.NavController
 
 @Composable
 fun Settings(navController: NavController) {
-    var isDarkTheme by remember { mutableStateOf(false) }
     var showChangePasswordFields by remember { mutableStateOf(false) }
     var showDeleteAccountDialog by remember { mutableStateOf(false) }
 
@@ -42,28 +41,6 @@ fun Settings(navController: NavController) {
             )
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Theme Switch
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(
-                text = "Dark Theme",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.weight(1f)
-            )
-            Switch(
-                checked = isDarkTheme,
-                onCheckedChange = { isDarkTheme = it },
-                colors = SwitchDefaults.colors(
-                    checkedThumbColor = MaterialTheme.colorScheme.primary,
-                    uncheckedThumbColor = MaterialTheme.colorScheme.onSurface
-                )
-            )
-        }
 
         Spacer(modifier = Modifier.height(24.dp))
 
