@@ -34,7 +34,6 @@ fun Scoreboard(navController: NavController) {
         ScoreboardEntry(7, "Player7", 11),
         ScoreboardEntry(8, "Player8", 10),
         ScoreboardEntry(9, "Player9", 9),
-        ScoreboardEntry(10, "Player10", 8),
         ScoreboardEntry(1, "LUCONE111", 39) // Placeholder for user's position
     )
 
@@ -64,19 +63,19 @@ fun ScoreboardItem(entry: ScoreboardEntry) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 16.dp, horizontal = 16.dp),
+            .padding(vertical = 15.dp, horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Position
         Box(
             modifier = Modifier
-                .width(32.dp)
+                .width(38.dp)
                 .padding(end = 8.dp)
         ) {
             Box(
                 modifier = Modifier
                     .background(backgroundColor, RoundedCornerShape(8.dp))
-                    .padding(4.dp).padding(horizontal = 4.dp),
+                    .padding(5.dp).padding(horizontal = 3.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
