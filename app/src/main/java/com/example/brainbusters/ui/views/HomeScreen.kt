@@ -23,10 +23,43 @@ fun HomeScreen(navController: NavController) {
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Preferiti", modifier = Modifier.padding(16.dp))
+        Text(text = "", modifier = Modifier.padding(16.dp))
 
-        QuizCategory(navController = navController, title = "Categoria 1")
-        QuizCategory(navController = navController, title = "Categoria 2")
+        Favorites(navController = navController, title = "Preferiti")
+        QuizCategory(navController = navController, title = "Geography")
+    }
+}
+
+@Composable
+fun Favorites(navController: NavController, title: String) {
+    Column(
+        modifier = Modifier
+            .padding(horizontal = 6.dp, vertical = 8.dp)
+            .fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier
+                .background(color = Color.hsv(60f, 1f, 0.9f), RoundedCornerShape(8.dp))
+        ) {
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = title,
+                modifier = Modifier
+                    .padding(bottom = 8.dp)
+                    .fillMaxWidth(),
+                color = MaterialTheme.colorScheme.onBackground,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = PaddingValues(horizontal = 8.dp)
+        ) {
+            items(count = 10) { index ->
+                QuizItem(navController = navController, title = "Quiz $index")
+            }
+        }
     }
 }
 
