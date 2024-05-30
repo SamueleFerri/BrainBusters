@@ -1,5 +1,6 @@
 package com.example.brainbusters
 
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -42,7 +43,8 @@ import com.example.brainbusters.ui.views.LoginScreen
 import com.example.brainbusters.ui.views.NotificationsScreen
 import com.example.brainbusters.ui.views.Profile
 import com.example.brainbusters.ui.views.QuizScreen
-import com.example.brainbusters.ui.views.RegisterScreen
+import com.example.brainbusters.ui.views.RegisterStepOneScreen
+import com.example.brainbusters.ui.views.RegisterStepTwoScreen
 import com.example.brainbusters.ui.views.ScoreScreen
 import com.example.brainbusters.ui.views.Scoreboard
 import com.example.brainbusters.ui.views.Settings
@@ -53,6 +55,13 @@ fun BrainBustersNavigation() {
     val navController = rememberNavController()
     var isLoggedIn by rememberSaveable { mutableStateOf(false) }
     val selected = remember { mutableStateOf(Icons.Default.Home) }
+
+    var profilePictureUri by rememberSaveable { mutableStateOf<Uri?>(null) }
+    var firstName by rememberSaveable { mutableStateOf("") }
+    var lastName by rememberSaveable { mutableStateOf("") }
+    var position by rememberSaveable { mutableStateOf("") }
+    var email by rememberSaveable { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
 
     Scaffold(
         topBar = {
@@ -167,10 +176,34 @@ fun BrainBustersNavigation() {
                     navController = navController,
                     onLoginSuccessful = { isLoggedIn = true })
             }
-            composable(Routes.registerScreen) {
-                RegisterScreen(
+            composable(Routes.registerStepOne) {
+                RegisterStepOneScreen(
                     navController = navController,
-                    onRegisterSuccessful = { isLoggedIn = true })
+                    profilePictureUri = profilePictureUri,
+                    onProfilePictureChange = { profilePictureUri = it },
+                    firstName = firstName,
+                    onFirstNameChange = { firstName = it },
+                    lastName = lastName,
+                    onLastNameChange = { lastName = it },
+                    position = position,
+                    onPositionChange = { position = it },
+                    onProceed = { navController.navigate(Routes.registerStepTwo) }
+                )
+            }
+            composable(Routes.registerStepTwo) {
+                RegisterStepTwoScreen(
+                    navController = navController,
+                    profilePictureUri = profilePictureUri,
+                    email = email,
+                    onEmailChange = { email = it },
+                    password = password,
+                    onPasswordChange = { password = it },
+                    onRegister = {
+                        // Handle registration logic here
+                        isLoggedIn = true
+                        navController.navigate(Routes.homeScreen)
+                    }
+                )
             }
             composable(Routes.homeScreen) { HomeScreen(navController = navController) }
             composable(Routes.scoreboard) { Scoreboard(navController = navController) }

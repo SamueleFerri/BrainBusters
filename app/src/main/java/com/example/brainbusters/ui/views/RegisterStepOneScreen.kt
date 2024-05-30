@@ -93,7 +93,7 @@ fun RegisterStepOneScreen(navController: NavController, profilePictureUri: Uri?,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(text = "Create Account - Step 1", fontSize = 28.sp, fontWeight = FontWeight.Bold)
+        Text(text = "Create Account", fontSize = 28.sp, fontWeight = FontWeight.Bold)
 
         Spacer(modifier = Modifier.height(16.dp))
 

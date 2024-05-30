@@ -5,7 +5,8 @@ object Routes {
 
     val homeScreen = "homeScreen"
     val loginScreen = "loginScreen"
-    val registerScreen = "registerScreen"
+    val registerStepOne = "registerStepOne"
+    val registerStepTwo = "registerStepTwo"
     val settings = "settings"
     val profile = "profile"
     val scoreboard = "scoreboard"

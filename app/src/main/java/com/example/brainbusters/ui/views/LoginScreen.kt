@@ -99,7 +99,7 @@ fun LoginScreen(navController: NavController, onLoginSuccessful: () -> Unit) {
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.clickable {
-                    navController.navigate(Routes.registerScreen)
+                    navController.navigate(Routes.registerStepOne)
                 }
             )
         }
