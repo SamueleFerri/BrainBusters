@@ -76,7 +76,7 @@ fun ScoreboardItem(entry: ScoreboardEntry) {
             Box(
                 modifier = Modifier
                     .background(backgroundColor, RoundedCornerShape(8.dp))
-                    .padding(4.dp),
+                    .padding(4.dp).padding(horizontal = 4.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(

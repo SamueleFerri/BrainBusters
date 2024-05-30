@@ -28,9 +28,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.brainbusters.R
+import com.example.brainbusters.ui.components.PieChartScreen
 
 @Composable
 fun Profile(navController: NavController) {
+
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -45,7 +47,7 @@ fun Profile(navController: NavController) {
             // Profile Picture with Badge
             Box(modifier = Modifier.size(120.dp), contentAlignment = Alignment.BottomEnd) {
                 Image(
-                    painter = painterResource(id = R.drawable.panda), // Replace with your drawable resource
+                    painter = painterResource(id = R.drawable.fotoprofilo), // Replace with your drawable resource
                     contentDescription = "Profile Picture",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -79,12 +81,12 @@ fun Profile(navController: NavController) {
                 // Username
                 Column {
                     Text(
-                        text = "Username",
+                        text = "LuconeCriticone",
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.onBackground
                     )
                     Text(
-                        text = "Title",
+                        text = "CEO OF BRAWLSTARS",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onBackground
                     )
@@ -122,10 +124,7 @@ fun Profile(navController: NavController) {
         Column(
             horizontalAlignment = Alignment.Start
         ) {
-            Text(color = Color.Red, text = "Category 1")
-            Text(color = Color.Green, text = "Category 2")
-            Text(color = Color.Blue, text = "Category 3")
-            Text(color = Color.Yellow, text = "Category 4")
+            PieChartScreen()
         }
     }
 }

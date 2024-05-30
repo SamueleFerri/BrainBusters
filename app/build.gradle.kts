@@ -72,4 +72,6 @@ dependencies {
     val nav_version = "2.7.7"
     implementation("androidx.navigation:navigation-compose:$nav_version")
 
+    implementation("co.yml:ycharts:2.1.0")
+
 }

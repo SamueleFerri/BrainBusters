@@ -1,8 +1,11 @@
-// BrainBustersNavigation.kt
 package com.example.brainbusters
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
@@ -22,18 +25,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.brainbusters.ui.views.HomeScreen
 import com.example.brainbusters.ui.views.LoginScreen
 import com.example.brainbusters.ui.views.NotificationsScreen
 import com.example.brainbusters.ui.views.Profile
+import com.example.brainbusters.ui.views.QuizScreen
+import com.example.brainbusters.ui.views.ScoreScreen
 import com.example.brainbusters.ui.views.Scoreboard
 import com.example.brainbusters.ui.views.Settings
 
@@ -41,19 +50,27 @@ import com.example.brainbusters.ui.views.Settings
 @Composable
 fun BrainBustersNavigation() {
     val navController = rememberNavController()
-    var isLoggedIn by remember { mutableStateOf(false) }
+    var isLoggedIn by rememberSaveable { mutableStateOf(false) }
     val selected = remember { mutableStateOf(Icons.Default.Home) }
 
     Scaffold(
         topBar = {
-            if(isLoggedIn) {
+            if (isLoggedIn) {
                 TopAppBar(
                     title = {
-                        Text(
-                            text = "BrainBusters",
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onPrimary
-                        )
+                        Row {
+                            Image(
+                                painter = painterResource(id = R.drawable.logo_brain_busters),
+                                contentDescription = "Brain Busters Logo",
+                                modifier = Modifier.size(30.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "BrainBusters",
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onPrimary,
+                            )
+                        }
                     },
                     actions = {
                         IconButton(onClick = {
@@ -145,13 +162,29 @@ fun BrainBustersNavigation() {
             modifier = Modifier.padding(paddingValues)
         ) {
             composable(Routes.loginScreen) {
-                LoginScreen(navController = navController, onLoginSuccessful = { isLoggedIn = true })
+                LoginScreen(
+                    navController = navController,
+                    onLoginSuccessful = { isLoggedIn = true })
             }
             composable(Routes.homeScreen) { HomeScreen(navController = navController) }
             composable(Routes.scoreboard) { Scoreboard(navController = navController) }
             composable(Routes.profile) { Profile(navController = navController) }
             composable(Routes.settings) { Settings(navController = navController) }
             composable(Routes.notifications) { NotificationsScreen(navController = navController) }
+            composable(
+                route = "quizScreen/{quizTitle}",
+                arguments = listOf(navArgument("quizTitle") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val quizTitle = backStackEntry.arguments?.getString("quizTitle") ?: "Quiz"
+                QuizScreen(navController = navController, quizTitle = quizTitle)
+            }
+            composable("quiz_screen/restart") {
+                QuizScreen(navController = navController, quizTitle = "Quiz")
+            }
+            composable("score_screen/{score}") { backStackEntry ->
+                val score = backStackEntry.arguments?.getString("score")?.toInt() ?: 0
+                ScoreScreen(navController = navController, score = score)
+            }
         }
     }
 }
