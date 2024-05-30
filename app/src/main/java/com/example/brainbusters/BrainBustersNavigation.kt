@@ -42,6 +42,7 @@ import com.example.brainbusters.ui.views.LoginScreen
 import com.example.brainbusters.ui.views.NotificationsScreen
 import com.example.brainbusters.ui.views.Profile
 import com.example.brainbusters.ui.views.QuizScreen
+import com.example.brainbusters.ui.views.RegisterScreen
 import com.example.brainbusters.ui.views.ScoreScreen
 import com.example.brainbusters.ui.views.Scoreboard
 import com.example.brainbusters.ui.views.Settings
@@ -165,6 +166,11 @@ fun BrainBustersNavigation() {
                 LoginScreen(
                     navController = navController,
                     onLoginSuccessful = { isLoggedIn = true })
+            }
+            composable(Routes.registerScreen) {
+                RegisterScreen(
+                    navController = navController,
+                    onRegisterSuccessful = { isLoggedIn = true })
             }
             composable(Routes.homeScreen) { HomeScreen(navController = navController) }
             composable(Routes.scoreboard) { Scoreboard(navController = navController) }
