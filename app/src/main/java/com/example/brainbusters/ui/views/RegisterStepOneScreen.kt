@@ -1,9 +1,7 @@
 package com.example.brainbusters.ui.views
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
@@ -23,7 +21,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.draw.clip
@@ -38,14 +35,7 @@ import java.io.ByteArrayOutputStream
 import java.util.*
 
 @Composable
-fun RegisterScreen(navController: NavController, onRegisterSuccessful: () -> Unit) {
-    var username by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var firstName by remember { mutableStateOf("") }
-    var lastName by remember { mutableStateOf("") }
-    var position by remember { mutableStateOf("") }
-    var profilePictureUri by remember { mutableStateOf<Uri?>(null) }
+fun RegisterStepOneScreen(navController: NavController, profilePictureUri: Uri?, onProfilePictureChange: (Uri) -> Unit, firstName: String, onFirstNameChange: (String) -> Unit, lastName: String, onLastNameChange: (String) -> Unit, position: String, onPositionChange: (String) -> Unit, onProceed: () -> Unit) {
     val context = LocalContext.current
     val fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
 
@@ -55,7 +45,7 @@ fun RegisterScreen(navController: NavController, onRegisterSuccessful: () -> Uni
     ) { permissions ->
         if (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true || permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true) {
             getLastKnownLocation(fusedLocationClient, context) { city ->
-                position = city
+                onPositionChange(city)
             }
         }
     }
@@ -65,7 +55,7 @@ fun RegisterScreen(navController: NavController, onRegisterSuccessful: () -> Uni
         when {
             ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED -> {
                 getLastKnownLocation(fusedLocationClient, context) { city ->
-                    position = city
+                    onPositionChange(city)
                 }
             }
             else -> {
@@ -83,7 +73,7 @@ fun RegisterScreen(navController: NavController, onRegisterSuccessful: () -> Uni
     val pickImageLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
-        profilePictureUri = uri
+        uri?.let { onProfilePictureChange(it) }
     }
 
     // Launcher to take a photo using the camera
@@ -92,7 +82,7 @@ fun RegisterScreen(navController: NavController, onRegisterSuccessful: () -> Uni
     ) { bitmap: Bitmap? ->
         bitmap?.let {
             val uri = bitmapToUri(context, it)
-            profilePictureUri = uri
+            onProfilePictureChange(uri)
         }
     }
 
@@ -103,7 +93,7 @@ fun RegisterScreen(navController: NavController, onRegisterSuccessful: () -> Uni
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(text = "Create Account", fontSize = 28.sp, fontWeight = FontWeight.Bold)
+        Text(text = "Create Account - Step 1", fontSize = 28.sp, fontWeight = FontWeight.Bold)
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -153,36 +143,8 @@ fun RegisterScreen(navController: NavController, onRegisterSuccessful: () -> Uni
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
-            value = username,
-            onValueChange = { username = it },
-            label = { Text("Username") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("Email") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Password") },
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        OutlinedTextField(
             value = firstName,
-            onValueChange = { firstName = it },
+            onValueChange = onFirstNameChange,
             label = { Text("First Name") },
             modifier = Modifier.fillMaxWidth()
         )
@@ -191,7 +153,7 @@ fun RegisterScreen(navController: NavController, onRegisterSuccessful: () -> Uni
 
         OutlinedTextField(
             value = lastName,
-            onValueChange = { lastName = it },
+            onValueChange = onLastNameChange,
             label = { Text("Last Name") },
             modifier = Modifier.fillMaxWidth()
         )
@@ -200,7 +162,7 @@ fun RegisterScreen(navController: NavController, onRegisterSuccessful: () -> Uni
 
         OutlinedTextField(
             value = position,
-            onValueChange = { position = it },
+            onValueChange = onPositionChange,
             label = { Text("Position") },
             modifier = Modifier.fillMaxWidth(),
             enabled = false // Disable manual editing of the position
@@ -209,14 +171,10 @@ fun RegisterScreen(navController: NavController, onRegisterSuccessful: () -> Uni
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = {
-                // Handle registration logic here
-                onRegisterSuccessful()
-                navController.navigate(Routes.homeScreen)
-            },
+            onClick = onProceed,
             modifier = Modifier.fillMaxWidth().height(48.dp)
         ) {
-            Text(text = "Register")
+            Text(text = "Next")
         }
 
         Spacer(modifier = Modifier.height(16.dp))
