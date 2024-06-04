@@ -1,6 +1,5 @@
 package com.example.brainbusters
 
-import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,18 +25,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.brainbusters.data.viewmodels.RegistrationViewModel
 import com.example.brainbusters.ui.views.HomeScreen
 import com.example.brainbusters.ui.views.LoginScreen
 import com.example.brainbusters.ui.views.NotificationsScreen
@@ -51,17 +51,10 @@ import com.example.brainbusters.ui.views.Settings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BrainBustersNavigation() {
-    val navController = rememberNavController()
-    var isLoggedIn by rememberSaveable { mutableStateOf(false) }
-    val selected = remember { mutableStateOf(Icons.Default.Home) }
+fun BrainBustersNavigation(navController: NavController, registrationViewModel: RegistrationViewModel) {
 
-    var profilePictureUri by rememberSaveable { mutableStateOf<Uri?>(null) }
-    var firstName by rememberSaveable { mutableStateOf("") }
-    var lastName by rememberSaveable { mutableStateOf("") }
-    var position by rememberSaveable { mutableStateOf("") }
-    var email by rememberSaveable { mutableStateOf("") }
-    var password by rememberSaveable { mutableStateOf("") }
+    var isLoggedIn by remember { mutableStateOf(false) }
+    val selected = remember { mutableStateOf(Icons.Default.Home) }
 
     Scaffold(
         topBar = {
@@ -167,39 +160,27 @@ fun BrainBustersNavigation() {
         }
     ) { paddingValues ->
         NavHost(
-            navController = navController,
+            navController = navController as NavHostController,
             startDestination = if (isLoggedIn) Routes.homeScreen else Routes.loginScreen,
             modifier = Modifier.padding(paddingValues)
         ) {
             composable(Routes.loginScreen) {
                 LoginScreen(
                     navController = navController,
-                    onLoginSuccessful = { isLoggedIn = true })
+                    onLoginSuccessful = { isLoggedIn = true }
+                )
             }
             composable(Routes.registerStepOne) {
                 RegisterStepOneScreen(
                     navController = navController,
-                    profilePictureUri = profilePictureUri,
-                    onProfilePictureChange = { profilePictureUri = it },
-                    firstName = firstName,
-                    onFirstNameChange = { firstName = it },
-                    lastName = lastName,
-                    onLastNameChange = { lastName = it },
-                    position = position,
-                    onPositionChange = { position = it },
-                    onProceed = { navController.navigate(Routes.registerStepTwo) }
+                    registrationViewModel = registrationViewModel
                 )
             }
             composable(Routes.registerStepTwo) {
                 RegisterStepTwoScreen(
                     navController = navController,
-                    profilePictureUri = profilePictureUri,
-                    email = email,
-                    onEmailChange = { email = it },
-                    password = password,
-                    onPasswordChange = { password = it },
-                    onRegister = {
-                        // Handle registration logic here
+                    registrationViewModel = registrationViewModel,
+                    onRegistrationSuccessful = {
                         isLoggedIn = true
                         navController.navigate(Routes.homeScreen)
                     }
