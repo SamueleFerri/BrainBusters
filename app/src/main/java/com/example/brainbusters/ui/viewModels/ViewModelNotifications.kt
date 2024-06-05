@@ -12,4 +12,8 @@ class ViewModelNotifications : ViewModel() {
     fun addNotification(notification: Notification) {
         _notifications.add(notification)
     }
+
+    fun removeNotification(notification: Any?) {
+        _notifications.remove(notification)
+    }
 }
