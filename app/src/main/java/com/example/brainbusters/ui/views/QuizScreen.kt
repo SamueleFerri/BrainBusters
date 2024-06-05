@@ -3,7 +3,7 @@
     import android.annotation.SuppressLint
     import androidx.compose.foundation.layout.*
     import androidx.compose.material.icons.Icons
-    import androidx.compose.material.icons.automirrored.filled.ArrowBack
+    import androidx.compose.material.icons.rounded.ArrowBack
     import androidx.compose.material3.*
     import androidx.compose.runtime.*
     import androidx.compose.ui.Alignment
@@ -57,7 +57,7 @@
                     title = { Text(text = quizTitle) },
                     navigationIcon = {
                         IconButton(onClick = { navController.popBackStack() }) {
-                            Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                            Icon(imageVector = Icons.Rounded.ArrowBack, contentDescription = "Back")
                         }
                     }
                 )
