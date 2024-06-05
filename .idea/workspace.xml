@@ -10,6 +10,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="28960bd1-3d77-45a8-867c-22c40b09ddfe" name="Changes" comment="">
+<<<<<<< HEAD
       <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/brainbusters/Notification.kt" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/brainbusters/ui/viewModels/ViewModelNotifications.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/8.6/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.6/checksums/checksums.lock" afterDir="false" />
@@ -27,6 +28,17 @@
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/brainbusters/BrainBustersNavigation.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/brainbusters/BrainBustersNavigation.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/brainbusters/ui/views/NotificationsScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/brainbusters/ui/views/NotificationsScreen.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/brainbusters/ui/views/QuizScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/brainbusters/ui/views/QuizScreen.kt" afterDir="false" />
+=======
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/brainbusters/BrainBusterApplication.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/brainbusters/DataModule.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/brainbusters/data/BrainBusterDatabase.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/brainbusters/data/daos/UserDao.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/brainbusters/data/entities/User.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/brainbusters/data/repositories/UserRepository.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/brainbusters/ui/viewModels/UserViewModel.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
+>>>>>>> 99fbaae85beb06b3de962008189c7096486c243b
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,6 +97,10 @@
       <list>
         <option value="Kotlin Object" />
         <option value="Kotlin File" />
+<<<<<<< HEAD
+=======
+        <option value="Kotlin Data Class" />
+>>>>>>> 99fbaae85beb06b3de962008189c7096486c243b
         <option value="Kotlin Class" />
       </list>
     </option>
