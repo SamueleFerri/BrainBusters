@@ -33,11 +33,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.brainbusters.ui.viewModels.ViewModelNotifications
 import com.example.brainbusters.ui.views.HomeScreen
 import com.example.brainbusters.ui.views.LoginScreen
 import com.example.brainbusters.ui.views.NotificationsScreen
@@ -53,6 +55,7 @@ import com.example.brainbusters.ui.views.Settings
 @Composable
 fun BrainBustersNavigation() {
     val navController = rememberNavController()
+    val viewModelNotifications: ViewModelNotifications = viewModel()
     var isLoggedIn by rememberSaveable { mutableStateOf(false) }
     val selected = remember { mutableStateOf(Icons.Default.Home) }
 
@@ -209,7 +212,7 @@ fun BrainBustersNavigation() {
             composable(Routes.scoreboard) { Scoreboard(navController = navController) }
             composable(Routes.profile) { Profile(navController = navController) }
             composable(Routes.settings) { Settings(navController = navController) }
-            composable(Routes.notifications) { NotificationsScreen(navController = navController) }
+            composable(Routes.notifications) { NotificationsScreen(navController = navController, viewModelNotifications) }
             composable(
                 route = "quizScreen/{quizTitle}",
                 arguments = listOf(navArgument("quizTitle") { type = NavType.StringType })
@@ -222,7 +225,7 @@ fun BrainBustersNavigation() {
             }
             composable("score_screen/{score}") { backStackEntry ->
                 val score = backStackEntry.arguments?.getString("score")?.toInt() ?: 0
-                ScoreScreen(navController = navController, score = score)
+                ScoreScreen(navController = navController, score = score, viewModelNotifications, quizTitle = "Quiz")
             }
         }
     }

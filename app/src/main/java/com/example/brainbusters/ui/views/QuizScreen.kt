@@ -11,7 +11,9 @@
     import androidx.compose.ui.graphics.Color
     import androidx.compose.ui.unit.dp
     import androidx.navigation.NavController
+    import com.example.brainbusters.Notification
     import com.example.brainbusters.Routes
+    import com.example.brainbusters.ui.viewModels.ViewModelNotifications
     import kotlinx.coroutines.delay
 
     @OptIn(ExperimentalMaterial3Api::class)
@@ -123,7 +125,7 @@
     }
 
     @Composable
-    fun ScoreScreen(navController: NavController, score: Int) {
+    fun ScoreScreen(navController: NavController, score: Int, viewModel: ViewModelNotifications, quizTitle: String) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -145,6 +147,8 @@
                     Text(text = "Restart Quiz")
                 }
                 Button(onClick = {
+                    viewModel.addNotification(Notification(id = 1, message = "$quizTitle finito"))
+                    navController.navigate("notifications")
                     navController.navigate(Routes.homeScreen) {
                         popUpTo(Routes.homeScreen) { inclusive = true }
                     }
@@ -154,4 +158,3 @@
             }
         }
     }
-
