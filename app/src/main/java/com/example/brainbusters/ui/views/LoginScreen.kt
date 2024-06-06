@@ -18,18 +18,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.brainbusters.R
 import com.example.brainbusters.Routes
-import com.example.brainbusters.ui.viewModels.LoginViewModel
+import com.example.brainbusters.ui.viewModels.UserViewModel
 import kotlinx.coroutines.runBlocking
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun LoginScreen(navController: NavController, onLoginSuccessful: () -> Unit) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    val loginViewModel : LoginViewModel = viewModel()
+    val userViewModel = koinViewModel<UserViewModel>()
 
     Column(
         modifier = Modifier
@@ -79,7 +79,7 @@ fun LoginScreen(navController: NavController, onLoginSuccessful: () -> Unit) {
             onClick = {
                 Log.i("Credential", "Email: $email Password: $password")
                 val loginSuccess = runBlocking {
-                    loginViewModel.login(email, password)
+                    userViewModel.actions.login(email, password)
                 }
                 if (loginSuccess) {
                     onLoginSuccessful()

@@ -8,9 +8,11 @@ import com.example.brainbusters.data.entities.User
 import com.example.brainbusters.data.repositories.UsersRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 data class UsersState(val users: List<User>, val isLoading: Boolean = false, val errorMessage: String? = null)
 
@@ -19,6 +21,7 @@ interface UsersActions {
     fun removeUser(userId: Int): Job
     fun updateUser(user: User): Job
     fun getRepository(): UsersRepository
+    fun login(email: String, password: String) : Boolean
 }
 
 class UserViewModel(
@@ -33,6 +36,9 @@ class UserViewModel(
 
     private val _errorMessage = MutableLiveData<String?>()
     val errorMessage: LiveData<String?> = _errorMessage
+
+    var userEmail = ""
+    var userPassword = ""
 
     fun clearErrorMessage() {
         _errorMessage.value = null
@@ -78,5 +84,24 @@ class UserViewModel(
         override fun getRepository(): UsersRepository {
             return userRepository
         }
+
+        override fun login(email: String, password: String): Boolean {
+            return runBlocking {
+                val user = userRepository.getUserByEmail(email).first()
+
+                if (user.userPassword == password) {
+                    // Le credenziali sono corrette, esegui il login
+                    println("Login effettuato con successo")
+                    userEmail = email
+                    userPassword = password
+                    true
+                } else {
+                    // Le credenziali non sono corrette, gestisci l'errore
+                    println("Email o password non corrette")
+                    false
+                }
+            }
+        }
+
     }
 }

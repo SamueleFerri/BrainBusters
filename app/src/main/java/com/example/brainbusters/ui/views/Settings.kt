@@ -14,7 +14,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.brainbusters.ui.viewModels.LoginViewModel
 import com.example.brainbusters.ui.viewModels.UserViewModel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -25,7 +24,6 @@ fun Settings(navController: NavController) {
     var showChangePasswordFields by remember { mutableStateOf(false) }
     var showDeleteAccountDialog by remember { mutableStateOf(false) }
     val userViewModel = koinViewModel<UserViewModel>()
-    val loginViewModel = koinViewModel<LoginViewModel>()
 
     Column(
         modifier = Modifier
@@ -89,7 +87,7 @@ fun Settings(navController: NavController) {
         Button(
             onClick = {
                 runBlocking {
-                    userViewModel.actions.removeUser(userViewModel.actions.getRepository().getUserIdByEmail(loginViewModel.userEmail).first())
+                    userViewModel.actions.removeUser(userViewModel.actions.getRepository().getUserIdByEmail(userViewModel.userEmail).first())
                 }
                 showDeleteAccountDialog = true
             },
