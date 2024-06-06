@@ -11,8 +11,13 @@
     import androidx.compose.ui.graphics.Color
     import androidx.compose.ui.unit.dp
     import androidx.navigation.NavController
+    import com.example.brainbusters.Notification
     import com.example.brainbusters.Routes
+    import com.example.brainbusters.ui.viewModels.ViewModelNotifications
     import kotlinx.coroutines.delay
+    import java.time.Instant
+    import java.time.ZoneId
+    import java.time.format.DateTimeFormatter
 
     @OptIn(ExperimentalMaterial3Api::class)
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -123,7 +128,7 @@
     }
 
     @Composable
-    fun ScoreScreen(navController: NavController, score: Int) {
+    fun ScoreScreen(navController: NavController, score: Int, viewModel: ViewModelNotifications, quizTitle: String) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -145,6 +150,14 @@
                     Text(text = "Restart Quiz")
                 }
                 Button(onClick = {
+                    val timestampMillis = System.currentTimeMillis()
+                    val timestampSeconds = timestampMillis / 1000
+                    val instant = Instant.ofEpochSecond(timestampSeconds)
+                    val formatter = DateTimeFormatter.ofPattern("EEEE, dd MMMM yyyy")
+                        .withZone(ZoneId.of("UTC"))
+                    val dateString = formatter.format(instant)
+                    viewModel.addNotification(Notification(id = 1, message = "$quizTitle finito", timestamp = dateString ))
+                    navController.navigate("notifications")
                     navController.navigate(Routes.homeScreen) {
                         popUpTo(Routes.homeScreen) { inclusive = true }
                     }
@@ -154,4 +167,3 @@
             }
         }
     }
-
