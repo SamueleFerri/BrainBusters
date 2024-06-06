@@ -1,6 +1,5 @@
 package com.example.brainbusters.data.entities
 
-import android.net.Uri
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
@@ -28,7 +27,7 @@ data class User(
     var userPassword: String,
 
     @ColumnInfo(name = "user_image")
-    var userImage: Uri?,
+    var userImage: String,
 
     @ColumnInfo(name = "user_position")
     var userPosition: String,
