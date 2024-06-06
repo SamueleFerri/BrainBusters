@@ -9,7 +9,7 @@ import com.example.brainbusters.data.entities.Career
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface CareerDao {
+interface CareersDao {
 
     // Get Career by id
     @Query("SELECT * FROM careers WHERE career_id = :careerID")
@@ -17,7 +17,7 @@ interface CareerDao {
 
     // Get Career by user id
     @Query("SELECT * FROM careers WHERE career_user_id = :userID")
-    fun getUserByUserName(userID: String): Flow<Career>
+    fun getUserByUserId(userID: Int): Flow<Career>
 
     // Insert Career
     @Insert(onConflict = OnConflictStrategy.IGNORE)
@@ -31,8 +31,11 @@ interface CareerDao {
     @Query("DELETE FROM careers WHERE career_user_id = :userId")
     suspend fun delete(userId: Int)
 
-    // get All Careers
+    // Get All Careers
     @Query("SELECT * FROM careers")
     fun getAllCareers(): Flow<List<Career>>
 
+    // Get Top 9 Careers
+    @Query("SELECT * FROM careers ORDER BY career_score LIMIT 9")
+    fun getScoreBoardCareers(): Flow<List<Career>>
 }

@@ -1,12 +1,12 @@
 package com.example.brainbusters.data.repositories
 
-import com.example.brainbusters.data.daos.UsersDAO
+import com.example.brainbusters.data.daos.UsersDao
 import com.example.brainbusters.data.entities.User
 import kotlinx.coroutines.flow.Flow
 
-class UsersRepository(private val usersDAO: UsersDAO) {
+class UsersRepository(private val usersDAO: UsersDao) {
 
-    val users: Flow<List<User>> = usersDAO.getUsers()
+    val users: Flow<List<User>> = usersDAO.getAllUsers()
 
     suspend fun insertNewUser(user: User) {
         usersDAO.insert(user)
