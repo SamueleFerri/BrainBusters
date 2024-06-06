@@ -17,6 +17,7 @@ val dataModule = module {
     }
 
     single { UsersRepository(get<BrainBusterDatabase>().usersDAO()) }
+    single {}
 
     viewModel { UserViewModel(get()) }
 }
