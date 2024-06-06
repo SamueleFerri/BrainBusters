@@ -212,7 +212,7 @@ fun BrainBustersNavigation() {
                         // Handle registration logic here
                         isLoggedIn = true
                         userViewModel.actions.addUser(User(userName = firstName, userSurname =  lastName,
-                            userUsername = username, userEmail = email, userPassword = password, userImage = profilePictureUri, userPosition = position))
+                            userUsername = username, userEmail = email, userPassword = password, userImage = profilePictureUri.toString(), userPosition = position))
                         navController.navigate(Routes.homeScreen)
                     }
                 )
