@@ -182,7 +182,10 @@ fun BrainBustersNavigation() {
             composable(Routes.loginScreen) {
                 LoginScreen(
                     navController = navController,
-                    onLoginSuccessful = { isLoggedIn = true })
+                    onLoginSuccessful = {
+                        isLoggedIn = true
+                    }
+                )
             }
             composable(Routes.registerStepOne) {
                 RegisterStepOneScreen(
