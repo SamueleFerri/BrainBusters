@@ -9,7 +9,7 @@ import com.example.brainbusters.data.entities.User
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface UsersDAO {
+interface UsersDao {
     // Get all users
     @Query("SELECT * FROM users ORDER BY user_name ASC")
     fun getUsers(): Flow<List<User>>
