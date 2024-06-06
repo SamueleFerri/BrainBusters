@@ -16,9 +16,10 @@ class UsersRepository(private val usersDAO: UsersDAO) {
         usersDAO.update(user)
     }
 
-    suspend fun deleteUser(user: User) {
-        usersDAO.delete(user.userId)
+    suspend fun deleteUserById(userId: String) {
+        usersDAO.deleteUserById(userId)
     }
+
 
     fun getUserById(userId: Int): Flow<User> {
         return usersDAO.getUserById(userId)

@@ -9,10 +9,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import com.example.brainbusters.ui.components.NotificationComponent
-import com.example.brainbusters.ui.viewModels.ViewModelNotifications
+import com.example.brainbusters.ui.viewModels.NotificationsViewModel
 
 @Composable
-fun NotificationsScreen(navController: NavHostController, viewModel: ViewModelNotifications) {
+fun NotificationsScreen(navController: NavHostController, viewModel: NotificationsViewModel) {
     LazyColumn (
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,

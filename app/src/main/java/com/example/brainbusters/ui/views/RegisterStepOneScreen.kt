@@ -102,7 +102,7 @@ fun RegisterStepOneScreen(navController: NavController, profilePictureUri: Uri?,
             Image(
                 bitmap = if (Build.VERSION.SDK_INT < 28) {
                     MediaStore.Images.Media.getBitmap(context.contentResolver, it).asImageBitmap()
-                } else {
+                } else {g
                     val source = ImageDecoder.createSource(context.contentResolver, it)
                     ImageDecoder.decodeBitmap(source).asImageBitmap()
                 },

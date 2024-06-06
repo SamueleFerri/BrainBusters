@@ -5,7 +5,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import com.example.brainbusters.Notification
 
-class ViewModelNotifications : ViewModel() {
+class NotificationsViewModel : ViewModel() {
     private val _notifications = mutableStateListOf<Notification>()
     val notifications: SnapshotStateList<Notification> = _notifications
 

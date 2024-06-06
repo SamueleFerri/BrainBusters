@@ -13,7 +13,7 @@
     import androidx.navigation.NavController
     import com.example.brainbusters.Notification
     import com.example.brainbusters.Routes
-    import com.example.brainbusters.ui.viewModels.ViewModelNotifications
+    import com.example.brainbusters.ui.viewModels.NotificationsViewModel
     import kotlinx.coroutines.delay
     import java.time.Instant
     import java.time.ZoneId
@@ -128,7 +128,7 @@
     }
 
     @Composable
-    fun ScoreScreen(navController: NavController, score: Int, viewModel: ViewModelNotifications, quizTitle: String) {
+    fun ScoreScreen(navController: NavController, score: Int, viewModel: NotificationsViewModel, quizTitle: String) {
         Column(
             modifier = Modifier
                 .fillMaxSize()

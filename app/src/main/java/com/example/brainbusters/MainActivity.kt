@@ -11,8 +11,10 @@ import androidx.compose.ui.Modifier
 import com.example.brainbusters.ui.theme.BrainBustersTheme
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         enableEdgeToEdge()
         setContent {
             BrainBustersTheme {
@@ -26,22 +28,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-/*
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier,
-        color = MaterialTheme.colorScheme.primary,
-        fontSize = 18.sp
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    BrainBustersTheme {
-        Greeting("Android")
-    }
-}*/

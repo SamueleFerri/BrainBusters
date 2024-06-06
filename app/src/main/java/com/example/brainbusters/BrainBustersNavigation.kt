@@ -39,7 +39,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.brainbusters.ui.viewModels.ViewModelNotifications
+import com.example.brainbusters.ui.viewModels.NotificationsViewModel
 import com.example.brainbusters.ui.views.HomeScreen
 import com.example.brainbusters.ui.views.LoginScreen
 import com.example.brainbusters.ui.views.NotificationsScreen
@@ -55,7 +55,7 @@ import com.example.brainbusters.ui.views.Settings
 @Composable
 fun BrainBustersNavigation() {
     val navController = rememberNavController()
-    val viewModelNotifications: ViewModelNotifications = viewModel()
+    val notificationsViewModel: NotificationsViewModel = viewModel()
     var isLoggedIn by rememberSaveable { mutableStateOf(false) }
     val selected = remember { mutableStateOf(Icons.Default.Home) }
 
@@ -212,7 +212,7 @@ fun BrainBustersNavigation() {
             composable(Routes.scoreboard) { Scoreboard(navController = navController) }
             composable(Routes.profile) { Profile(navController = navController) }
             composable(Routes.settings) { Settings(navController = navController) }
-            composable(Routes.notifications) { NotificationsScreen(navController = navController, viewModelNotifications) }
+            composable(Routes.notifications) { NotificationsScreen(navController = navController, notificationsViewModel) }
             composable(
                 route = "quizScreen/{quizTitle}",
                 arguments = listOf(navArgument("quizTitle") { type = NavType.StringType })
@@ -225,7 +225,7 @@ fun BrainBustersNavigation() {
             }
             composable("score_screen/{score}") { backStackEntry ->
                 val score = backStackEntry.arguments?.getString("score")?.toInt() ?: 0
-                ScoreScreen(navController = navController, score = score, viewModelNotifications, quizTitle = "Quiz")
+                ScoreScreen(navController = navController, score = score, notificationsViewModel, quizTitle = "Quiz")
             }
         }
     }
