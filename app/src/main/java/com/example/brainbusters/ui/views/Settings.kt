@@ -14,7 +14,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.brainbusters.ui.viewModels.LoginViewModel
 import com.example.brainbusters.ui.viewModels.UserViewModel
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -22,6 +25,7 @@ fun Settings(navController: NavController) {
     var showChangePasswordFields by remember { mutableStateOf(false) }
     var showDeleteAccountDialog by remember { mutableStateOf(false) }
     val userViewModel = koinViewModel<UserViewModel>()
+    val loginViewModel = koinViewModel<LoginViewModel>()
 
     Column(
         modifier = Modifier
@@ -83,7 +87,12 @@ fun Settings(navController: NavController) {
 
         // Delete Account Button
         Button(
-            onClick = { showDeleteAccountDialog = true },
+            onClick = {
+                runBlocking {
+                    userViewModel.actions.removeUser(userViewModel.actions.getRepository().getUserIdByEmail(loginViewModel.userEmail).first())
+                }
+                showDeleteAccountDialog = true
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)

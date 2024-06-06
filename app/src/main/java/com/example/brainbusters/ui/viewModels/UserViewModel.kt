@@ -16,8 +16,9 @@ data class UsersState(val users: List<User>, val isLoading: Boolean = false, val
 
 interface UsersActions {
     fun addUser(user: User): Job
-    fun removeUser(userId: String): Job
+    fun removeUser(userId: Int): Job
     fun updateUser(user: User): Job
+    fun getRepository(): UsersRepository
 }
 
 class UserViewModel(
@@ -52,7 +53,7 @@ class UserViewModel(
             }
         }
 
-        override fun removeUser(userId: String) = viewModelScope.launch {
+        override fun removeUser(userId: Int) = viewModelScope.launch {
             _isLoading.value = true
             try {
                 userRepository.deleteUserById(userId)
@@ -72,6 +73,10 @@ class UserViewModel(
             } finally {
                 _isLoading.value = false
             }
+        }
+
+        override fun getRepository(): UsersRepository {
+            return userRepository
         }
     }
 }

@@ -8,6 +8,9 @@ import kotlinx.coroutines.withContext
 
 class LoginViewModel(private val userDao: UsersDao) : ViewModel() {
 
+    var userEmail = ""
+    var userPassword = ""
+
     // Funzione per eseguire il login
     suspend fun login(email : String, password : String) : Boolean {
         // Esegui la logica di controllo email e password
@@ -17,6 +20,8 @@ class LoginViewModel(private val userDao: UsersDao) : ViewModel() {
             if (user.first().userPassword == password) {
                 // Le credenziali sono corrette, esegui il login
                 println("Login effettuato con successo")
+                userEmail = email
+                userPassword = password
                 true
             } else {
                 // Le credenziali non sono corrette, gestisci l'errore
