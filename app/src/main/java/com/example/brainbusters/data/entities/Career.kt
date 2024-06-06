@@ -9,6 +9,10 @@ import androidx.room.PrimaryKey
     ForeignKey(entity = User::class,
         parentColumns = arrayOf("user_id"),
         childColumns = arrayOf("career_user_id"),
+        onDelete = ForeignKey.CASCADE),
+    ForeignKey(entity = Badge::class,
+        parentColumns = arrayOf("badge_id"),
+        childColumns = arrayOf("career_badge_id"),
         onDelete = ForeignKey.CASCADE)
 ])
 data class Career(
@@ -20,5 +24,8 @@ data class Career(
     var score: Int,
 
     @ColumnInfo(name = "career_user_id")
-    var userId: Int
+    var userId: Int,
+
+    @ColumnInfo(name = "career_badge_id")
+    var badgeId: Int
 )

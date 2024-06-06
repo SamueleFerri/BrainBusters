@@ -28,4 +28,7 @@ data class User(
 
     @ColumnInfo(name = "user_image")
     var userImage: String,
+
+    @ColumnInfo(name = "user_position")
+    var userPosition: String,
 )
