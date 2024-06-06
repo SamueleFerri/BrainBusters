@@ -1,6 +1,7 @@
 package com.example.brainbusters.ui.views
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -102,7 +103,7 @@ fun RegisterStepOneScreen(navController: NavController, profilePictureUri: Uri?,
             Image(
                 bitmap = if (Build.VERSION.SDK_INT < 28) {
                     MediaStore.Images.Media.getBitmap(context.contentResolver, it).asImageBitmap()
-                } else {g
+                } else {
                     val source = ImageDecoder.createSource(context.contentResolver, it)
                     ImageDecoder.decodeBitmap(source).asImageBitmap()
                 },
@@ -185,6 +186,7 @@ fun RegisterStepOneScreen(navController: NavController, profilePictureUri: Uri?,
     }
 }
 
+@SuppressLint("MissingPermission")
 private fun getLastKnownLocation(
     fusedLocationClient: FusedLocationProviderClient,
     context: Context,

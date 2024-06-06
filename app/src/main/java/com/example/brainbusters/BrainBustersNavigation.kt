@@ -39,7 +39,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.brainbusters.data.daos.UsersDAO
+import com.example.brainbusters.data.repositories.UsersRepository
 import com.example.brainbusters.ui.viewModels.NotificationsViewModel
+import com.example.brainbusters.ui.viewModels.UserViewModel
 import com.example.brainbusters.ui.views.HomeScreen
 import com.example.brainbusters.ui.views.LoginScreen
 import com.example.brainbusters.ui.views.NotificationsScreen
@@ -50,12 +53,14 @@ import com.example.brainbusters.ui.views.RegisterStepTwoScreen
 import com.example.brainbusters.ui.views.ScoreScreen
 import com.example.brainbusters.ui.views.Scoreboard
 import com.example.brainbusters.ui.views.Settings
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BrainBustersNavigation() {
     val navController = rememberNavController()
     val notificationsViewModel: NotificationsViewModel = viewModel()
+    val userViewModel = koinViewModel<UserViewModel>()
     var isLoggedIn by rememberSaveable { mutableStateOf(false) }
     val selected = remember { mutableStateOf(Icons.Default.Home) }
 
