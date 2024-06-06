@@ -1,9 +1,8 @@
 package com.example.brainbusters.ui.viewModels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import co.yml.charts.common.extensions.isNotNull
 import com.example.brainbusters.data.entities.User
 import com.example.brainbusters.data.repositories.UsersRepository
 import kotlinx.coroutines.Job
@@ -14,7 +13,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-data class UsersState(val users: List<User>, val isLoading: Boolean = false, val errorMessage: String? = null)
+data class UsersState(val users: List<User>)
 
 interface UsersActions {
     fun addUser(user: User): Job
@@ -34,50 +33,34 @@ class UserViewModel(
         initialValue = UsersState(emptyList())
     )
 
-    private val _errorMessage = MutableLiveData<String?>()
-    val errorMessage: LiveData<String?> = _errorMessage
 
-    var userEmail = ""
-    var userPassword = ""
 
-    fun clearErrorMessage() {
-        _errorMessage.value = null
-    }
-
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean> = _isLoading
+    var emailU = ""
+    var passwordU = ""
 
     val actions = object : UsersActions {
         override fun addUser(user: User) = viewModelScope.launch {
-            _isLoading.value = true
             try {
                 userRepository.insertNewUser(user)
             } catch (e: Exception) {
-                _errorMessage.value = "Failed to add user: ${e.message}"
-            } finally {
-                _isLoading.value = false
+                throw e
             }
         }
 
         override fun removeUser(userId: Int) = viewModelScope.launch {
-            _isLoading.value = true
+
             try {
                 userRepository.deleteUserById(userId)
             } catch (e: Exception) {
-                _errorMessage.value = "Failed to remove user: ${e.message}"
-            } finally {
-                _isLoading.value = false
+                throw e
             }
         }
 
         override fun updateUser(user: User) = viewModelScope.launch {
-            _isLoading.value = true
             try {
                 userRepository.updateUser(user)
             } catch (e: Exception) {
-                _errorMessage.value = "Failed to update user: ${e.message}"
-            } finally {
-                _isLoading.value = false
+                throw e
             }
         }
 
@@ -87,18 +70,22 @@ class UserViewModel(
 
         override fun login(email: String, password: String): Boolean {
             return runBlocking {
-                val user = userRepository.getUserByEmail(email).first()
-
-                if (user.userPassword == password) {
-                    // Le credenziali sono corrette, esegui il login
-                    println("Login effettuato con successo")
-                    userEmail = email
-                    userPassword = password
-                    true
-                } else {
-                    // Le credenziali non sono corrette, gestisci l'errore
-                    println("Email o password non corrette")
+                if(userRepository.getUserByEmail(email).isNotNull()) {
+                    println("ciao")
                     false
+                } else {
+                    val user = userRepository.getUserByEmail(email).first()
+                    if (user.userPassword == password) {
+                        // Le credenziali sono corrette, esegui il login
+                        println("Login effettuato con successo")
+                        emailU = email
+                        passwordU = password
+                        true
+                    } else {
+                        // Le credenziali non sono corrette, gestisci l'errore
+                        println("Email o password non corrette")
+                        false
+                    }
                 }
             }
         }

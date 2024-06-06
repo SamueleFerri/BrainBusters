@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -59,7 +60,9 @@ import org.koin.androidx.compose.koinViewModel
 fun BrainBustersNavigation() {
     val navController = rememberNavController()
     val notificationsViewModel: NotificationsViewModel = viewModel()
+
     val userViewModel = koinViewModel<UserViewModel>()
+    val userStates = userViewModel.state.collectAsStateWithLifecycle()
 
     var isLoggedIn by rememberSaveable { mutableStateOf(false) }
     val selected = remember { mutableStateOf(Icons.Default.Home) }
@@ -221,7 +224,7 @@ fun BrainBustersNavigation() {
                     }
                 )
             }
-            composable(Routes.homeScreen) { HomeScreen(navController = navController) }
+            composable(Routes.homeScreen) { HomeScreen(navController = navController, action = userViewModel.actions, state = userStates) }
             composable(Routes.scoreboard) { Scoreboard(navController = navController) }
             composable(Routes.profile) { Profile(navController = navController) }
             composable(Routes.settings) { Settings(navController = navController) }

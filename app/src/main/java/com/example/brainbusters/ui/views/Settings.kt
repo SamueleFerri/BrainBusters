@@ -87,7 +87,7 @@ fun Settings(navController: NavController) {
         Button(
             onClick = {
                 runBlocking {
-                    userViewModel.actions.removeUser(userViewModel.actions.getRepository().getUserIdByEmail(userViewModel.userEmail).first())
+                    userViewModel.actions.removeUser(userViewModel.actions.getRepository().getUserIdByEmail(userViewModel.emailU).first())
                 }
                 showDeleteAccountDialog = true
             },
