@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 package com.example.brainbusters
+=======
+//package com.example.brainbusters
+>>>>>>> 08fef9b343e58a15b462109e1df99e927211177e
 //
 //import org.junit.Test
 //
