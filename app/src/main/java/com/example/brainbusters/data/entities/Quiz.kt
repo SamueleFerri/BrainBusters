@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "quitzes",
+@Entity(tableName = "quizzes",
     indices = [Index(
         value = ["title"],
         unique = true
