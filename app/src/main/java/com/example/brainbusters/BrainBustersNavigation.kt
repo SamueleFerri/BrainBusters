@@ -39,8 +39,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.brainbusters.data.daos.UsersDAO
-import com.example.brainbusters.data.repositories.UsersRepository
 import com.example.brainbusters.ui.viewModels.NotificationsViewModel
 import com.example.brainbusters.ui.viewModels.UserViewModel
 import com.example.brainbusters.ui.views.HomeScreen
@@ -65,6 +63,7 @@ fun BrainBustersNavigation() {
     val selected = remember { mutableStateOf(Icons.Default.Home) }
 
     var profilePictureUri by rememberSaveable { mutableStateOf<Uri?>(null) }
+    var username by rememberSaveable { mutableStateOf("") }
     var firstName by rememberSaveable { mutableStateOf("") }
     var lastName by rememberSaveable { mutableStateOf("") }
     var position by rememberSaveable { mutableStateOf("") }
@@ -206,6 +205,8 @@ fun BrainBustersNavigation() {
                     onEmailChange = { email = it },
                     password = password,
                     onPasswordChange = { password = it },
+                    username = username,
+                    onUsernameChange = { username = it },
                     onRegister = {
                         // Handle registration logic here
                         isLoggedIn = true
