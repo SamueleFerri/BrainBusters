@@ -39,6 +39,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.brainbusters.data.entities.User
 import com.example.brainbusters.ui.viewModels.NotificationsViewModel
 import com.example.brainbusters.ui.viewModels.UserViewModel
 import com.example.brainbusters.ui.views.HomeScreen
@@ -210,6 +211,8 @@ fun BrainBustersNavigation() {
                     onRegister = {
                         // Handle registration logic here
                         isLoggedIn = true
+                        userViewModel.actions.addUser(User(userName = firstName, userSurname =  lastName,
+                            userUsername = username, userEmail = email, userPassword = password, userImage = profilePictureUri, userPosition = position))
                         navController.navigate(Routes.homeScreen)
                     }
                 )
