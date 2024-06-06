@@ -15,4 +15,8 @@ class BadgeRepository(private val badgesDAO: BadgesDao) {
     fun getAllBages() {
         badgesDAO.getAllbadges()
     }
+
+    fun getBadgeById(badgeId: Int) {
+        badgesDAO.getBadgeById(badgeId)
+    }
 }
