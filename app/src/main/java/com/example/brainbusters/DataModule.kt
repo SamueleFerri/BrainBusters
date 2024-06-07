@@ -4,6 +4,7 @@ import androidx.room.Room
 import com.example.brainbusters.data.BrainBusterDatabase
 import com.example.brainbusters.data.repositories.BadgeRepository
 import com.example.brainbusters.data.repositories.CareerRepository
+import com.example.brainbusters.data.repositories.QuizRepository
 import com.example.brainbusters.data.repositories.UsersRepository
 import com.example.brainbusters.ui.viewModels.UserViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -19,8 +20,9 @@ val dataModule = module {
     }
 
     single { UsersRepository(get<BrainBusterDatabase>().usersDAO()) }
-    single { CareerRepository(get<BrainBusterDatabase>().careersDAO())}
     single { BadgeRepository(get<BrainBusterDatabase>().badgesDAO()) }
+    single { QuizRepository(get<BrainBusterDatabase>().quizzesDAO()) }
+    single { CareerRepository(get<BrainBusterDatabase>().careersDAO()) }
 
     viewModel { UserViewModel(get()) }
 }

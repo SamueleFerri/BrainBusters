@@ -14,8 +14,11 @@ interface QuizzesDao {
    @Query("SELECT * FROM quizzes WHERE quiz_id = :quizId")
    fun getQuizById(quizId: Int): Flow<Quiz>
 
+   @Query("SELECT * FROM quizzes")
+   fun getAllQuizzes(): Flow<List<Quiz>>
+
    @Query("SELECT * FROM quizzes WHERE quiz_category = :category")
-   fun getAllQuizInCategory(category: String)
+   fun getAllQuizInCategory(category: String): Flow<List<Quiz>>
 
    // Insert Quiz
    @Insert(onConflict = OnConflictStrategy.IGNORE)
@@ -27,8 +30,6 @@ interface QuizzesDao {
 
    // Delete Quiz
    @Query("DELETE FROM quizzes WHERE quiz_id = :quizId")
-   suspend fun delete(quizId: String)
-
-
+   suspend fun delete(quizId: Int)
 
 }
