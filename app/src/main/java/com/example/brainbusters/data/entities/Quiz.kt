@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "quizzes",
     indices = [Index(
-        value = ["title"],
+        value = ["quiz_title"],
         unique = true
     )])
 data class Quiz(
