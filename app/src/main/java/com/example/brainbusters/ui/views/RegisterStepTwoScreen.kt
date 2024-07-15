@@ -21,10 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavController
-import com.example.brainbusters.Notification
 import com.example.brainbusters.Routes
-import com.example.brainbusters.data.entities.User
-import com.example.brainbusters.ui.viewModels.UserViewModel
 
 @Composable
 fun RegisterStepTwoScreen(

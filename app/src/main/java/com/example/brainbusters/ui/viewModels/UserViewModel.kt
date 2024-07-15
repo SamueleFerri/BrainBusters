@@ -1,5 +1,7 @@
 package com.example.brainbusters.ui.viewModels
 
+import android.icu.text.Transliterator.Position
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.yml.charts.common.extensions.isNotNull
@@ -8,6 +10,7 @@ import com.example.brainbusters.data.repositories.UsersRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -21,6 +24,12 @@ interface UsersActions {
     fun updateUser(user: User): Job
     fun getRepository(): UsersRepository
     fun login(email: String, password: String) : Boolean
+    fun register(
+        name: String,
+        surname: String,
+        username: String,
+        email: String,
+        password: String, image: String, position: String): Boolean
 }
 
 class UserViewModel(
@@ -90,5 +99,59 @@ class UserViewModel(
             }
         }
 
+        override fun register(
+            name: String,
+            surname:  String,
+            username: String,
+            email: String,
+            password: String,
+            image: String,
+            position: String
+        ): Boolean {
+            return runBlocking {
+                // Controllo se l'email è valida (deve contenere '@')
+                if (!isValidEmail(email)) {
+                    println("Email non valida")
+                    return@runBlocking false
+                }
+
+                // Controllo se l'email esiste nel repository
+                val existingUser = userRepository.getUserByEmail(email).firstOrNull()
+                if (existingUser != null) {
+                    println("Email già registrata")
+                    return@runBlocking false
+                }
+
+                // Controllo se la password è valida (deve essere lunga almeno 8 caratteri)
+                if (!isValidPassword(password)) {
+                    println("Password non valida")
+                    return@runBlocking false
+                }
+
+                // Creazione dell'oggetto User e inserimento nel repository
+                val newUser = User(
+                    userName = name,
+                    userSurname =  surname,
+                    userUsername = username,
+                    userEmail = email,
+                    userPassword = password,
+                    userImage = image,
+                    userPosition = position
+                )
+                userRepository.insertNewUser(newUser)
+                println("Utente registrato con successo")
+                true
+            }
+        }
+    }
+
+    // Funzione di validazione dell'email
+    private fun isValidEmail(email: String): Boolean {
+        return email.isNotEmpty() && email.contains('@')
+    }
+
+    // Funzione di validazione della password
+    private fun isValidPassword(password: String): Boolean {
+        return password.length >= 8
     }
 }

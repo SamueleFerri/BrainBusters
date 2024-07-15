@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -13,7 +14,9 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -41,6 +44,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.brainbusters.data.entities.User
+import com.example.brainbusters.data.repositories.UsersRepository
 import com.example.brainbusters.ui.viewModels.NotificationsViewModel
 import com.example.brainbusters.ui.viewModels.UserViewModel
 import com.example.brainbusters.ui.views.HomeScreen
@@ -60,6 +64,8 @@ import org.koin.androidx.compose.koinViewModel
 fun BrainBustersNavigation() {
     val navController = rememberNavController()
     val notificationsViewModel: NotificationsViewModel = viewModel()
+
+    var showErrorDialog by remember { mutableStateOf(false) }
 
     val userViewModel = koinViewModel<UserViewModel>()
     val userStates = userViewModel.state.collectAsStateWithLifecycle()
@@ -217,13 +223,24 @@ fun BrainBustersNavigation() {
                     onUsernameChange = { username = it },
                     onRegister = {
                         // Handle registration logic here
-                        isLoggedIn = true
-                        userViewModel.actions.addUser(User(userName = firstName, userSurname =  lastName,
-                            userUsername = username, userEmail = email, userPassword = password, userImage = profilePictureUri.toString(), userPosition = position))
-                        navController.navigate(Routes.homeScreen)
+                        val success = userViewModel.actions.register(
+                            name = firstName,
+                            surname =  lastName,
+                            username = username,
+                            email = email,
+                            password = password,
+                            image = profilePictureUri.toString(), position = position)
+                        if(success){
+                            isLoggedIn = true
+                            navController.navigate(Routes.homeScreen)
+                        }else{
+                            isLoggedIn = false
+                            showErrorDialog = true
+                        }
                     }
                 )
             }
+
             composable(Routes.homeScreen) { HomeScreen(navController = navController, action = userViewModel.actions, state = userStates) }
             composable(Routes.scoreboard) { Scoreboard(navController = navController) }
             composable(Routes.profile) { Profile(navController = navController) }
@@ -243,6 +260,23 @@ fun BrainBustersNavigation() {
                 val score = backStackEntry.arguments?.getString("score")?.toInt() ?: 0
                 ScoreScreen(navController = navController, score = score, notificationsViewModel, quizTitle = "Quiz")
             }
+        }
+
+        // Dialog di errore per la registrazione fallita
+        if (showErrorDialog) {
+            AlertDialog(
+                onDismissRequest = { showErrorDialog = false },
+                title = { Text("Error") },
+                text = { Text("Error creating account, email or password error.") },
+                confirmButton = {
+                    Button(
+                        onClick = { showErrorDialog = false },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("OK")
+                    }
+                }
+            )
         }
     }
 }
