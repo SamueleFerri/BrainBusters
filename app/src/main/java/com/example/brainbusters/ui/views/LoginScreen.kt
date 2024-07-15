@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -29,6 +30,7 @@ import org.koin.androidx.compose.koinViewModel
 fun LoginScreen(navController: NavController, onLoginSuccessful: () -> Unit) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var showErrorDialog by remember { mutableStateOf(false) }
     val userViewModel = koinViewModel<UserViewModel>()
 
     Column(
@@ -83,8 +85,10 @@ fun LoginScreen(navController: NavController, onLoginSuccessful: () -> Unit) {
                 }
                 if (loginSuccess) {
                     onLoginSuccessful()
+                    navController.navigate(Routes.homeScreen)
+                }else{
+                    showErrorDialog = true
                 }
-                navController.navigate(Routes.homeScreen)
             }
         ) {
             Text(text = "Login")
@@ -109,6 +113,20 @@ fun LoginScreen(navController: NavController, onLoginSuccessful: () -> Unit) {
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.clickable {
                     navController.navigate(Routes.registerStepOne)
+                }
+            )
+        }
+        if (showErrorDialog) {
+            AlertDialog(
+                onDismissRequest = { showErrorDialog = false },
+                title = { Text(text = "Login Error") },
+                text = { Text(text = "Email or password error") },
+                confirmButton = {
+                    TextButton(
+                        onClick = { showErrorDialog = false }
+                    ) {
+                        Text("OK")
+                    }
                 }
             )
         }
