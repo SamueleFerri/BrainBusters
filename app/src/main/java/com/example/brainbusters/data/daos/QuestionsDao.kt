@@ -24,8 +24,8 @@ interface QuestionsDao {
     suspend fun insert(question: Question)
 
     // Remove
-    @Query("DELETE FROM questions WHERE question_id = :quizId")
-    suspend fun delete(quizId: Int)
+    @Query("DELETE FROM questions WHERE question_id = :questionId")
+    suspend fun delete(questionId: Int)
 
     // Update
     @Update(onConflict = OnConflictStrategy.IGNORE)
