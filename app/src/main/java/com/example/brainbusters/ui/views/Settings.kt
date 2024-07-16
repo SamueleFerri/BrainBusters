@@ -10,6 +10,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.brainbusters.Routes
 import com.example.brainbusters.ui.viewModels.UserViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
@@ -160,7 +161,7 @@ fun Settings(navController: NavController) {
                     TextButton(
                         onClick = {
                             showDeleteAccountDialog = false
-                            // Handle account deletion
+                            navController.navigate(Routes.loginScreen)
                         }
                     ) {
                         Text("Confirm", color = MaterialTheme.colorScheme.error)
