@@ -267,7 +267,7 @@ fun BrainBustersNavigation() {
             AlertDialog(
                 onDismissRequest = { showErrorDialog = false },
                 title = { Text("Error") },
-                text = { Text("Error creating account, email or password error.") },
+                text = { Text("Error creating account, email not valid or password error (password min 8 characters).") },
                 confirmButton = {
                     Button(
                         onClick = { showErrorDialog = false },

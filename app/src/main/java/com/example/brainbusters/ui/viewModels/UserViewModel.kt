@@ -1,15 +1,12 @@
 package com.example.brainbusters.ui.viewModels
 
-import android.icu.text.Transliterator.Position
-import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import co.yml.charts.common.extensions.isNotNull
 import com.example.brainbusters.data.entities.User
 import com.example.brainbusters.data.repositories.UsersRepository
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -30,6 +27,8 @@ interface UsersActions {
         username: String,
         email: String,
         password: String, image: String, position: String): Boolean
+    fun changePassword(oldPassword: String, newPassword: String): Boolean
+    fun printUserEmailsAndPasswords()
 }
 
 class UserViewModel(
@@ -79,22 +78,17 @@ class UserViewModel(
 
         override fun login(email: String, password: String): Boolean {
             return runBlocking {
-                if(userRepository.getUserByEmail(email).isNotNull()) {
-                    println("ciao")
-                    false
+                val user = userRepository.getUserByEmail(email).firstOrNull()
+                if (user != null && user.userPassword == password) {
+                    // Le credenziali sono corrette, esegui il login
+                    println("Login effettuato con successo")
+                    emailU = email
+                    passwordU = password
+                    true
                 } else {
-                    val user = userRepository.getUserByEmail(email).first()
-                    if (user.userPassword == password) {
-                        // Le credenziali sono corrette, esegui il login
-                        println("Login effettuato con successo")
-                        emailU = email
-                        passwordU = password
-                        true
-                    } else {
-                        // Le credenziali non sono corrette, gestisci l'errore
-                        println("Email o password non corrette")
-                        false
-                    }
+                    // Le credenziali non sono corrette, gestisci l'errore
+                    println("Email o password non corrette")
+                    false
                 }
             }
         }
@@ -139,10 +133,51 @@ class UserViewModel(
                     userPosition = position
                 )
                 userRepository.insertNewUser(newUser)
+                emailU = email
+                passwordU = password
                 println("Utente registrato con successo")
                 true
             }
         }
+
+        override fun changePassword(oldPassword: String, newPassword: String): Boolean {
+            return runBlocking {
+                // Recupera l'utente dal repository
+                val user = userRepository.getUserByEmail(emailU).firstOrNull()
+                println(emailU + "ds")
+                println(user)
+                // Controlla se l'utente esiste e la vecchia password corrisponde
+                if (user != null && user.userPassword == oldPassword) {
+                    // Controlla se la nuova password è valida
+                    if (isValidPassword(newPassword)) {
+                        // Aggiorna la password dell'utente
+                        val updatedUser = user.copy(userPassword = newPassword)
+                        userRepository.updateUser(updatedUser)
+                        println("Password cambiata con successo")
+                        return@runBlocking true
+                    } else {
+                        println("Nuova password non valida")
+                        return@runBlocking false
+                    }
+                } else {
+                    println("Utente non trovato o vecchia password errata")
+                    return@runBlocking false
+                }
+            }
+        }
+
+        val usersFlow: Flow<List<User>> = userRepository.getAllUsers()
+
+        override fun printUserEmailsAndPasswords() {
+            viewModelScope.launch {
+                usersFlow.collect { userList ->
+                    userList.forEach { user ->
+                        println("Email: ${user.userEmail}, Password: ${user.userPassword}")
+                    }
+                }
+            }
+        }
+
     }
 
     // Funzione di validazione dell'email
