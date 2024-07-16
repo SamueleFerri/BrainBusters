@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.brainbusters.ui.viewModels.UserViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.koin.androidx.compose.koinViewModel
@@ -25,6 +26,8 @@ fun Settings(navController: NavController) {
     var errorMessage by remember { mutableStateOf("") }
 
     val userViewModel = koinViewModel<UserViewModel>()
+    val userEmail = UserViewModel.getEmail()
+    var passwordChangedSuccessfully by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -87,7 +90,11 @@ fun Settings(navController: NavController) {
                                 newPassword = newPassword
                             )
                         }
-                        if (!success) {
+                        if (success) {
+                            passwordChangedSuccessfully = true
+                            oldPassword = ""
+                            newPassword = ""
+                        } else {
                             errorMessage = "Failed to change password. Please check your old password and try again."
                             showErrorDialog = true
                         }
@@ -108,7 +115,7 @@ fun Settings(navController: NavController) {
         Button(
             onClick = {
                 runBlocking {
-                    userViewModel.actions.removeUser(userViewModel.actions.getRepository().getUserIdByEmail(userViewModel.emailU).first())
+                    userViewModel.actions.removeUser(userViewModel.actions.getRepository().getUserIdByEmail(userEmail).first())
                 }
                 showDeleteAccountDialog = true
             },
@@ -121,6 +128,26 @@ fun Settings(navController: NavController) {
             )
         ) {
             Text(text = "Delete Account", color = MaterialTheme.colorScheme.onError)
+        }
+
+        if (passwordChangedSuccessfully) {
+            LaunchedEffect(key1 = true) {
+                // Delay per mostrare il messaggio di successo per un breve periodo
+                delay(3000) // Tempo in millisecondi (ad esempio 3000 per 3 secondi)
+                passwordChangedSuccessfully = false
+            }
+            AlertDialog(
+                onDismissRequest = { passwordChangedSuccessfully = false },
+                title = { Text("Success") },
+                text = { Text("Password changed successfully") },
+                confirmButton = {
+                    TextButton(
+                        onClick = { passwordChangedSuccessfully = false }
+                    ) {
+                        Text("OK")
+                    }
+                }
+            )
         }
 
         // Delete Account Confirmation Dialog

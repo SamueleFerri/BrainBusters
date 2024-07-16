@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import org.koin.androidx.compose.get
 
 data class UsersState(val users: List<User>)
 
@@ -42,9 +43,27 @@ class UserViewModel(
     )
 
 
+    companion object {
+        private var emailU: String = ""
+        private var passwordU: String = ""
 
-    var emailU = ""
-    var passwordU = ""
+        fun getEmail(): String {
+            return emailU
+        }
+
+        fun setEmail(email: String) {
+            emailU = email
+        }
+
+        fun getPassword(): String {
+            return passwordU
+        }
+
+        fun setPassword(password: String) {
+            passwordU = password
+        }
+    }
+
 
     val actions = object : UsersActions {
         override fun addUser(user: User) = viewModelScope.launch {
@@ -82,8 +101,8 @@ class UserViewModel(
                 if (user != null && user.userPassword == password) {
                     // Le credenziali sono corrette, esegui il login
                     println("Login effettuato con successo")
-                    emailU = email
-                    passwordU = password
+                    setEmail(email)
+                    setPassword(password)
                     true
                 } else {
                     // Le credenziali non sono corrette, gestisci l'errore
@@ -133,8 +152,8 @@ class UserViewModel(
                     userPosition = position
                 )
                 userRepository.insertNewUser(newUser)
-                emailU = email
-                passwordU = password
+                setEmail(email)
+                setPassword(password)
                 println("Utente registrato con successo")
                 true
             }
@@ -143,8 +162,8 @@ class UserViewModel(
         override fun changePassword(oldPassword: String, newPassword: String): Boolean {
             return runBlocking {
                 // Recupera l'utente dal repository
-                val user = userRepository.getUserByEmail(emailU).firstOrNull()
-                println(emailU + "ds")
+                val user = userRepository.getUserByEmail(getEmail()).firstOrNull()
+                println(getEmail() + "ds")
                 println(user)
                 // Controlla se l'utente esiste e la vecchia password corrisponde
                 if (user != null && user.userPassword == oldPassword) {
