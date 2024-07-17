@@ -75,4 +75,5 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:$nav_version")
 
     implementation("co.yml:ycharts:2.1.0")
+    implementation("io.coil-kt:coil-compose:2.1.0")
 }
