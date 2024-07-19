@@ -51,4 +51,8 @@ interface UsersDao {
 
     @Query("SELECT user_id FROM users WHERE user_email = :userEmail")
     fun getIdFromEmail(userEmail: String): Flow<Int>
+
+    // Aggiorna l'immagine dell'utente
+    @Query("UPDATE users SET user_image = :userImage WHERE user_email = :userEmail")
+    suspend fun updateUserImage(userEmail: String, userImage: String)
 }

@@ -1,5 +1,6 @@
 package com.example.brainbusters.ui.viewModels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.brainbusters.data.entities.User
@@ -12,7 +13,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import org.koin.androidx.compose.get
 
 data class UsersState(val users: List<User>)
 
@@ -21,6 +21,8 @@ interface UsersActions {
     fun removeUser(userId: Int): Job
     fun updateUser(user: User): Job
     fun getRepository(): UsersRepository
+    fun getProfileImageUri(userEmail: String): Flow<String>
+    fun saveProfileImageUri(userEmail: String, uri: String): Job
     fun login(email: String, password: String) : Boolean
     fun register(
         name: String,
@@ -41,7 +43,6 @@ class UserViewModel(
         started = SharingStarted.WhileSubscribed(),
         initialValue = UsersState(emptyList())
     )
-
 
     companion object {
         private var emailU: String = ""
@@ -93,6 +94,21 @@ class UserViewModel(
 
         override fun getRepository(): UsersRepository {
             return userRepository
+        }
+
+        // Funzione per ottenere l'immagine del profilo
+        override fun getProfileImageUri(userEmail: String): Flow<String> {
+            return userRepository.getUserByEmail(userEmail).map { it.userImage }
+        }
+
+        override fun saveProfileImageUri(userEmail: String, uri: String): Job = viewModelScope.launch {
+            viewModelScope.launch {
+                try {
+                    userRepository.updateUserImage(userEmail, uri)
+                } catch (e: Exception) {
+                    Log.e("ProfileDebug", "Error saving profile image URI", e)
+                }
+            }
         }
 
         override fun login(email: String, password: String): Boolean {

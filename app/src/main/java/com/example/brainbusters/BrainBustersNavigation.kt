@@ -43,8 +43,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.brainbusters.data.entities.User
-import com.example.brainbusters.data.repositories.UsersRepository
 import com.example.brainbusters.ui.viewModels.NotificationsViewModel
 import com.example.brainbusters.ui.viewModels.UserViewModel
 import com.example.brainbusters.ui.views.HomeScreen

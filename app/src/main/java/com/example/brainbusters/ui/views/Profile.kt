@@ -1,6 +1,7 @@
 package com.example.brainbusters.ui.views
 
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -22,14 +23,34 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.brainbusters.ui.components.PieChartScreen
+import com.example.brainbusters.ui.viewModels.UserViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun Profile(navController: NavController) {
+    val userEmail = UserViewModel.getEmail()
     var profileImageUri by remember { mutableStateOf<Uri?>(null) }
+    val viewModel: UserViewModel = koinViewModel()
+
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
-        profileImageUri = uri
+        uri?.let {
+            profileImageUri = it
+            viewModel.actions.saveProfileImageUri(userEmail, it.toString())
+        }
+    }
+
+    LaunchedEffect(viewModel) {
+        viewModel.actions.getRepository().getUserByEmail(userEmail).collect { user ->
+            Log.d("ProfileDebug", "User: $user")
+            user.userImage.let {
+                Log.d("ProfileDebug", "User image URI from repository: $it")
+                profileImageUri = Uri.parse(it)
+            } ?: run {
+                Log.d("ProfileDebug", "User image URI is null")
+            }
+        }
     }
 
     Column(
@@ -41,10 +62,9 @@ fun Profile(navController: NavController) {
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            // Profile Picture with Badge
             Box(modifier = Modifier.size(120.dp), contentAlignment = Alignment.BottomEnd) {
                 val painter = rememberAsyncImagePainter(
-                    model = profileImageUri
+                    model = profileImageUri ?: Uri.EMPTY // Usando un URI vuoto come fallback
                 )
                 Image(
                     painter = painter,
@@ -56,7 +76,6 @@ fun Profile(navController: NavController) {
                         .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape)
                         .clickable { launcher.launch("image/*") }
                 )
-                // Badge
                 Box(
                     modifier = Modifier
                         .size(30.dp)
@@ -75,11 +94,9 @@ fun Profile(navController: NavController) {
 
             Spacer(modifier = Modifier.padding(8.dp))
 
-            // User Info
             Column(
                 verticalArrangement = Arrangement.Center
             ) {
-                // Username
                 Column {
                     Text(
                         text = "LuconeCriticone",
@@ -95,7 +112,6 @@ fun Profile(navController: NavController) {
 
                 Spacer(modifier = Modifier.padding(4.dp))
 
-                // Number of Quizzes and Level
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -120,7 +136,6 @@ fun Profile(navController: NavController) {
 
         Spacer(modifier = Modifier.padding(8.dp))
 
-        // Legend
         Column(
             horizontalAlignment = Alignment.Start
         ) {
