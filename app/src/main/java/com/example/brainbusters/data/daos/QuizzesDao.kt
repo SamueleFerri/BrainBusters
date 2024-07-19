@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 interface QuizzesDao {
 
    @Query("SELECT * FROM quizzes WHERE quiz_id = :quizId")
-   fun getQuizById(quizId: Int): Flow<Quiz>
+   fun getQuizById(quizId: Int): Flow<List<Quiz>>
 
    @Query("SELECT * FROM quizzes")
    fun getAllQuizzes(): Flow<List<Quiz>>
@@ -23,6 +23,10 @@ interface QuizzesDao {
    // Insert Quiz
    @Insert(onConflict = OnConflictStrategy.IGNORE)
    suspend fun insert(quiz: Quiz)
+
+   // Insert All Quizzes
+   @Insert(onConflict = OnConflictStrategy.IGNORE)
+   suspend fun insertAll(quizzes: List<Quiz>)
 
    // Update Quiz
    @Update(onConflict = OnConflictStrategy.IGNORE)

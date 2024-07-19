@@ -34,7 +34,7 @@ interface UsersActions {
     fun printUserEmailsAndPasswords()
 }
 
-class UserViewModel(
+public class UserViewModel(
     private val userRepository: UsersRepository
 ) : ViewModel() {
 

@@ -44,6 +44,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.brainbusters.ui.viewModels.NotificationsViewModel
+import com.example.brainbusters.ui.viewModels.QuizViewModel
 import com.example.brainbusters.ui.viewModels.UserViewModel
 import com.example.brainbusters.ui.views.HomeScreen
 import com.example.brainbusters.ui.views.LoginScreen
@@ -66,6 +67,9 @@ fun BrainBustersNavigation() {
     var showErrorDialog by remember { mutableStateOf(false) }
 
     val userViewModel = koinViewModel<UserViewModel>()
+    val quizViewModel = koinViewModel<QuizViewModel>()
+
+    val quizStates = quizViewModel.state.collectAsStateWithLifecycle()
     val userStates = userViewModel.state.collectAsStateWithLifecycle()
 
     var isLoggedIn by rememberSaveable { mutableStateOf(false) }
@@ -239,7 +243,14 @@ fun BrainBustersNavigation() {
                 )
             }
 
-            composable(Routes.homeScreen) { HomeScreen(navController = navController, action = userViewModel.actions, state = userStates) }
+            composable(Routes.homeScreen) {
+                HomeScreen(
+                    navController = navController,
+                    userState = userStates,
+                    userAction = userViewModel.actions,
+                    quizViewModel = quizViewModel
+                )
+            }
             composable(Routes.scoreboard) { Scoreboard(navController = navController) }
             composable(Routes.profile) { Profile(navController = navController) }
             composable(Routes.settings) { Settings(navController = navController) }
