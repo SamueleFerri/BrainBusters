@@ -161,6 +161,7 @@ fun Settings(navController: NavController) {
                     TextButton(
                         onClick = {
                             showDeleteAccountDialog = false
+
                             navController.navigate(Routes.loginScreen)
                         }
                     ) {

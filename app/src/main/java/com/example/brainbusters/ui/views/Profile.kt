@@ -30,6 +30,7 @@ import org.koin.androidx.compose.koinViewModel
 fun Profile(navController: NavController) {
     val userEmail = UserViewModel.getEmail()
     var profileImageUri by remember { mutableStateOf<Uri?>(null) }
+    var username by remember { mutableStateOf("") }
     val viewModel: UserViewModel = koinViewModel()
 
     val launcher = rememberLauncherForActivityResult(
@@ -50,6 +51,7 @@ fun Profile(navController: NavController) {
             } ?: run {
                 Log.d("ProfileDebug", "User image URI is null")
             }
+            username = user.userUsername
         }
     }
 
@@ -64,7 +66,7 @@ fun Profile(navController: NavController) {
         ) {
             Box(modifier = Modifier.size(120.dp), contentAlignment = Alignment.BottomEnd) {
                 val painter = rememberAsyncImagePainter(
-                    model = profileImageUri ?: Uri.EMPTY // Usando un URI vuoto come fallback
+                    model = profileImageUri ?: Uri.EMPTY
                 )
                 Image(
                     painter = painter,
@@ -99,7 +101,7 @@ fun Profile(navController: NavController) {
             ) {
                 Column {
                     Text(
-                        text = "LuconeCriticone",
+                        text = username, // Usa l'username ottenuto dal repository
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.onBackground
                     )
