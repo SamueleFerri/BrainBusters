@@ -19,5 +19,8 @@ data class Quiz(
     var title: String,
 
     @ColumnInfo(name = "quiz_category")
-    var categoryName: String
+    var categoryName: String,
+
+    @ColumnInfo(name = "is_favorite")
+    var isFavorite: Boolean = false
 )

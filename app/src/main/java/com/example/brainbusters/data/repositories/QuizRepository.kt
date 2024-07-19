@@ -1,6 +1,5 @@
 package com.example.brainbusters.data.repositories
 
-import androidx.lifecycle.LiveData
 import com.example.brainbusters.data.daos.QuizzesDao
 import com.example.brainbusters.data.entities.Quiz
 import kotlinx.coroutines.flow.Flow
@@ -21,11 +20,19 @@ class QuizRepository(private val quizzesDAO: QuizzesDao) {
         return quizzesDAO.getAllQuizInCategory(category)
     }
 
-    fun getQuizById(quizId: Int): Flow<List<Quiz>> {
+    fun getQuizById(quizId: Int): Flow<Quiz> {
         return quizzesDAO.getQuizById(quizId)
     }
 
     suspend fun insertAllQuizzes(allQuizzes: List<Quiz>) {
         quizzesDAO.insertAll(allQuizzes)
+    }
+
+    suspend fun updateQuiz(quiz: Quiz) {
+        quizzesDAO.update(quiz)
+    }
+
+    fun getFavoriteQuizzes(): Flow<List<Quiz>> {
+        return quizzesDAO.getFavoriteQuizzes()
     }
 }

@@ -11,7 +11,9 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.StarBorder
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -29,12 +31,12 @@ import com.example.brainbusters.ui.viewModels.QuizViewModel
 import com.example.brainbusters.ui.viewModels.UsersActions
 import com.example.brainbusters.ui.viewModels.UsersState
 
-
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun HomeScreen(navController: NavController, userState: State<UsersState>, userAction: UsersActions, quizViewModel: QuizViewModel) {
     val geographyQuizzes by quizViewModel.getQuizzesByCategory("Geography").collectAsStateWithLifecycle(emptyList())
-    val favoriteQuizzes by quizViewModel.getQuizzesByCategory("Favorite").collectAsStateWithLifecycle(emptyList())
+    val favoriteQuizzes by quizViewModel.getFavoriteQuizzes().collectAsStateWithLifecycle(emptyList())
+
     Log.d(TAG, "HomeScreen: " + quizViewModel.state.value.quizzes)
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -43,14 +45,14 @@ fun HomeScreen(navController: NavController, userState: State<UsersState>, userA
     ) {
         Text(text = "", modifier = Modifier.padding(16.dp))
 
-        Favorites(navController = navController, title = "Preferiti", quizzes = favoriteQuizzes)
-        QuizCategory(navController = navController, title = "Geography", quizzes = geographyQuizzes)
+        QuizCategory(navController = navController, title = "Geography", quizzes = geographyQuizzes, quizViewModel = quizViewModel)
+        Favorites(navController = navController, title = "Favorites", quizzes = favoriteQuizzes, quizViewModel = quizViewModel)
         UserEliminateMe(userState, userAction)
     }
 }
 
 @Composable
-fun Favorites(navController: NavController, title: String, quizzes: List<Quiz>) {
+fun Favorites(navController: NavController, title: String, quizzes: List<Quiz>, quizViewModel: QuizViewModel) {
     Column(
         modifier = Modifier
             .padding(horizontal = 6.dp, vertical = 8.dp)
@@ -76,14 +78,14 @@ fun Favorites(navController: NavController, title: String, quizzes: List<Quiz>) 
             contentPadding = PaddingValues(horizontal = 8.dp)
         ) {
             items(quizzes) { quiz ->
-                QuizItem(navController = navController, title = quiz.title)
+                QuizItem(navController = navController, quiz = quiz, quizViewModel = quizViewModel)
             }
         }
     }
 }
 
 @Composable
-fun QuizCategory(navController: NavController, title: String, quizzes: List<Quiz>) {
+fun QuizCategory(navController: NavController, title: String, quizzes: List<Quiz>, quizViewModel: QuizViewModel) {
     Column(
         modifier = Modifier
             .padding(horizontal = 6.dp, vertical = 8.dp)
@@ -109,20 +111,20 @@ fun QuizCategory(navController: NavController, title: String, quizzes: List<Quiz
             contentPadding = PaddingValues(horizontal = 8.dp)
         ) {
             items(quizzes) { quiz ->
-                QuizItem(navController = navController, title = quiz.title)
+                QuizItem(navController = navController, quiz = quiz, quizViewModel = quizViewModel)
             }
         }
     }
 }
 
 @Composable
-fun QuizItem(navController: NavController, title: String) {
+fun QuizItem(navController: NavController, quiz: Quiz, quizViewModel: QuizViewModel) {
     Card(
         modifier = Modifier
             .size(120.dp)
             .padding(vertical = 8.dp)
             .clickable {
-                navController.navigate("quizScreen/$title")
+                navController.navigate("quizScreen/${quiz.title}")
             }
     ) {
         Column(
@@ -130,7 +132,20 @@ fun QuizItem(navController: NavController, title: String) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(text = title)
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(onClick = {
+                    val updatedQuiz = quiz.copy(isFavorite = !quiz.isFavorite)
+                    quizViewModel.updateQuiz(updatedQuiz)
+                }) {
+                    Icon(
+                        imageVector = if (quiz.isFavorite) Icons.Filled.Star else Icons.Outlined.StarBorder,
+                        contentDescription = if (quiz.isFavorite) "Remove from favorites" else "Add to favorites"
+                    )
+                }
+                Text(text = quiz.title)
+            }
         }
     }
 }
