@@ -7,17 +7,19 @@ import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.brainbusters.data.daos.BadgesDao
 import com.example.brainbusters.data.daos.CareersDao
+import com.example.brainbusters.data.daos.QuestionsDao
 import com.example.brainbusters.data.daos.QuizzesDao
 import com.example.brainbusters.data.daos.UsersDao
 import com.example.brainbusters.data.entities.Badge
 import com.example.brainbusters.data.entities.Career
+import com.example.brainbusters.data.entities.Question
 import com.example.brainbusters.data.entities.Quiz
 import com.example.brainbusters.data.entities.User
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Database(
-    entities = [User::class, Career::class, Badge::class, Quiz::class],
+    entities = [User::class, Career::class, Badge::class, Quiz::class, Question::class],
     version = 1
 )
 abstract class BrainBusterDatabase : RoomDatabase() {
@@ -25,6 +27,7 @@ abstract class BrainBusterDatabase : RoomDatabase() {
     abstract fun careersDAO(): CareersDao
     abstract fun badgesDAO(): BadgesDao
     abstract fun quizzesDAO(): QuizzesDao
+    abstract fun questionsDAO(): QuestionsDao
 
     class Callback(
         private val scope: CoroutineScope

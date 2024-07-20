@@ -2,8 +2,10 @@ import androidx.room.Room
 import com.example.brainbusters.data.BrainBusterDatabase
 import com.example.brainbusters.data.repositories.BadgeRepository
 import com.example.brainbusters.data.repositories.CareerRepository
+import com.example.brainbusters.data.repositories.QuestionRepository
 import com.example.brainbusters.data.repositories.QuizRepository
 import com.example.brainbusters.data.repositories.UsersRepository
+import com.example.brainbusters.ui.viewModels.QuestionViewModel
 import com.example.brainbusters.ui.viewModels.QuizViewModel
 import com.example.brainbusters.ui.viewModels.UserViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -32,12 +34,15 @@ val dataModule = module {
     single { get<BrainBusterDatabase>().careersDAO() }
     single { get<BrainBusterDatabase>().badgesDAO() }
     single { get<BrainBusterDatabase>().quizzesDAO() }
+    single { get<BrainBusterDatabase>().questionsDAO() }
 
     single { UsersRepository(get()) }
     single { BadgeRepository(get()) }
     single { QuizRepository(get()) }
     single { CareerRepository(get()) }
+    single { QuestionRepository(get()) }
 
     viewModel { UserViewModel(get()) }
     viewModel { QuizViewModel(get()) }
+    viewModel { QuestionViewModel(get()) }
 }

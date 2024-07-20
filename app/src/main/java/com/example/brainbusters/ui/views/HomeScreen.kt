@@ -25,8 +25,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.example.brainbusters.Routes
 import com.example.brainbusters.data.entities.Quiz
-import com.example.brainbusters.data.entities.User
 import com.example.brainbusters.ui.viewModels.QuizViewModel
 import com.example.brainbusters.ui.viewModels.UsersActions
 import com.example.brainbusters.ui.viewModels.UsersState
@@ -47,7 +47,6 @@ fun HomeScreen(navController: NavController, userState: State<UsersState>, userA
 
         QuizCategory(navController = navController, title = "Geography", quizzes = geographyQuizzes, quizViewModel = quizViewModel)
         Favorites(navController = navController, title = "Favorites", quizzes = favoriteQuizzes, quizViewModel = quizViewModel)
-        UserEliminateMe(userState, userAction)
     }
 }
 
@@ -124,7 +123,7 @@ fun QuizItem(navController: NavController, quiz: Quiz, quizViewModel: QuizViewMo
             .size(120.dp)
             .padding(vertical = 8.dp)
             .clickable {
-                navController.navigate("quizScreen/${quiz.title}")
+                navController.navigate(Routes.quizScreen(quiz.quizId, quiz.title))
             }
     ) {
         Column(
@@ -146,35 +145,6 @@ fun QuizItem(navController: NavController, quiz: Quiz, quizViewModel: QuizViewMo
                 }
                 Text(text = quiz.title)
             }
-        }
-    }
-}
-
-@Composable
-fun UserEliminateMe(state: State<UsersState>, action: UsersActions) {
-    LazyColumn(
-        modifier = Modifier.padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
-    ) {
-        items(state.value.users) { user ->
-            UserItem(item = user, onDelete = { action.removeUser(user.userId) })
-        }
-    }
-}
-
-@Composable
-fun UserItem(item: User, onDelete: () -> Unit) {
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .height(56.dp)
-            .padding(horizontal = 16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(text = item.userEmail)
-        IconButton(onClick = onDelete) {
-            Icon(Icons.Outlined.Close, "Remove User")
         }
     }
 }

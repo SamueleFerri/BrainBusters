@@ -1,8 +1,7 @@
 package com.example.brainbusters
 
 object Routes {
-    fun scoreScreen(score: Int) = "score_screen/$score"
-
+    // Rotte senza parametri
     val homeScreen = "homeScreen"
     val loginScreen = "loginScreen"
     val registerStepOne = "registerStepOne"
@@ -11,4 +10,8 @@ object Routes {
     val profile = "profile"
     val scoreboard = "scoreboard"
     val notifications = "notifications"
+
+    // Rotte con parametri
+    fun quizScreen(quizId: Int, quizTitle: String) = "quizScreen/$quizId/$quizTitle"
+    fun scoreScreen(score: Int, quizTitle: String) = "scoreScreen/$score/$quizTitle"
 }
