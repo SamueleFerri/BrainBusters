@@ -4,10 +4,12 @@ import com.example.brainbusters.data.repositories.BadgeRepository
 import com.example.brainbusters.data.repositories.CareerRepository
 import com.example.brainbusters.data.repositories.QuestionRepository
 import com.example.brainbusters.data.repositories.QuizRepository
+import com.example.brainbusters.data.repositories.ResponseRepository
 import com.example.brainbusters.data.repositories.UsersRepository
 import com.example.brainbusters.ui.viewModels.QuestionViewModel
 import com.example.brainbusters.ui.viewModels.CareerViewModel
 import com.example.brainbusters.ui.viewModels.QuizViewModel
+import com.example.brainbusters.ui.viewModels.ResponseViewModel
 import com.example.brainbusters.ui.viewModels.UserViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -36,16 +38,19 @@ val dataModule = module {
     single { get<BrainBusterDatabase>().badgesDAO() }
     single { get<BrainBusterDatabase>().quizzesDAO() }
     single { get<BrainBusterDatabase>().questionsDAO() }
+    single { get<BrainBusterDatabase>().resposesDAO() }
 
     single { UsersRepository(get()) }
     single { BadgeRepository(get()) }
     single { QuizRepository(get()) }
     single { CareerRepository(get()) }
     single { QuestionRepository(get()) }
+    single { ResponseRepository(get()) }
 
     viewModel { UserViewModel(get(), get(), get()) }
     viewModel { QuizViewModel(get()) }
     viewModel { QuestionViewModel(get()) }
     viewModel { CareerViewModel(get()) }
+    viewModel { ResponseViewModel(get()) }
 
 }
