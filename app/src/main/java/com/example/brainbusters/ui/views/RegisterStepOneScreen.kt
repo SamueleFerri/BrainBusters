@@ -32,7 +32,12 @@ import androidx.navigation.NavController
 import com.example.brainbusters.Routes
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
+import java.io.IOException
 import java.util.*
 
 @Composable
@@ -194,16 +199,32 @@ private fun getLastKnownLocation(
 ) {
     fusedLocationClient.lastLocation.addOnSuccessListener { location ->
         location?.let {
-            val city = getCityName(context, it.latitude, it.longitude)
-            onLocationReceived(city)
+            getCityNameAsync(context, it.latitude, it.longitude) { city ->
+                onLocationReceived(city)
+            }
         }
+    }.addOnFailureListener {
+        // Handle failure
+        onLocationReceived("Unknown city")
     }
 }
 
-private fun getCityName(context: Context, latitude: Double, longitude: Double): String {
+private fun getCityNameAsync(context: Context, latitude: Double, longitude: Double, onCityNameReceived: (String) -> Unit) {
     val geocoder = Geocoder(context, Locale.getDefault())
-    val addresses = geocoder.getFromLocation(latitude, longitude, 1)
-    return addresses?.get(0)?.locality ?: "Unknown city"
+    CoroutineScope(Dispatchers.IO).launch {
+        try {
+            val addresses = geocoder.getFromLocation(latitude, longitude, 1)
+            val cityName = addresses?.firstOrNull()?.locality ?: "Unknown city"
+            withContext(Dispatchers.Main) {
+                onCityNameReceived(cityName)
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+            withContext(Dispatchers.Main) {
+                onCityNameReceived("Unknown city")
+            }
+        }
+    }
 }
 
 private fun bitmapToUri(context: Context, bitmap: Bitmap): Uri {

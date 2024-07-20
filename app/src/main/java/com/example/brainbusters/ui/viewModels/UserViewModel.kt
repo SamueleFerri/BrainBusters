@@ -214,7 +214,7 @@ class UserViewModel(
                 }
 
                 // Verifica se il badge esiste
-                val badge = badgeRepository.getBadgeById(0) // 0 è un esempio di badgeId
+                val badge = badgeRepository.getBadgeById(0) 
                 if (badge == null) {
                     Log.e("UserViewModel", "Badge not found for badgeId: 0")
                     return@launch
