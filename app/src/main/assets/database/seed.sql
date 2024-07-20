@@ -48,6 +48,6 @@ CREATE TABLE IF NOT EXISTS badges (
 
 -- Inserimento di dati di esempio nella tabella badges
 INSERT INTO badges (badge_title, badge_color, required_quizzes) VALUES
-    ('Principiante dei quiz', 'Blue', 1),
-    ('Novizio dei quiz', 'Green', 2),
-    ('Esperto dei quiz', 'Red', 10);
+    ('Principiante dei quiz', '#0000FF', 1),
+    ('Novizio dei quiz', '#088F8F', 2),
+    ('Esperto dei quiz', '#FF0000', 10);

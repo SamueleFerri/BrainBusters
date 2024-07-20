@@ -3,6 +3,7 @@ package com.example.brainbusters.ui.viewModels
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.brainbusters.data.entities.Badge
 import com.example.brainbusters.data.entities.Career
 import com.example.brainbusters.data.entities.User
 import com.example.brainbusters.data.repositories.BadgeRepository
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
@@ -26,7 +28,7 @@ interface UsersActions {
     fun getRepository(): UsersRepository
     fun getProfileImageUri(userEmail: String): Flow<String>
     fun saveProfileImageUri(userEmail: String, uri: String): Job
-    fun login(email: String, password: String) : Boolean
+    fun login(email: String, password: String): Boolean
     fun register(
         name: String,
         surname: String,
@@ -34,6 +36,7 @@ interface UsersActions {
         email: String,
         password: String, image: String, position: String): Boolean
     fun createCareer(userId: Int): Job
+    suspend fun getHighestBadgeColor(userId: Int): String
     fun changePassword(oldPassword: String, newPassword: String): Boolean
     fun printUserEmailsAndPasswords()
 }
@@ -71,7 +74,6 @@ class UserViewModel(
         }
     }
 
-
     val actions = object : UsersActions {
         override fun addUser(user: User) = viewModelScope.launch {
             try {
@@ -82,7 +84,6 @@ class UserViewModel(
         }
 
         override fun removeUser(userId: Int) = viewModelScope.launch {
-
             try {
                 userRepository.deleteUserById(userId)
             } catch (e: Exception) {
@@ -102,7 +103,6 @@ class UserViewModel(
             return userRepository
         }
 
-        // Funzione per ottenere l'immagine del profilo
         override fun getProfileImageUri(userEmail: String): Flow<String> {
             return userRepository.getUserByEmail(userEmail).map { it.userImage }
         }
@@ -121,14 +121,10 @@ class UserViewModel(
             return runBlocking {
                 val user = userRepository.getUserByEmail(email).firstOrNull()
                 if (user != null && user.userPassword == password) {
-                    // Le credenziali sono corrette, esegui il login
-                    println("Login effettuato con successo")
                     setEmail(email)
                     setPassword(password)
                     true
                 } else {
-                    // Le credenziali non sono corrette, gestisci l'errore
-                    println("Email o password non corrette")
                     false
                 }
             }
@@ -144,26 +140,19 @@ class UserViewModel(
             position: String
         ): Boolean {
             return runBlocking {
-                // Controllo se l'email è valida (deve contenere '@')
                 if (!isValidEmail(email)) {
-                    println("Email non valida")
                     return@runBlocking false
                 }
 
-                // Controllo se l'email esiste nel repository
                 val existingUser = userRepository.getUserByEmail(email).firstOrNull()
                 if (existingUser != null) {
-                    println("Email già registrata")
                     return@runBlocking false
                 }
 
-                // Controllo se la password è valida (deve essere lunga almeno 8 caratteri)
                 if (!isValidPassword(password)) {
-                    println("Password non valida")
                     return@runBlocking false
                 }
 
-                // Creazione dell'oggetto User e inserimento nel repository
                 val newUser = User(
                     userName = name,
                     userSurname = surname,
@@ -181,24 +170,12 @@ class UserViewModel(
                     if (createdUser != null) {
                         setEmail(email)
                         setPassword(password)
-                        Log.d("UserViewModel", "Utente registrato con successo")
-
-                        // Creazione della carriera per l'utente appena registrato
                         createCareer(createdUser.userId)
-                        Log.d(
-                            "Career",
-                            "Career creato con successo: ${
-                                careerRepository.getCareerByUserId(createdUser.userId)
-                            }"
-                        )
-
                         true
                     } else {
-                        Log.e("UserViewModel", "Utente non trovato dopo la registrazione")
                         false
                     }
                 } catch (e: Exception) {
-                    Log.e("UserViewModel", "Errore durante la registrazione", e)
                     false
                 }
             }
@@ -206,50 +183,63 @@ class UserViewModel(
 
         override fun createCareer(userId: Int) = viewModelScope.launch {
             try {
-                // Verifica se l'utente esiste
                 val user = userRepository.getUserById(userId).firstOrNull()
                 if (user == null) {
                     Log.e("UserViewModel", "User not found for userId: $userId")
                     return@launch
                 }
 
-                // Verifica se il badge esiste
-                val badge = badgeRepository.getBadgeById(0) 
+                // Verifica se il badge con ID 0 esiste, altrimenti lo crea
+                var badge = badgeRepository.getBadgeById(1)
                 if (badge == null) {
-                    Log.e("UserViewModel", "Badge not found for badgeId: 0")
-                    return@launch
+                    Log.d("UserViewModel", "Badge not found, creating default badge with ID 0")
+                    badge = Badge(
+                        title = "Default Badge",
+                        color = "blue",
+                        requiredQuizes = 0
+                    )
+                    badgeRepository.insertBadge(badge)
+                    badge = badgeRepository.getBadgeById(1) // Ricarica il badge dopo l'inserimento
                 }
 
-                val newCareer = Career(score = 0, userId = userId, badgeId = 0) // badgeId è 0 per esempio
-                careerRepository.insertNewCareer(newCareer)
-                Log.d("UserViewModel", "Career created successfully")
+                if (badge != null) {
+                    val newCareer = Career(score = 0, userId = userId, badgeId = badge.badgeId)
+                    careerRepository.insertNewCareer(newCareer)
+                    Log.d("UserViewModel", "Career created successfully")
+                } else {
+                    Log.e("UserViewModel", "Failed to create badge with ID 0")
+                }
             } catch (e: Exception) {
                 Log.e("UserViewModel", "Error creating career", e)
             }
         }
 
+        // Funzione per ottenere il colore della carriera con l'ID più alto per un dato userId
+        override suspend fun getHighestBadgeColor(userId: Int): String {
+            val careers = careerRepository.getCareerByUserId(userId).toList()
+            val latestCareer = careers.lastOrNull()
+            Log.d("UserViewModel", "Latest Career: $latestCareer")
+            if(latestCareer == null) {
+                return "#808080"
+            }else{
+                val color = badgeRepository.getBadgeById(latestCareer.badgeId)
+                return color?.color ?: "#808080"
+            }
+        }
+
         override fun changePassword(oldPassword: String, newPassword: String): Boolean {
             return runBlocking {
-                // Recupera l'utente dal repository
                 val user = userRepository.getUserByEmail(getEmail()).firstOrNull()
-                println(getEmail() + "ds")
-                println(user)
-                // Controlla se l'utente esiste e la vecchia password corrisponde
                 if (user != null && user.userPassword == oldPassword) {
-                    // Controlla se la nuova password è valida
                     if (isValidPassword(newPassword)) {
-                        // Aggiorna la password dell'utente
                         val updatedUser = user.copy(userPassword = newPassword)
                         userRepository.updateUser(updatedUser)
-                        println("Password cambiata con successo")
-                        return@runBlocking true
+                        true
                     } else {
-                        println("Nuova password non valida")
-                        return@runBlocking false
+                        false
                     }
                 } else {
-                    println("Utente non trovato o vecchia password errata")
-                    return@runBlocking false
+                    false
                 }
             }
         }
@@ -265,15 +255,12 @@ class UserViewModel(
                 }
             }
         }
-
     }
 
-    // Funzione di validazione dell'email
     private fun isValidEmail(email: String): Boolean {
         return email.isNotEmpty() && email.contains('@')
     }
 
-    // Funzione di validazione della password
     private fun isValidPassword(password: String): Boolean {
         return password.length >= 8
     }

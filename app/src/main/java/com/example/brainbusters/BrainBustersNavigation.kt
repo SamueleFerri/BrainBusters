@@ -22,7 +22,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.brainbusters.ui.viewModels.*
 import com.example.brainbusters.ui.views.*
-import kotlinx.coroutines.flow.collect
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)

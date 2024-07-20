@@ -8,15 +8,15 @@ class BadgeRepository(private val badgesDAO: BadgesDao) {
 
     val badges: Flow<List<Badge>> = badgesDAO.getAllbadges()
 
-    suspend fun insertNewBadge(badge: Badge) {
-        badgesDAO.insert(badge)
+    suspend fun insertBadge(badge: Badge) {
+        badgesDAO.insertBadge(badge)
     }
 
     fun getAllBages() {
         badgesDAO.getAllbadges()
     }
 
-    fun getBadgeById(badgeId: Int) {
-        badgesDAO.getBadgeById(badgeId)
+    suspend fun getBadgeById(badgeId: Int): Badge?{
+        return badgesDAO.getBadgeById(badgeId)
     }
 }

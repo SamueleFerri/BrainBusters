@@ -12,7 +12,7 @@ interface BadgesDao {
 
     // Insert Badge
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(badge: Badge)
+    suspend fun insertBadge(badge: Badge)
 
 
     // Get All Badge
@@ -21,5 +21,5 @@ interface BadgesDao {
 
     // Get Badge by id
     @Query("SELECT * FROM badges WHERE badge_id = :badgeId")
-    fun getBadgeById(badgeId: Int): Flow<Badge>
+    suspend fun getBadgeById(badgeId: Int): Badge?
 }

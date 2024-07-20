@@ -24,6 +24,7 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.brainbusters.ui.components.PieChartScreen
 import com.example.brainbusters.ui.viewModels.UserViewModel
+import kotlinx.coroutines.flow.firstOrNull
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -31,6 +32,7 @@ fun Profile(navController: NavController) {
     val userEmail = UserViewModel.getEmail()
     var profileImageUri by remember { mutableStateOf<Uri?>(null) }
     var username by remember { mutableStateOf("") }
+    var badgeColor by remember { mutableStateOf(Color.White) }
     val viewModel: UserViewModel = koinViewModel()
 
     val launcher = rememberLauncherForActivityResult(
@@ -42,16 +44,24 @@ fun Profile(navController: NavController) {
         }
     }
 
-    LaunchedEffect(viewModel) {
+    LaunchedEffect(userEmail) {
         viewModel.actions.getRepository().getUserByEmail(userEmail).collect { user ->
             Log.d("ProfileDebug", "User: $user")
-            user.userImage.let {
-                Log.d("ProfileDebug", "User image URI from repository: $it")
-                profileImageUri = Uri.parse(it)
-            } ?: run {
-                Log.d("ProfileDebug", "User image URI is null")
-            }
+            profileImageUri = Uri.parse(user.userImage ?: "")
             username = user.userUsername
+
+            val userId = user.userId
+
+            val colorString = viewModel.actions.getHighestBadgeColor(userId)
+            Log.d("ProfileDebug", "Badge color string: $colorString")
+            // Converte la stringa del colore in un oggetto Color
+            badgeColor = try {
+                Color(android.graphics.Color.parseColor(colorString))
+            } catch (e: IllegalArgumentException) {
+                // Gestisce il caso in cui la stringa del colore non sia valida
+                Log.e("ProfileDebug", "Invalid color format: $colorString")
+                Color.Gray // Imposta un colore di fallback
+            }
         }
     }
 
@@ -82,7 +92,7 @@ fun Profile(navController: NavController) {
                     modifier = Modifier
                         .size(30.dp)
                         .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.secondary)
+                        .background(badgeColor)
                         .border(2.dp, Color.White, CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
@@ -101,7 +111,7 @@ fun Profile(navController: NavController) {
             ) {
                 Column {
                     Text(
-                        text = username, // Usa l'username ottenuto dal repository
+                        text = username,
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.onBackground
                     )
