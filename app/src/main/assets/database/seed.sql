@@ -37,3 +37,17 @@ INSERT INTO questions (question_number, question_question, question_quizId) VALU
     ('3', 'What is the speed of light?', 2),
     ('4', 'What is the hardest natural substance on Earth?', 2),
     ('5', 'Who is known as the father of modern physics?', 2);
+
+-- Creazione della tabella badges con la struttura corretta
+CREATE TABLE IF NOT EXISTS badges (
+    badge_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    badge_title TEXT NOT NULL UNIQUE,
+    badge_color TEXT NOT NULL,
+    required_quizzes INTEGER NOT NULL
+);
+
+-- Inserimento di dati di esempio nella tabella badges
+INSERT INTO badges (badge_title, badge_color, required_quizzes) VALUES
+    ('Principiante dei quiz', 'Blue', 1),
+    ('Novizio dei quiz', 'Green', 2),
+    ('Esperto dei quiz', 'Red', 10);
