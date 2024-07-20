@@ -6,6 +6,7 @@ import com.example.brainbusters.data.repositories.QuestionRepository
 import com.example.brainbusters.data.repositories.QuizRepository
 import com.example.brainbusters.data.repositories.UsersRepository
 import com.example.brainbusters.ui.viewModels.QuestionViewModel
+import com.example.brainbusters.ui.viewModels.CareerViewModel
 import com.example.brainbusters.ui.viewModels.QuizViewModel
 import com.example.brainbusters.ui.viewModels.UserViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -42,7 +43,9 @@ val dataModule = module {
     single { CareerRepository(get()) }
     single { QuestionRepository(get()) }
 
-    viewModel { UserViewModel(get()) }
+    viewModel { UserViewModel(get(), get(), get()) }
     viewModel { QuizViewModel(get()) }
     viewModel { QuestionViewModel(get()) }
+    viewModel { CareerViewModel(get()) }
+
 }

@@ -32,6 +32,7 @@ fun BrainBustersNavigation() {
     val notificationsViewModel: NotificationsViewModel = viewModel()
     val userViewModel = koinViewModel<UserViewModel>()
     val quizViewModel = koinViewModel<QuizViewModel>()
+    val careerViewModel = koinViewModel<CareerViewModel>()
     val questionViewModel = koinViewModel<QuestionViewModel>()
 
     var showErrorDialog by remember { mutableStateOf(false) }

@@ -16,11 +16,11 @@ class CareerRepository(private val careersDAO: CareersDao) {
         careersDAO.delete(userId)
     }
 
-    fun getCareerByUserId(userId: Int) {
-        careersDAO.getUserByUserId(userId)
+    fun getCareerByUserId(userId: Int): Flow<Career?> {
+        return careersDAO.getCareerById(userId)
     }
 
-    fun  getScoreBoard() {
-        careersDAO.getScoreBoardCareers()
+    fun getScoreBoard(): Flow<List<Career>> {
+        return careersDAO.getScoreBoardCareers()
     }
 }

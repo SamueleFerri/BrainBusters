@@ -3,7 +3,10 @@ package com.example.brainbusters.ui.viewModels
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.brainbusters.data.entities.Career
 import com.example.brainbusters.data.entities.User
+import com.example.brainbusters.data.repositories.BadgeRepository
+import com.example.brainbusters.data.repositories.CareerRepository
 import com.example.brainbusters.data.repositories.UsersRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
@@ -30,12 +33,15 @@ interface UsersActions {
         username: String,
         email: String,
         password: String, image: String, position: String): Boolean
+    fun createCareer(userId: Int): Job
     fun changePassword(oldPassword: String, newPassword: String): Boolean
     fun printUserEmailsAndPasswords()
 }
 
-public class UserViewModel(
-    private val userRepository: UsersRepository
+class UserViewModel(
+    private val userRepository: UsersRepository,
+    private val careerRepository: CareerRepository,
+    private val badgeRepository: BadgeRepository
 ) : ViewModel() {
 
     val state = userRepository.users.map { UsersState(it) }.stateIn(
@@ -160,18 +166,65 @@ public class UserViewModel(
                 // Creazione dell'oggetto User e inserimento nel repository
                 val newUser = User(
                     userName = name,
-                    userSurname =  surname,
+                    userSurname = surname,
                     userUsername = username,
                     userEmail = email,
                     userPassword = password,
                     userImage = image,
                     userPosition = position
                 )
-                userRepository.insertNewUser(newUser)
-                setEmail(email)
-                setPassword(password)
-                println("Utente registrato con successo")
-                true
+
+                try {
+                    userRepository.insertNewUser(newUser)
+                    val createdUser = userRepository.getUserByEmail(email).firstOrNull()
+
+                    if (createdUser != null) {
+                        setEmail(email)
+                        setPassword(password)
+                        Log.d("UserViewModel", "Utente registrato con successo")
+
+                        // Creazione della carriera per l'utente appena registrato
+                        createCareer(createdUser.userId)
+                        Log.d(
+                            "Career",
+                            "Career creato con successo: ${
+                                careerRepository.getCareerByUserId(createdUser.userId)
+                            }"
+                        )
+
+                        true
+                    } else {
+                        Log.e("UserViewModel", "Utente non trovato dopo la registrazione")
+                        false
+                    }
+                } catch (e: Exception) {
+                    Log.e("UserViewModel", "Errore durante la registrazione", e)
+                    false
+                }
+            }
+        }
+
+        override fun createCareer(userId: Int) = viewModelScope.launch {
+            try {
+                // Verifica se l'utente esiste
+                val user = userRepository.getUserById(userId).firstOrNull()
+                if (user == null) {
+                    Log.e("UserViewModel", "User not found for userId: $userId")
+                    return@launch
+                }
+
+                // Verifica se il badge esiste
+                val badge = badgeRepository.getBadgeById(0) // 0 è un esempio di badgeId
+                if (badge == null) {
+                    Log.e("UserViewModel", "Badge not found for badgeId: 0")
+                    return@launch
+                }
+
+                val newCareer = Career(score = 0, userId = userId, badgeId = 0) // badgeId è 0 per esempio
+                careerRepository.insertNewCareer(newCareer)
+                Log.d("UserViewModel", "Career created successfully")
+            } catch (e: Exception) {
+                Log.e("UserViewModel", "Error creating career", e)
             }
         }
 
