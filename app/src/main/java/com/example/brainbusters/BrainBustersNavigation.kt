@@ -44,6 +44,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.brainbusters.ui.viewModels.CareerViewModel
 import com.example.brainbusters.ui.viewModels.NotificationsViewModel
 import com.example.brainbusters.ui.viewModels.QuizViewModel
 import com.example.brainbusters.ui.viewModels.UserViewModel
@@ -69,6 +70,7 @@ fun BrainBustersNavigation() {
 
     val userViewModel = koinViewModel<UserViewModel>()
     val quizViewModel = koinViewModel<QuizViewModel>()
+    val careerViewModel = koinViewModel<CareerViewModel>()
 
     val quizStates = quizViewModel.state.collectAsStateWithLifecycle()
     val userStates = userViewModel.state.collectAsStateWithLifecycle()
