@@ -1,6 +1,8 @@
 package com.example.brainbusters
 
+import android.content.ContentValues
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -241,8 +243,7 @@ fun BrainBustersNavigation() {
             ) { backStackEntry ->
                 val quizId = backStackEntry.arguments?.getInt("quizId") ?: return@composable
                 val quizTitle = backStackEntry.arguments?.getString("quizTitle") ?: return@composable
-
-                val user = userViewModel.actions.getUserIdByEmail(email)
+                val user = userViewModel.actions.getUserIdByEmail(UserViewModel.getEmail())
                 QuizScreen(
                     navController = navController,
                     quizId = quizId,

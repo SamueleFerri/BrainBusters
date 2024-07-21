@@ -37,7 +37,6 @@ fun HomeScreen(navController: NavController, userState: State<UsersState>, userA
     val geographyQuizzes by quizViewModel.getQuizzesByCategory("Geography").collectAsStateWithLifecycle(emptyList())
     val favoriteQuizzes by quizViewModel.getFavoriteQuizzes().collectAsStateWithLifecycle(emptyList())
 
-    Log.d(TAG, "HomeScreen: " + quizViewModel.state.value.quizzes)
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Top,

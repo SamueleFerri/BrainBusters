@@ -22,6 +22,7 @@ import kotlinx.coroutines.delay
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import kotlin.math.log
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -68,6 +69,7 @@ fun QuizScreen(
                     isAnswered = false
                     selectedAnswerIndex = null
                 } else {
+                    val ciao = 10
                     val quizDone = QuizDone(
                         quizId = quizId,
                         userId = userId,
@@ -83,13 +85,13 @@ fun QuizScreen(
                     val timestamp = formatter.format(instant)
                     val notification = Notification(
                         id = quizId,
-                        message = "Quiz completed with score: $score",
+                        message = "Quiz completed $quizTitle with score: $score",
                         timestamp = timestamp
                     )
                     notificationsViewModel.addNotification(notification)
 
                     // Navigate to score screen
-                    navController.navigate("scorescreen/$score/$quizTitle")
+                    navController.navigate("scoreScreen/$score/$quizTitle")
                 }
             }
         }

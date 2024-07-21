@@ -17,12 +17,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.brainbusters.ui.viewModels.ScoreboardViewModel
 
-// Data class for scoreboard entry
 data class ScoreboardEntry(
     val position: Int,
     val nickname: String,
     val quizzesCompleted: Int,
-    val isCurrentUser: Boolean = false // Aggiungi la proprietà isCurrentUser
+    val isCurrentUser: Boolean = false
 )
 
 @Composable
