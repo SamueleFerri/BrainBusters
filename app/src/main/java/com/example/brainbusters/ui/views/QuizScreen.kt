@@ -14,8 +14,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.brainbusters.Notification
 import com.example.brainbusters.Routes
+import com.example.brainbusters.data.entities.QuizDone
 import com.example.brainbusters.ui.viewModels.QuestionViewModel
 import com.example.brainbusters.ui.viewModels.NotificationsViewModel
+import com.example.brainbusters.ui.viewModels.QuizDoneViewModel
 import kotlinx.coroutines.delay
 import java.time.Instant
 import java.time.ZoneId
@@ -29,7 +31,9 @@ fun QuizScreen(
     quizId: Int,
     quizTitle: String,
     questionViewModel: QuestionViewModel,
-    notificationsViewModel: NotificationsViewModel // Add NotificationsViewModel parameter
+    quizDoneViewModel: QuizDoneViewModel,
+    notificationsViewModel: NotificationsViewModel,
+    userId: Int
 ) {
     var currentQuestionIndex by remember { mutableStateOf(0) }
     var score by remember { mutableStateOf(0) }
@@ -64,20 +68,28 @@ fun QuizScreen(
                     isAnswered = false
                     selectedAnswerIndex = null
                 } else {
-                    // Send notification when quiz is completed
-                    val timestamp = DateTimeFormatter
-                        .ofPattern("yyyy-MM-dd HH:mm:ss")
-                        .withZone(ZoneId.systemDefault())
-                        .format(Instant.now())
+                    val quizDone = QuizDone(
+                        quizId = quizId,
+                        userId = userId,
+                        score = score
+                    )
+                    quizDoneViewModel.insertOrUpdate(quizDone)
 
+                    // Create a notification
+                    val timestampMillis = System.currentTimeMillis()
+                    val instant = Instant.ofEpochMilli(timestampMillis)
+                    val formatter = DateTimeFormatter.ofPattern("EEEE, dd MMMM yyyy HH:mm:ss")
+                        .withZone(ZoneId.systemDefault())
+                    val timestamp = formatter.format(instant)
                     val notification = Notification(
                         id = quizId,
-                        message = "You completed the quiz '$quizTitle' with a score of $score!",
+                        message = "Quiz completed with score: $score",
                         timestamp = timestamp
                     )
-
                     notificationsViewModel.addNotification(notification)
-                    navController.navigate("scoreScreen/$score/$quizTitle")
+
+                    // Navigate to score screen
+                    navController.navigate("scorescreen/$score/$quizTitle")
                 }
             }
         }
@@ -85,46 +97,37 @@ fun QuizScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.SpaceBetween
+                .padding(paddingValues),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            if (currentQuestion != null) {
-                Column {
-                    Text(
-                        text = currentQuestion.question,
-                        style = MaterialTheme.typography.headlineMedium
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    responses.forEachIndexed { index, response ->
-                        Button(
-                            onClick = {
-                                if (!isAnswered) {
-                                    selectedAnswerIndex = index
-                                    isAnswered = true
-                                    score += response.score
-                                }
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 4.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = when {
-                                    isAnswered && response.score > 0 -> Color.Green
-                                    isAnswered && index == selectedAnswerIndex -> Color.Red
-                                    else -> MaterialTheme.colorScheme.primary
-                                }
-                            )
-                        ) {
-                            Text(text = response.text)
+            currentQuestion?.let { question ->
+                Text(text = question.question)
+                Spacer(modifier = Modifier.height(16.dp))
+                responses.forEachIndexed { index, response ->
+                    Button(
+                        onClick = {
+                            selectedAnswerIndex = index
+                            if (response.score == 5) {
+                                score += 1
+                            }
+                            isAnswered = true
+                        },
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                        colors = if (selectedAnswerIndex == index) {
+                            ButtonDefaults.buttonColors(containerColor = if (response.score == 5) Color.Green else Color.Red)
+                        } else {
+                            ButtonDefaults.buttonColors()
                         }
+                    ) {
+                        Text(text = response.text)
                     }
                 }
             }
         }
     }
 }
+
 @Composable
 fun ScoreScreen(
     navController: NavController,

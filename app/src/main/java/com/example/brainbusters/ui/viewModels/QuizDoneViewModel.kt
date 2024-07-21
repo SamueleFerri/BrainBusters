@@ -21,9 +21,9 @@ class QuizDoneViewModel(private val quizDoneRepository: QuizDoneRepository) : Vi
         return quizDoneRepository.getQuizzesDoneByQuizId(quizId)
     }
 
-    fun insert(quizDone: QuizDone) {
+    fun insertOrUpdate(quizDone: QuizDone) {
         viewModelScope.launch {
-            quizDoneRepository.insert(quizDone)
+            quizDoneRepository.insertOrUpdate(quizDone)
         }
     }
 
