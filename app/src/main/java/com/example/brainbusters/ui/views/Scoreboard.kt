@@ -1,14 +1,13 @@
 package com.example.brainbusters.ui.views
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,10 +27,20 @@ data class ScoreboardEntry(
 @Composable
 fun Scoreboard(navController: NavController, scoreboardViewModel: ScoreboardViewModel) {
     val scoreboardEntries by scoreboardViewModel.scoreboardEntries.collectAsState(initial = emptyList())
+    var selectedEntry by remember { mutableStateOf<ScoreboardEntry?>(null) }
+    var showDialog by remember { mutableStateOf(false) }
+
+    // Show dialog if an entry is selected
+    if (showDialog && selectedEntry != null) {
+        ScoreboardEntryDialog(entry = selectedEntry!!, onDismiss = { showDialog = false })
+    }
 
     LazyColumn {
         itemsIndexed(scoreboardEntries) { index, entry ->
-            ScoreboardItem(entry = entry)
+            ScoreboardItem(entry = entry, onClick = {
+                selectedEntry = entry
+                showDialog = true
+            })
             // Divider between scoreboard entries
             if (index < scoreboardEntries.size - 1) {
                 Divider(
@@ -44,7 +53,7 @@ fun Scoreboard(navController: NavController, scoreboardViewModel: ScoreboardView
 }
 
 @Composable
-fun ScoreboardItem(entry: ScoreboardEntry) {
+fun ScoreboardItem(entry: ScoreboardEntry, onClick: () -> Unit) {
     // Define colors for different positions
     val goldColor = Color(0xFFFFD700) // Gold
     val silverColor = Color(0xFFC0C0C0) // Silver
@@ -61,7 +70,8 @@ fun ScoreboardItem(entry: ScoreboardEntry) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 15.dp, horizontal = 16.dp),
+            .padding(vertical = 15.dp, horizontal = 16.dp)
+            .clickable { onClick() }, // Make item clickable
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Position
@@ -102,4 +112,24 @@ fun ScoreboardItem(entry: ScoreboardEntry) {
             textAlign = TextAlign.End
         )
     }
+}
+
+@Composable
+fun ScoreboardEntryDialog(entry: ScoreboardEntry, onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(text = "Details for ${entry.nickname}") },
+        text = {
+            Column {
+                Text(text = "Position: ${entry.position}")
+                Text(text = "Nickname: ${entry.nickname}")
+                Text(text = "Quizzes Completed: ${entry.quizzesCompleted}")
+            }
+        },
+        confirmButton = {
+            Button(onClick = onDismiss) {
+                Text("OK")
+            }
+        }
+    )
 }
