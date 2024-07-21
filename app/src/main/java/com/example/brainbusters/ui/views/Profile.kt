@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.brainbusters.ui.components.PieChartScreen
+import com.example.brainbusters.ui.viewModels.CareerViewModel
 import com.example.brainbusters.ui.viewModels.UserViewModel
 import kotlinx.coroutines.flow.firstOrNull
 import org.koin.androidx.compose.koinViewModel
@@ -34,7 +35,10 @@ fun Profile(navController: NavController) {
     var username by remember { mutableStateOf("") }
     var userId by remember { mutableIntStateOf(1) }
     var userBadge by remember { mutableStateOf("") }
+    var quizTaken by remember { mutableIntStateOf(0) }
+    var userLevel by remember { mutableIntStateOf(0) }
     val viewModel: UserViewModel = koinViewModel()
+    val careerViewModel: CareerViewModel = koinViewModel()
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -64,6 +68,9 @@ fun Profile(navController: NavController) {
             userId = it.userId
             Log.d("ProfileDebug", "UserId: $userId")
             userBadge = viewModel.actions.getBadgeByUserId(userId)?.title ?: ""
+
+            quizTaken = careerViewModel.getQuizTaken(userId)
+            userLevel = careerViewModel.getUserLevel(userId)
 
             val colorString = viewModel.actions.getHighestBadgeColor(userId)
             Log.d("ProfileDebug", "Badge color string: $colorString")
@@ -144,7 +151,7 @@ fun Profile(navController: NavController) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Quizzes taken: 25",
+                        text = "Quizzes taken: $quizTaken",
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onBackground
                     )
@@ -152,7 +159,7 @@ fun Profile(navController: NavController) {
                     Spacer(modifier = Modifier.padding(8.dp))
 
                     Text(
-                        text = "Level: 5",
+                        text = "Level: $userLevel",
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onBackground
                     )
