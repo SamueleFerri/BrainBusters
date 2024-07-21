@@ -31,7 +31,7 @@ abstract class BrainBusterDatabase : RoomDatabase() {
     abstract fun quizzesDAO(): QuizzesDao
     abstract fun questionsDAO(): QuestionsDao
 
-    abstract fun resposesDAO(): ResponsesDao
+    abstract fun responsesDAO(): ResponsesDao
 
     class Callback(
         private val scope: CoroutineScope

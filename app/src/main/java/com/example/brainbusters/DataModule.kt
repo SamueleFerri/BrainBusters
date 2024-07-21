@@ -38,7 +38,7 @@ val dataModule = module {
     single { get<BrainBusterDatabase>().badgesDAO() }
     single { get<BrainBusterDatabase>().quizzesDAO() }
     single { get<BrainBusterDatabase>().questionsDAO() }
-    single { get<BrainBusterDatabase>().resposesDAO() }
+    single { get<BrainBusterDatabase>().responsesDAO() }
 
     single { UsersRepository(get()) }
     single { BadgeRepository(get()) }
