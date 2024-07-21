@@ -20,9 +20,18 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.brainbusters.Routes
 import com.example.brainbusters.ui.viewModels.*
-import com.example.brainbusters.ui.views.*
-import kotlinx.coroutines.flow.collect
+import com.example.brainbusters.ui.views.HomeScreen
+import com.example.brainbusters.ui.views.LoginScreen
+import com.example.brainbusters.ui.views.NotificationsScreen
+import com.example.brainbusters.ui.views.Profile
+import com.example.brainbusters.ui.views.QuizScreen
+import com.example.brainbusters.ui.views.RegisterStepOneScreen
+import com.example.brainbusters.ui.views.RegisterStepTwoScreen
+import com.example.brainbusters.ui.views.ScoreScreen
+import com.example.brainbusters.ui.views.Scoreboard
+import com.example.brainbusters.ui.views.Settings
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -238,7 +247,8 @@ fun BrainBustersNavigation() {
                     navController = navController,
                     quizId = quizId,
                     quizTitle = quizTitle,
-                    questionViewModel = questionViewModel
+                    questionViewModel = questionViewModel,
+                    notificationsViewModel = notificationsViewModel // Pass NotificationsViewModel
                 )
             }
             composable("quizScreen/restart") {
@@ -246,7 +256,8 @@ fun BrainBustersNavigation() {
                     navController = navController,
                     quizId = 0, // Provide a default or handle as needed
                     quizTitle = "Quiz",
-                    questionViewModel = questionViewModel
+                    questionViewModel = questionViewModel,
+                    notificationsViewModel = notificationsViewModel // Pass NotificationsViewModel
                 )
             }
             composable(
@@ -265,7 +276,6 @@ fun BrainBustersNavigation() {
                 )
             }
         }
-
         // Dialog di errore per la registrazione fallita
         if (showErrorDialog) {
             AlertDialog(
