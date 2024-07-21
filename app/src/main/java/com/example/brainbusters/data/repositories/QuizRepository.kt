@@ -19,7 +19,9 @@ class QuizRepository(private val quizzesDAO: QuizzesDao) {
     fun getAllQuizInCategory(category: String): Flow<List<Quiz>> {
         return quizzesDAO.getAllQuizInCategory(category)
     }
-
+    fun getAllQuizzes(): Flow<List<Quiz>> {
+        return quizzesDAO.getAllQuizzes()
+    }
     fun getQuizById(quizId: Int): Flow<Quiz> {
         return quizzesDAO.getQuizById(quizId)
     }

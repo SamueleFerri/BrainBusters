@@ -37,4 +37,5 @@ interface CareersDao {
 
     @Query("SELECT * FROM careers ORDER BY career_score DESC")
     fun getScoreBoardCareers(): Flow<List<Career>>
+
 }

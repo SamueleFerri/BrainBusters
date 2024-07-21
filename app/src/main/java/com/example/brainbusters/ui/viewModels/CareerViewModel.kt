@@ -5,17 +5,23 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.brainbusters.data.entities.Career
 import com.example.brainbusters.data.repositories.CareerRepository
+import com.example.brainbusters.data.repositories.QuizDoneRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
-class CareerViewModel(private val careerRepository: CareerRepository) : ViewModel() {
+class CareerViewModel(
+    private val careerRepository: CareerRepository,
+    private val quizRepository: QuizDoneRepository
+) : ViewModel() {
 
     private val _careers = MutableStateFlow<List<Career>>(emptyList())
     val careers: StateFlow<List<Career>> get() = _careers
 
-    fun setCareer(career: Career) = viewModelScope.launch {
+    fun insertCareer(career: Career) = viewModelScope.launch {
         try {
             careerRepository.insertNewCareer(career)
         } catch (e: Exception) {
@@ -30,7 +36,8 @@ class CareerViewModel(private val careerRepository: CareerRepository) : ViewMode
 
     fun updateCareer(career: Career) = viewModelScope.launch {
         try {
-            careerRepository.insertNewCareer(career)
+            val updatedCareer = career.copy(score = getUserScore(career.userId))
+            careerRepository.updateCareer(career)
         } catch (e: Exception) {
             // Gestione degli errori
             throw e
@@ -50,13 +57,27 @@ class CareerViewModel(private val careerRepository: CareerRepository) : ViewMode
         return careerRepository.getScoreBoard()
     }
 
-
     fun getQuizTaken(userId: Int): Int {
-        return 15
+        return runBlocking {
+            try {
+                quizRepository.getQuizzesDoneByUserId(userId).firstOrNull()!!.count()
+            } catch (e: Exception) {
+                Log.e("CareerViewModel", "Error fetching quizzes taken", e)
+                0
+            }
+        }
     }
 
     fun getUserScore(userId: Int): Int {
-        return 20
+        return runBlocking {
+            try {
+                val quizzesDone = quizRepository.getQuizzesDoneByUserId(userId).firstOrNull() ?: emptyList()
+                quizzesDone.sumOf { it.score }
+            } catch (e: Exception) {
+                Log.e("CareerViewModel", "Error fetching user score", e)
+                0
+            }
+        }
     }
 
     fun getUserLevel(userId: Int): Int {

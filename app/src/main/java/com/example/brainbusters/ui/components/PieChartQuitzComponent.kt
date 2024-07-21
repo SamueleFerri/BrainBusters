@@ -23,7 +23,7 @@ fun PieChartScreen() {
     val pieChartData = PieChartData(
         slices = listOf(
             PieChartData.Slice(
-                label = "storia",
+                label = "geografia",
                 value = 50f,
                 color = Color.Red
             ),

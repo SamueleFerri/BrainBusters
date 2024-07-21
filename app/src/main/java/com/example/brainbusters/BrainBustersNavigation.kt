@@ -23,6 +23,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.brainbusters.Routes
+import com.example.brainbusters.data.entities.Career
 import com.example.brainbusters.ui.viewModels.*
 import com.example.brainbusters.ui.views.*
 import kotlinx.coroutines.flow.firstOrNull
@@ -254,18 +255,6 @@ fun BrainBustersNavigation() {
                     userId = user
                 )
             }
-            composable("quizScreen/restart") {
-                val user = userViewModel.actions.getUserIdByEmail(email)
-                QuizScreen(
-                    navController = navController,
-                    quizId = 0, // Provide a default or handle as needed
-                    quizTitle = "Quiz",
-                    questionViewModel = questionViewModel,
-                    notificationsViewModel = notificationsViewModel, // Pass NotificationsViewModel
-                    quizDoneViewModel = quizDoneViewModel,
-                    userId = user
-                )
-            }
             composable(
                 route = "scoreScreen/{score}/{quizTitle}",
                 arguments = listOf(
@@ -275,10 +264,18 @@ fun BrainBustersNavigation() {
             ) { backStackEntry ->
                 val score = backStackEntry.arguments?.getInt("score") ?: return@composable
                 val quizTitle = backStackEntry.arguments?.getString("quizTitle") ?: return@composable
+                var quizId by remember { mutableStateOf<Int>(0) }
+
+                LaunchedEffect(quizTitle) {
+                    quizId = quizViewModel.getIdQuizByTitle(quizTitle)?:0
+                }
+
+
                 ScoreScreen(
                     navController = navController,
                     score = score,
-                    quizTitle = quizTitle
+                    quizTitle = quizTitle,
+                    quizId = quizId
                 )
             }
         }

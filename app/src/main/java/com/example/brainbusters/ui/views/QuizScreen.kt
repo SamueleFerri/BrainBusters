@@ -15,6 +15,7 @@ import androidx.navigation.NavController
 import com.example.brainbusters.Notification
 import com.example.brainbusters.Routes
 import com.example.brainbusters.data.entities.QuizDone
+import com.example.brainbusters.ui.viewModels.CareerViewModel
 import com.example.brainbusters.ui.viewModels.QuestionViewModel
 import com.example.brainbusters.ui.viewModels.NotificationsViewModel
 import com.example.brainbusters.ui.viewModels.QuizDoneViewModel
@@ -134,7 +135,8 @@ fun QuizScreen(
 fun ScoreScreen(
     navController: NavController,
     score: Int,
-    quizTitle: String
+    quizTitle: String,
+    quizId: Int
 ) {
     Column(
         modifier = Modifier
@@ -150,9 +152,7 @@ fun ScoreScreen(
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             Button(onClick = {
-                navController.navigate("quizScreen/restart") {
-                    popUpTo("quizScreen/restart") { inclusive = true }
-                }
+                navController.navigate(Routes.quizScreen(quizId, quizTitle))
             }) {
                 Text(text = "Restart Quiz")
             }

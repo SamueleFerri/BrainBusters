@@ -9,7 +9,6 @@ import com.example.brainbusters.data.repositories.BadgeRepository
 import com.example.brainbusters.data.repositories.CareerRepository
 import com.example.brainbusters.data.repositories.QuizDoneRepository
 import com.example.brainbusters.data.repositories.UsersRepository
-import com.example.brainbusters.ui.views.ScoreboardEntry
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.count
@@ -19,6 +18,16 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import org.koin.androidx.compose.koinViewModel
+
+data class ScoreboardEntry(
+    val position: Int,
+    val nickname: String,
+    val score: Int,
+    val quizzesCompleted: Int,
+    val profileImageUrl: String,
+    val level: Int,
+    val isCurrentUser: Boolean = false
+)
 
 class ScoreboardViewModel(
     private val careerRepository: CareerRepository,
@@ -34,9 +43,10 @@ class ScoreboardViewModel(
 
     // Combine both flows to create a list of ScoreboardEntry
     val scoreboardEntries: Flow<List<ScoreboardEntry>> = combine(careersFlow, usersFlow) { careers, users ->
-        careers.mapNotNull { career ->
+        val currentUser = users.find { it.userEmail == userEmail }
+        val top9Entries = careers.mapNotNull { career ->
             val user = users.find { it.userId == career.userId }
-            user?.let { user ->
+            user?.let {
                 val badgeColor = runBlocking {
                     badgeRepository.getBadgeById(career.badgeId)?.color ?: "#808080"
                 }
@@ -50,7 +60,27 @@ class ScoreboardViewModel(
                     isCurrentUser = user.userId == getCurrentUserId() // Add flag to identify current user
                 )
             }
-        }.take(9)
+        }.take(9).toMutableList()
+
+        currentUser?.let { user ->
+            val currentUserCareer = careers.find { it.userId == user.userId }
+            currentUserCareer?.let { career ->
+                if (top9Entries.none { it.isCurrentUser }) {
+                    top9Entries.add(
+                        ScoreboardEntry(
+                            position = careers.indexOf(career) + 1,
+                            nickname = user.userUsername,
+                            score = career.score,
+                            quizzesCompleted = getQuizDoneById(user.userId),
+                            profileImageUrl = user.userImage,
+                            level = getUserLevel(user.userId),
+                            isCurrentUser = true
+                        )
+                    )
+                }
+            }
+        }
+        top9Entries
     }
 
     private suspend fun getQuizDoneById(userId: Int): Int {
@@ -65,12 +95,12 @@ class ScoreboardViewModel(
     }
 
     private suspend fun getUserLevel(userId: Int): Int {
-        val career =  careerRepository.getCareerByUserId(userId).first()
+        val career = careerRepository.getCareerByUserId(userId).first()
         var level = 0
         if (career != null) {
-            if(career.score >= 10){
+            if (career.score >= 10) {
                 level = career.score / 10
-                if (career.score % 10 >= 5){
+                if (career.score % 10 >= 5) {
                     level -= 1
                 }
             }
@@ -111,6 +141,4 @@ class ScoreboardViewModel(
             }
         }
     }
-
-
 }

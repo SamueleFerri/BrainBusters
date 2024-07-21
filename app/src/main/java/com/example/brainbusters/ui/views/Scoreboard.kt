@@ -18,17 +18,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
+import com.example.brainbusters.ui.viewModels.ScoreboardEntry
 import com.example.brainbusters.ui.viewModels.ScoreboardViewModel
-
-data class ScoreboardEntry(
-    val position: Int,
-    val nickname: String,
-    val score: Int,
-    val quizzesCompleted: Int,
-    val profileImageUrl: String,
-    val level: Int,
-    val isCurrentUser: Boolean = false // Aggiungi la proprietà isCurrentUser
-)
 
 @Composable
 fun Scoreboard(navController: NavController, scoreboardViewModel: ScoreboardViewModel) {
@@ -73,10 +64,18 @@ fun ScoreboardItem(entry: ScoreboardEntry, onClick: () -> Unit) {
         else -> Color.Transparent
     }
 
+    // Determine the background color for the current user
+    val backgroundColor = if (entry.isCurrentUser) {
+        MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+    } else {
+        Color.Transparent
+    }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 15.dp, horizontal = 16.dp)
+            .background(backgroundColor)
             .clickable { onClick() }, // Make item clickable
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -119,7 +118,6 @@ fun ScoreboardItem(entry: ScoreboardEntry, onClick: () -> Unit) {
         )
     }
 }
-
 @Composable
 fun ScoreboardEntryDialog(entry: ScoreboardEntry, onDismiss: () -> Unit) {
     AlertDialog(
@@ -147,6 +145,7 @@ fun ScoreboardEntryDialog(entry: ScoreboardEntry, onDismiss: () -> Unit) {
 
                 Text(text = "Position: ${entry.position}")
                 Text(text = "Nickname: ${entry.nickname}")
+                Text(text = "Score: ${entry.score}")
                 Text(text = "Quizzes Completed: ${entry.quizzesCompleted}")
                 Text(text = "Level: ${entry.level}")
             }

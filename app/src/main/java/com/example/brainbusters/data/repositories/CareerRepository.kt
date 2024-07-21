@@ -12,6 +12,10 @@ class CareerRepository(private val careersDAO: CareersDao) {
         careersDAO.insert(career)
     }
 
+    suspend fun updateCareer(career: Career) {
+        careersDAO.update(career)
+    }
+
     suspend fun deleteCareerByUserId(userId: Int) {
         careersDAO.delete(userId)
     }

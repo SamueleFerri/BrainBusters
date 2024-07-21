@@ -70,9 +70,9 @@ CREATE TABLE IF NOT EXISTS quizzes (
 -- Inserimento di dati di esempio nella tabella quizzes
 INSERT INTO quizzes (quiz_title, quiz_category, is_favorite) VALUES
     ('Quiz 1', 'Geography', 0),
-    ('Quiz 2', 'Geography', 1),
+    ('Quiz 2', 'Geography', 0),
     ('Quiz 3', 'Science', 0),
-    ('Quiz 4', 'Math', 1);
+    ('Quiz 4', 'Math', 0);
 
 -- Creazione della tabella questions
 CREATE TABLE IF NOT EXISTS questions (
