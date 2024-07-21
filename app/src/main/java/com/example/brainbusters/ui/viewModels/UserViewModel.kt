@@ -190,17 +190,17 @@ class UserViewModel(
                 }
 
                 // Verifica se il badge con ID 0 esiste, altrimenti lo crea
-                var badge = badgeRepository.getBadgeById(1)
-                if (badge == null) {
-                    Log.d("UserViewModel", "Badge not found, creating default badge with ID 0")
-                    badge = Badge(
-                        title = "Default Badge",
-                        color = "blue",
-                        requiredQuizes = 0
-                    )
-                    badgeRepository.insertBadge(badge)
-                    badge = badgeRepository.getBadgeById(1) // Ricarica il badge dopo l'inserimento
-                }
+                val badge = badgeRepository.getBadgeById(1)
+//                if (badge == null) {
+//                    Log.d("UserViewModel", "Badge not found, creating default badge with ID 0")
+//                    badge = Badge(
+//                        title = "Default Badge",
+//                        color = "blue",
+//                        requiredQuizes = 0
+//                    )
+//                    badgeRepository.insertBadge(badge)
+//                    badge = badgeRepository.getBadgeById(1) // Ricarica il badge dopo l'inserimento
+//                }
 
                 if (badge != null) {
                     val newCareer = Career(score = 0, userId = userId, badgeId = badge.badgeId)
@@ -218,6 +218,7 @@ class UserViewModel(
         override suspend fun getHighestBadgeColor(userId: Int): String {
             val careers = careerRepository.getCareerByUserId(userId).toList()
             val latestCareer = careers.lastOrNull()
+            println("Careers: $careers")
             Log.d("UserViewModel", "Latest Career: $latestCareer")
             if(latestCareer == null) {
                 return "#808080"

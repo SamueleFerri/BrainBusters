@@ -45,18 +45,22 @@ fun Profile(navController: NavController) {
     }
 
     LaunchedEffect(userEmail) {
-        viewModel.actions.getRepository().getUserByEmail(userEmail).collect { user ->
-            Log.d("ProfileDebug", "User: $user")
-            profileImageUri = Uri.parse(user.userImage ?: "")
-            username = user.userUsername
+        val user = viewModel.actions.getRepository().getUserByEmail(userEmail).firstOrNull()
+        user?.let {
+            Log.d("ProfileDebug", "User: $it")
+            profileImageUri = Uri.parse(it.userImage ?: "")
+            username = it.userUsername
 
-            val userId = user.userId
+            val userId = it.userId
 
             val colorString = viewModel.actions.getHighestBadgeColor(userId)
+            println("ColorString: $colorString")
             Log.d("ProfileDebug", "Badge color string: $colorString")
+
             // Converte la stringa del colore in un oggetto Color
             badgeColor = try {
-                Color(android.graphics.Color.parseColor(colorString))
+//                Color(android.graphics.Color.parseColor(colorString))
+                    Color(android.graphics.Color.parseColor("#808080"))
             } catch (e: IllegalArgumentException) {
                 // Gestisce il caso in cui la stringa del colore non sia valida
                 Log.e("ProfileDebug", "Invalid color format: $colorString")
@@ -64,6 +68,7 @@ fun Profile(navController: NavController) {
             }
         }
     }
+
 
     Column(
         modifier = Modifier.fillMaxSize(),
