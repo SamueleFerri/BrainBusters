@@ -1,5 +1,6 @@
 package com.example.brainbusters.ui.viewModels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.brainbusters.data.entities.Career
@@ -49,8 +50,25 @@ class CareerViewModel(private val careerRepository: CareerRepository) : ViewMode
         return careerRepository.getScoreBoard()
     }
 
-    fun getUserScore(UserId: Int): Int {
+
+    fun getQuizTaken(userId: Int): Int {
+        return 15
+    }
+
+    fun getUserScore(userId: Int): Int {
         return 20
+    }
+
+    fun getUserLevel(userId: Int): Int {
+        val score = getUserScore(userId)
+        var level = 1
+        if(score >= 10){
+            level = score / 10
+            if (score % 10 >= 5){
+                level -= 1
+            }
+        }
+        return level
     }
 
     init {

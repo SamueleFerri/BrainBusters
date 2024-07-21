@@ -58,6 +58,6 @@ val dataModule = module {
     viewModel { CareerViewModel(get()) }
     viewModel { ResponseViewModel(get()) }
     viewModel { QuizDoneViewModel(get()) }
-    viewModel { ScoreboardViewModel(get(), get(), get()) }
+    viewModel { ScoreboardViewModel(get(), get(), get(), get()) }
 
 }

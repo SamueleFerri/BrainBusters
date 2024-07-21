@@ -1,36 +1,51 @@
 package com.example.brainbusters.ui.views
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
 import com.example.brainbusters.ui.viewModels.ScoreboardViewModel
 
 data class ScoreboardEntry(
     val position: Int,
     val nickname: String,
     val quizzesCompleted: Int,
-    val isCurrentUser: Boolean = false
+    val profileImageUrl: String,
+    val level: Int,
+    val isCurrentUser: Boolean = false // Aggiungi la proprietà isCurrentUser
 )
 
 @Composable
 fun Scoreboard(navController: NavController, scoreboardViewModel: ScoreboardViewModel) {
     val scoreboardEntries by scoreboardViewModel.scoreboardEntries.collectAsState(initial = emptyList())
+    var selectedEntry by remember { mutableStateOf<ScoreboardEntry?>(null) }
+    var showDialog by remember { mutableStateOf(false) }
+
+    // Show dialog if an entry is selected
+    if (showDialog && selectedEntry != null) {
+        ScoreboardEntryDialog(entry = selectedEntry!!, onDismiss = { showDialog = false })
+    }
 
     LazyColumn {
         itemsIndexed(scoreboardEntries) { index, entry ->
-            ScoreboardItem(entry = entry)
+            ScoreboardItem(entry = entry, onClick = {
+                selectedEntry = entry
+                showDialog = true
+            })
             // Divider between scoreboard entries
             if (index < scoreboardEntries.size - 1) {
                 Divider(
@@ -43,7 +58,7 @@ fun Scoreboard(navController: NavController, scoreboardViewModel: ScoreboardView
 }
 
 @Composable
-fun ScoreboardItem(entry: ScoreboardEntry) {
+fun ScoreboardItem(entry: ScoreboardEntry, onClick: () -> Unit) {
     // Define colors for different positions
     val goldColor = Color(0xFFFFD700) // Gold
     val silverColor = Color(0xFFC0C0C0) // Silver
@@ -60,7 +75,8 @@ fun ScoreboardItem(entry: ScoreboardEntry) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 15.dp, horizontal = 16.dp),
+            .padding(vertical = 15.dp, horizontal = 16.dp)
+            .clickable { onClick() }, // Make item clickable
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Position
@@ -101,4 +117,43 @@ fun ScoreboardItem(entry: ScoreboardEntry) {
             textAlign = TextAlign.End
         )
     }
+}
+
+@Composable
+fun ScoreboardEntryDialog(entry: ScoreboardEntry, onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(text = "Details for ${entry.nickname}") },
+        text = {
+            Column(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth()
+            ) {
+                // Load image using Coil if the image URL is provided
+                Image(
+                    painter = rememberImagePainter(entry.profileImageUrl),
+                    contentDescription = "Profile Image",
+                    modifier = Modifier
+                        .size(100.dp)
+                        .clip(RoundedCornerShape(50.dp))
+                        .background(Color.Gray)
+                        .padding(8.dp),
+                    contentScale = ContentScale.Crop
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(text = "Position: ${entry.position}")
+                Text(text = "Nickname: ${entry.nickname}")
+                Text(text = "Quizzes Completed: ${entry.quizzesCompleted}")
+                Text(text = "Level: ${entry.level}")
+            }
+        },
+        confirmButton = {
+            Button(onClick = onDismiss) {
+                Text("OK")
+            }
+        }
+    )
 }
