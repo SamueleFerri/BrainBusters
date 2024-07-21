@@ -20,6 +20,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.brainbusters.Routes
 import com.example.brainbusters.ui.viewModels.*
 import com.example.brainbusters.ui.views.*
 import org.koin.androidx.compose.koinViewModel
@@ -237,7 +238,8 @@ fun BrainBustersNavigation() {
                     navController = navController,
                     quizId = quizId,
                     quizTitle = quizTitle,
-                    questionViewModel = questionViewModel
+                    questionViewModel = questionViewModel,
+                    notificationsViewModel = notificationsViewModel // Pass NotificationsViewModel
                 )
             }
             composable("quizScreen/restart") {
@@ -245,7 +247,8 @@ fun BrainBustersNavigation() {
                     navController = navController,
                     quizId = 0, // Provide a default or handle as needed
                     quizTitle = "Quiz",
-                    questionViewModel = questionViewModel
+                    questionViewModel = questionViewModel,
+                    notificationsViewModel = notificationsViewModel // Pass NotificationsViewModel
                 )
             }
             composable(
@@ -264,7 +267,6 @@ fun BrainBustersNavigation() {
                 )
             }
         }
-
         // Dialog di errore per la registrazione fallita
         if (showErrorDialog) {
             AlertDialog(

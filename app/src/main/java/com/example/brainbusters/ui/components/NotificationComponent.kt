@@ -19,12 +19,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 
 
-//da eliminare è solo per le prove
-//data class Notification(
-//    val title: String,
-//    val message: String,
-//    val timestamp: String
-//)
 @Composable
 fun NotificationComponent(
     notification: Notification,

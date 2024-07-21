@@ -12,8 +12,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.example.brainbusters.Notification
 import com.example.brainbusters.Routes
 import com.example.brainbusters.ui.viewModels.QuestionViewModel
+import com.example.brainbusters.ui.viewModels.NotificationsViewModel
 import kotlinx.coroutines.delay
 import java.time.Instant
 import java.time.ZoneId
@@ -26,7 +28,8 @@ fun QuizScreen(
     navController: NavController,
     quizId: Int,
     quizTitle: String,
-    questionViewModel: QuestionViewModel
+    questionViewModel: QuestionViewModel,
+    notificationsViewModel: NotificationsViewModel // Add NotificationsViewModel parameter
 ) {
     var currentQuestionIndex by remember { mutableStateOf(0) }
     var score by remember { mutableStateOf(0) }
@@ -61,6 +64,19 @@ fun QuizScreen(
                     isAnswered = false
                     selectedAnswerIndex = null
                 } else {
+                    // Send notification when quiz is completed
+                    val timestamp = DateTimeFormatter
+                        .ofPattern("yyyy-MM-dd HH:mm:ss")
+                        .withZone(ZoneId.systemDefault())
+                        .format(Instant.now())
+
+                    val notification = Notification(
+                        id = quizId,
+                        message = "You completed the quiz '$quizTitle' with a score of $score!",
+                        timestamp = timestamp
+                    )
+
+                    notificationsViewModel.addNotification(notification)
                     navController.navigate("scoreScreen/$score/$quizTitle")
                 }
             }
@@ -109,7 +125,6 @@ fun QuizScreen(
         }
     }
 }
-
 @Composable
 fun ScoreScreen(
     navController: NavController,
