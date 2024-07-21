@@ -28,7 +28,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-suspend fun BrainBustersNavigation() {
+fun BrainBustersNavigation() {
     val navController = rememberNavController()
     val notificationsViewModel: NotificationsViewModel = viewModel()
     val userViewModel = koinViewModel<UserViewModel>()
@@ -236,23 +236,28 @@ suspend fun BrainBustersNavigation() {
             ) { backStackEntry ->
                 val quizId = backStackEntry.arguments?.getInt("quizId") ?: return@composable
                 val quizTitle = backStackEntry.arguments?.getString("quizTitle") ?: return@composable
+
+                val user = userViewModel.actions.getUserIdByEmail(email)
                 QuizScreen(
                     navController = navController,
                     quizId = quizId,
                     quizTitle = quizTitle,
                     questionViewModel = questionViewModel,
                     notificationsViewModel = notificationsViewModel, // Pass NotificationsViewModel
-                    quizDoneViewModel = quizDoneViewModel
+                    quizDoneViewModel = quizDoneViewModel,
+                    userId = user
                 )
             }
             composable("quizScreen/restart") {
+                val user = userViewModel.actions.getUserIdByEmail(email)
                 QuizScreen(
                     navController = navController,
                     quizId = 0, // Provide a default or handle as needed
                     quizTitle = "Quiz",
                     questionViewModel = questionViewModel,
                     notificationsViewModel = notificationsViewModel, // Pass NotificationsViewModel
-                    quizDoneViewModel = quizDoneViewModel
+                    quizDoneViewModel = quizDoneViewModel,
+                    userId = user
                 )
             }
             composable(

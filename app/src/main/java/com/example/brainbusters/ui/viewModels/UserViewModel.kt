@@ -12,10 +12,11 @@ import com.example.brainbusters.data.repositories.UsersRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.lastOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
@@ -26,6 +27,7 @@ interface UsersActions {
     fun removeUser(userId: Int): Job
     fun updateUser(user: User): Job
     fun getRepository(): UsersRepository
+    fun getUserIdByEmail(email: String): Int
     fun getProfileImageUri(userEmail: String): Flow<String>
     fun saveProfileImageUri(userEmail: String, uri: String): Job
     fun login(email: String, password: String): Boolean
@@ -37,6 +39,7 @@ interface UsersActions {
         password: String, image: String, position: String): Boolean
     fun createCareer(userId: Int): Job
     suspend fun getHighestBadgeColor(userId: Int): String
+    suspend fun getBadgeByUserId(userId: Int): Badge?
     fun changePassword(oldPassword: String, newPassword: String): Boolean
     fun printUserEmailsAndPasswords()
 }
@@ -101,6 +104,16 @@ class UserViewModel(
 
         override fun getRepository(): UsersRepository {
             return userRepository
+        }
+
+        override fun getUserIdByEmail(email: String): Int {
+            return runBlocking {
+                try {
+                    userRepository.getUserIdfromMail(email)
+                } catch (e: Exception) {
+                    0 // or handle the exception in a suitable way
+                }
+            }
         }
 
         override fun getProfileImageUri(userEmail: String): Flow<String> {
@@ -191,16 +204,6 @@ class UserViewModel(
 
                 // Verifica se il badge con ID 0 esiste, altrimenti lo crea
                 val badge = badgeRepository.getBadgeById(1)
-//                if (badge == null) {
-//                    Log.d("UserViewModel", "Badge not found, creating default badge with ID 0")
-//                    badge = Badge(
-//                        title = "Default Badge",
-//                        color = "blue",
-//                        requiredQuizes = 0
-//                    )
-//                    badgeRepository.insertBadge(badge)
-//                    badge = badgeRepository.getBadgeById(1) // Ricarica il badge dopo l'inserimento
-//                }
 
                 if (badge != null) {
                     val newCareer = Career(score = 0, userId = userId, badgeId = badge.badgeId)
@@ -230,6 +233,17 @@ class UserViewModel(
             } catch (e: Exception) {
                 Log.e("UserViewModel", "Error retrieving badge color", e)
                 "#808080" // Colore di fallback in caso di errore
+            }
+        }
+
+        override suspend fun getBadgeByUserId(userId: Int): Badge? {
+            return try {
+                val career = careerRepository.getCareerByUserId(userId).firstOrNull()
+                val badge = career?.let { badgeRepository.getBadgeById(it.badgeId) }
+                badge
+            } catch (e: Exception) {
+                Log.e("UserViewModel", "Error retrieving career", e)
+                null
             }
         }
 

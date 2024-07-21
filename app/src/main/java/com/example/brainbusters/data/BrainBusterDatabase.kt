@@ -9,19 +9,21 @@ import com.example.brainbusters.data.daos.BadgesDao
 import com.example.brainbusters.data.daos.CareersDao
 import com.example.brainbusters.data.daos.QuestionsDao
 import com.example.brainbusters.data.daos.QuizzesDao
+import com.example.brainbusters.data.daos.QuizzesDoneDao
 import com.example.brainbusters.data.daos.ResponsesDao
 import com.example.brainbusters.data.daos.UsersDao
 import com.example.brainbusters.data.entities.Badge
 import com.example.brainbusters.data.entities.Career
 import com.example.brainbusters.data.entities.Question
 import com.example.brainbusters.data.entities.Quiz
+import com.example.brainbusters.data.entities.QuizDone
 import com.example.brainbusters.data.entities.Response
 import com.example.brainbusters.data.entities.User
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Database(
-    entities = [User::class, Career::class, Badge::class, Quiz::class, Question::class, Response::class],
+    entities = [User::class, Career::class, Badge::class, Quiz::class, Question::class, Response::class, QuizDone::class],
     version = 1
 )
 abstract class BrainBusterDatabase : RoomDatabase() {
@@ -32,6 +34,8 @@ abstract class BrainBusterDatabase : RoomDatabase() {
     abstract fun questionsDAO(): QuestionsDao
 
     abstract fun responsesDAO(): ResponsesDao
+
+    abstract fun quizzesDoneDAO(): QuizzesDoneDao
 
     class Callback(
         private val scope: CoroutineScope

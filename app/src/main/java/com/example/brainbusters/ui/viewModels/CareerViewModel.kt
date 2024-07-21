@@ -49,6 +49,11 @@ class CareerViewModel(private val careerRepository: CareerRepository) : ViewMode
         return careerRepository.getScoreBoard()
     }
 
+    
+    fun getUserScore(UserId: Int): Int {
+        return 20
+    }
+
     init {
         loadAllCareers()
     }

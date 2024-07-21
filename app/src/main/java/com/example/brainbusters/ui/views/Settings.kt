@@ -14,6 +14,7 @@ import com.example.brainbusters.Routes
 import com.example.brainbusters.ui.viewModels.UserViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
 import org.koin.androidx.compose.koinViewModel
 
@@ -116,7 +117,7 @@ fun Settings(navController: NavController) {
         Button(
             onClick = {
                 runBlocking {
-                    userViewModel.actions.removeUser(userViewModel.actions.getRepository().getUserIdByEmail(userEmail).first())
+                    userViewModel.actions.removeUser(userViewModel.actions.getRepository().getUserIdByEmail(userEmail).firstOrNull()?:0)
                 }
                 showDeleteAccountDialog = true
             },
