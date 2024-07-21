@@ -1,4 +1,65 @@
--- Creazione della tabella quizzes con la struttura corretta
+-- Creazione della tabella users
+CREATE TABLE IF NOT EXISTS users (
+    user_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    user_name TEXT NOT NULL,
+    user_surname TEXT NOT NULL,
+    user_username TEXT NOT NULL,
+    user_email TEXT NOT NULL,
+    user_password TEXT NOT NULL,
+    user_image TEXT NOT NULL,
+    user_position TEXT NOT NULL,
+    UNIQUE(user_name, user_email)
+);
+
+-- Inserimento di 9 utenti
+INSERT INTO users (user_name, user_surname, user_username, user_email, user_password, user_image, user_position) VALUES
+('Mario', 'Rossi', 'mrossi', 'mario.rossi@example.com', 'password1', 'image1.png', 'Manager'),
+('Luigi', 'Verdi', 'lverdi', 'luigi.verdi@example.com', 'password2', 'image2.png', 'Developer'),
+('Giulia', 'Bianchi', 'gbianchi', 'giulia.bianchi@example.com', 'password3', 'image3.png', 'Designer'),
+('Francesca', 'Neri', 'fneri', 'francesca.neri@example.com', 'password4', 'image4.png', 'Analyst'),
+('Alessandro', 'Gialli', 'agialli', 'alessandro.gialli@example.com', 'password5', 'image5.png', 'Manager'),
+('Lorenzo', 'Blu', 'lblu', 'lorenzo.blu@example.com', 'password6', 'image6.png', 'Developer'),
+('Elena', 'Marrone', 'emarrone', 'elena.marrone@example.com', 'password7', 'image7.png', 'Designer'),
+('Matteo', 'Viola', 'mviola', 'matteo.viola@example.com', 'password8', 'image8.png', 'Analyst'),
+('Sara', 'Rosa', 'srosa', 'sara.rosa@example.com', 'password9', 'image9.png', 'Manager');
+
+-- Creazione della tabella badges
+CREATE TABLE IF NOT EXISTS badges (
+    badge_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    badge_title TEXT NOT NULL UNIQUE,
+    badge_color TEXT NOT NULL,
+    required_quizzes INTEGER NOT NULL
+);
+
+-- Inserimento di badge di esempio
+INSERT INTO badges (badge_title, badge_color, required_quizzes) VALUES
+    ('Principiante dei quiz', '#0000FF', 1),
+    ('Novizio dei quiz', '#088F8F', 2),
+    ('Esperto dei quiz', '#FF0000', 10);
+
+-- Creazione della tabella careers
+CREATE TABLE IF NOT EXISTS careers (
+    career_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    career_score INTEGER NOT NULL,
+    career_user_id INTEGER NOT NULL,
+    career_badge_id INTEGER NOT NULL,
+    FOREIGN KEY (career_user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (career_badge_id) REFERENCES badges(badge_id) ON DELETE CASCADE
+);
+
+-- Inserimento delle carriere
+INSERT INTO careers (career_score, career_user_id, career_badge_id) VALUES
+(100, 1, 1), -- Carriera per Mario Rossi
+(200, 2, 2), -- Carriera per Luigi Verdi
+(150, 3, 3), -- Carriera per Giulia Bianchi
+(180, 4, 1), -- Carriera per Francesca Neri
+(220, 5, 2), -- Carriera per Alessandro Gialli
+(160, 6, 3), -- Carriera per Lorenzo Blu
+(140, 7, 1), -- Carriera per Elena Marrone
+(170, 8, 2), -- Carriera per Matteo Viola
+(210, 9, 3); -- Carriera per Sara Rosa
+
+-- Creazione della tabella quizzes
 CREATE TABLE IF NOT EXISTS quizzes (
     quiz_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     quiz_title TEXT NOT NULL UNIQUE,
@@ -13,7 +74,7 @@ INSERT INTO quizzes (quiz_title, quiz_category, is_favorite) VALUES
     ('Quiz 3', 'Science', 0),
     ('Quiz 4', 'Math', 1);
 
--- Creazione della tabella questions con la struttura corretta
+-- Creazione della tabella questions
 CREATE TABLE IF NOT EXISTS questions (
     question_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     question_number TEXT NOT NULL,
@@ -38,7 +99,7 @@ INSERT INTO questions (question_number, question_question, question_quizId) VALU
     ('4', 'What is the hardest natural substance on Earth?', 2),
     ('5', 'Who is known as the father of modern physics?', 2);
 
--- Creazione della tabella responses con la struttura corretta
+-- Creazione della tabella responses
 CREATE TABLE IF NOT EXISTS responses (
     response_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     response_text TEXT NOT NULL,
@@ -46,7 +107,6 @@ CREATE TABLE IF NOT EXISTS responses (
     response_question_id INTEGER NOT NULL,
     FOREIGN KEY (response_question_id) REFERENCES questions(question_id) ON DELETE CASCADE
 );
-
 -- Inserimento di risposte per il Quiz 1, Domanda 1
 INSERT INTO responses (response_text, response_score, response_question_id) VALUES
     ('Paris', 5, 1),
@@ -116,17 +176,3 @@ INSERT INTO responses (response_text, response_score, response_question_id) VALU
     ('Isaac Newton', 0, 10),
     ('Galileo Galilei', 0, 10),
     ('Nikola Tesla', 0, 10);
-
--- Creazione della tabella badges con la struttura corretta
-CREATE TABLE IF NOT EXISTS badges (
-    badge_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    badge_title TEXT NOT NULL UNIQUE,
-    badge_color TEXT NOT NULL,
-    required_quizzes INTEGER NOT NULL
-);
-
--- Inserimento di badge di esempio
-INSERT INTO badges (badge_title, badge_color, required_quizzes) VALUES
-    ('Principiante dei quiz', '#0000FF', 1),
-    ('Novizio dei quiz', '#088F8F', 2),
-    ('Esperto dei quiz', '#FF0000', 10);

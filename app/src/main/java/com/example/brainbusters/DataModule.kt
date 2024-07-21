@@ -12,6 +12,7 @@ import com.example.brainbusters.ui.viewModels.CareerViewModel
 import com.example.brainbusters.ui.viewModels.QuizDoneViewModel
 import com.example.brainbusters.ui.viewModels.QuizViewModel
 import com.example.brainbusters.ui.viewModels.ResponseViewModel
+import com.example.brainbusters.ui.viewModels.ScoreboardViewModel
 import com.example.brainbusters.ui.viewModels.UserViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -57,5 +58,6 @@ val dataModule = module {
     viewModel { CareerViewModel(get()) }
     viewModel { ResponseViewModel(get()) }
     viewModel { QuizDoneViewModel(get()) }
+    viewModel { ScoreboardViewModel(get(), get(), get()) }
 
 }
