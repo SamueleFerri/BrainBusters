@@ -43,6 +43,7 @@ class ScoreboardViewModel(
                 ScoreboardEntry(
                     position = careers.indexOf(career) + 1,
                     nickname = user.userUsername,
+                    score = career.score,
                     quizzesCompleted = getQuizDoneById(user.userId),
                     profileImageUrl = user.userImage,
                     level = getUserLevel(user.userId),
@@ -101,6 +102,7 @@ class ScoreboardViewModel(
                 ScoreboardEntry(
                     position = careers.indexOf(career) + 1,
                     nickname = user.userUsername,
+                    score = career.score,
                     quizzesCompleted = career.score,
                     profileImageUrl = userRepository.getUserById(getCurrentUserId()).first().userImage,
                     level = getUserLevel(user.userId),

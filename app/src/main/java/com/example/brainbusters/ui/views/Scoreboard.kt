@@ -23,6 +23,7 @@ import com.example.brainbusters.ui.viewModels.ScoreboardViewModel
 data class ScoreboardEntry(
     val position: Int,
     val nickname: String,
+    val score: Int,
     val quizzesCompleted: Int,
     val profileImageUrl: String,
     val level: Int,
@@ -110,7 +111,7 @@ fun ScoreboardItem(entry: ScoreboardEntry, onClick: () -> Unit) {
 
         // Quizzes Completed
         Text(
-            text = "${entry.quizzesCompleted}",
+            text = "${entry.score}",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.width(64.dp),
