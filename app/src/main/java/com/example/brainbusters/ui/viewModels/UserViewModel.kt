@@ -214,17 +214,22 @@ class UserViewModel(
             }
         }
 
-        // Funzione per ottenere il colore della carriera con l'ID più alto per un dato userId
+        // Funzione per ottenere il colore del badge con l'ID più alto per un dato userId
         override suspend fun getHighestBadgeColor(userId: Int): String {
-            val careers = careerRepository.getCareerByUserId(userId).toList()
-            val latestCareer = careers.lastOrNull()
-            println("Careers: $careers")
-            Log.d("UserViewModel", "Latest Career: $latestCareer")
-            if(latestCareer == null) {
-                return "#808080"
-            }else{
-                val color = badgeRepository.getBadgeById(latestCareer.badgeId)
-                return color?.color ?: "#808080"
+            return try {
+                // Assicurati che questa funzione venga chiamata in un contesto di coroutine
+                var badgeColor = "#808080" // Colore di fallback
+                careerRepository.getCareerByUserId(userId).firstOrNull()?.let { careers ->
+                    Log.d("UserViewModel", "Careers: $careers")
+
+                    val badge = badgeRepository.getBadgeById(careers.badgeId)
+                    badgeColor = badge?.color ?: "#808080"
+                    Log.d("UserViewModel", "Badge Color: $badgeColor")
+                }
+                badgeColor
+            } catch (e: Exception) {
+                Log.e("UserViewModel", "Error retrieving badge color", e)
+                "#808080" // Colore di fallback in caso di errore
             }
         }
 

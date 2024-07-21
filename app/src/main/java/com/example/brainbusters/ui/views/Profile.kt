@@ -32,7 +32,7 @@ fun Profile(navController: NavController) {
     val userEmail = UserViewModel.getEmail()
     var profileImageUri by remember { mutableStateOf<Uri?>(null) }
     var username by remember { mutableStateOf("") }
-    var badgeColor by remember { mutableStateOf(Color.White) }
+    //var badgeColor by remember { mutableStateOf(Color.Gray) }
     val viewModel: UserViewModel = koinViewModel()
 
     val launcher = rememberLauncherForActivityResult(
@@ -53,14 +53,38 @@ fun Profile(navController: NavController) {
 
             val userId = it.userId
 
+//            val colorString = viewModel.actions.getHighestBadgeColor(userId)
+//            Log.d("ProfileDebug", "Badge color string: $colorString")
+//
+//            // Converte la stringa del colore in un oggetto Color
+//            badgeColor = try {
+//                Color(android.graphics.Color.parseColor(colorString))
+//            } catch (e: IllegalArgumentException) {
+//                // Gestisce il caso in cui la stringa del colore non sia valida
+//                Log.e("ProfileDebug", "Invalid color format: $colorString")
+//                Color.Gray // Imposta un colore di fallback
+//            }
+        }
+    }
+
+    // Utilizza produceState per ottenere il colore del badge al di fuori di LaunchedEffect
+    val badgeColor by produceState<Color>(initialValue = Color.Gray, key1 = userEmail) {
+        val user = viewModel.actions.getRepository().getUserByEmail(userEmail).firstOrNull()
+        user?.let {
+            Log.d("ProfileDebug", "User: $it")
+            profileImageUri = Uri.parse(it.userImage ?: "")
+            username = it.userUsername
+
+            val userId = it.userId
+            Log.d("ProfileDebug", "UserId: $userId")
+            Log.d("ProfileDebug", "PORCDIOOOOOOO")
+
             val colorString = viewModel.actions.getHighestBadgeColor(userId)
-            println("ColorString: $colorString")
             Log.d("ProfileDebug", "Badge color string: $colorString")
 
             // Converte la stringa del colore in un oggetto Color
-            badgeColor = try {
-//                Color(android.graphics.Color.parseColor(colorString))
-                    Color(android.graphics.Color.parseColor("#808080"))
+            value = try {
+                Color(android.graphics.Color.parseColor(colorString))
             } catch (e: IllegalArgumentException) {
                 // Gestisce il caso in cui la stringa del colore non sia valida
                 Log.e("ProfileDebug", "Invalid color format: $colorString")
