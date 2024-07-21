@@ -35,14 +35,11 @@ fun QuizScreen(
 
     // Retrieve questions from the database
     val questions by questionViewModel.getQuestionsByQuizId(quizId).collectAsStateWithLifecycle(emptyList())
+    val currentQuestion = questions.getOrNull(currentQuestionIndex)
 
-    val options = remember(questions) {
-        questions.map { listOf("Option 1", "Option 2", "Option 3", "Option 4") } // Placeholder options
-    }
-
-    val correctAnswers = remember(questions) {
-        questions.map { 0 } // Placeholder correct answer index
-    }
+    // Retrieve responses for the current question
+    val responses by questionViewModel.getResponsesByQuestionId(currentQuestion?.questionId ?: 0)
+        .collectAsStateWithLifecycle(emptyList())
 
     Scaffold(
         topBar = {
@@ -64,7 +61,7 @@ fun QuizScreen(
                     isAnswered = false
                     selectedAnswerIndex = null
                 } else {
-                    navController.navigate("scoreScreen/${score}/${quizTitle}")
+                    navController.navigate("scoreScreen/$score/$quizTitle")
                 }
             }
         }
@@ -76,8 +73,7 @@ fun QuizScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            if (currentQuestionIndex < questions.size) {
-                val currentQuestion = questions[currentQuestionIndex]
+            if (currentQuestion != null) {
                 Column {
                     Text(
                         text = currentQuestion.question,
@@ -85,15 +81,13 @@ fun QuizScreen(
                     )
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    options[currentQuestionIndex].forEachIndexed { index, option ->
+                    responses.forEachIndexed { index, response ->
                         Button(
                             onClick = {
                                 if (!isAnswered) {
                                     selectedAnswerIndex = index
                                     isAnswered = true
-                                    if (index == correctAnswers[currentQuestionIndex]) {
-                                        score++
-                                    }
+                                    score += response.score
                                 }
                             },
                             modifier = Modifier
@@ -101,13 +95,13 @@ fun QuizScreen(
                                 .padding(vertical = 4.dp),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = when {
-                                    isAnswered && index == correctAnswers[currentQuestionIndex] -> Color.Green
+                                    isAnswered && response.score > 0 -> Color.Green
                                     isAnswered && index == selectedAnswerIndex -> Color.Red
                                     else -> MaterialTheme.colorScheme.primary
                                 }
                             )
                         ) {
-                            Text(text = option)
+                            Text(text = response.text)
                         }
                     }
                 }
@@ -149,7 +143,6 @@ fun ScoreScreen(
                 val formatter = DateTimeFormatter.ofPattern("EEEE, dd MMMM yyyy")
                     .withZone(ZoneId.of("UTC"))
                 val dateString = formatter.format(instant)
-                // Navigate to the home screen or perform other actions
                 navController.navigate(Routes.homeScreen) {
                     popUpTo(Routes.homeScreen) { inclusive = true }
                 }
