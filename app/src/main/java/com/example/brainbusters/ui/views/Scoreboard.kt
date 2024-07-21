@@ -6,44 +6,35 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.brainbusters.ui.viewModels.ScoreboardViewModel
 
-// Mock data for demonstration
+// Data class for scoreboard entry
 data class ScoreboardEntry(
     val position: Int,
     val nickname: String,
-    val quizzesCompleted: Int
+    val quizzesCompleted: Int,
+    val isCurrentUser: Boolean = false // Aggiungi la proprietà isCurrentUser
 )
 
 @Composable
-fun Scoreboard(navController: NavController) {
-    // Mock data for demonstration
-    val scoreboardData = listOf(
-        ScoreboardEntry(1, "LUCONE111", 39),
-        ScoreboardEntry(2, "Player2", 18),
-        ScoreboardEntry(3, "Player3", 15),
-        ScoreboardEntry(4, "Player4", 14),
-        ScoreboardEntry(5, "Player5", 13),
-        ScoreboardEntry(6, "Player6", 12),
-        ScoreboardEntry(7, "Player7", 11),
-        ScoreboardEntry(8, "Player8", 10),
-        ScoreboardEntry(9, "Player9", 9),
-        ScoreboardEntry(1, "LUCONE111", 39) // Placeholder for user's position
-    )
+fun Scoreboard(navController: NavController, scoreboardViewModel: ScoreboardViewModel) {
+    val scoreboardEntries by scoreboardViewModel.scoreboardEntries.collectAsState(initial = emptyList())
 
     LazyColumn {
-        itemsIndexed(scoreboardData) { index, entry ->
+        itemsIndexed(scoreboardEntries) { index, entry ->
             ScoreboardItem(entry = entry)
             // Divider between scoreboard entries
-            if (index < scoreboardData.size - 1) {
-                HorizontalDivider(
+            if (index < scoreboardEntries.size - 1) {
+                Divider(
                     modifier = Modifier.padding(horizontal = 16.dp),
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f)
                 )
@@ -54,10 +45,16 @@ fun Scoreboard(navController: NavController) {
 
 @Composable
 fun ScoreboardItem(entry: ScoreboardEntry) {
-    val backgroundColor = when (entry.position) {
-        1 -> Color(0xFFFFD700) // Gold
-        2 -> Color(0xFFC0C0C0) // Silver
-        3 -> Color(0xFFCD7F32) // Bronze
+    // Define colors for different positions
+    val goldColor = Color(0xFFFFD700) // Gold
+    val silverColor = Color(0xFFC0C0C0) // Silver
+    val bronzeColor = Color(0xFFCD7F32) // Bronze
+
+    // Determine the background color of the position box
+    val positionBackgroundColor = when (entry.position) {
+        1 -> goldColor
+        2 -> silverColor
+        3 -> bronzeColor
         else -> Color.Transparent
     }
 
@@ -75,8 +72,9 @@ fun ScoreboardItem(entry: ScoreboardEntry) {
         ) {
             Box(
                 modifier = Modifier
-                    .background(backgroundColor, RoundedCornerShape(8.dp))
-                    .padding(5.dp).padding(horizontal = 3.dp),
+                    .background(positionBackgroundColor, RoundedCornerShape(8.dp))
+                    .padding(horizontal = 7.dp, vertical = 5.dp)
+                    .align(Alignment.Center),
                 contentAlignment = Alignment.Center
             ) {
                 Text(

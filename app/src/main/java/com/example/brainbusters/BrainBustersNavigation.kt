@@ -36,6 +36,7 @@ fun BrainBustersNavigation() {
     val careerViewModel = koinViewModel<CareerViewModel>()
     val questionViewModel = koinViewModel<QuestionViewModel>()
     val quizDoneViewModel = koinViewModel<QuizDoneViewModel>()
+    val scoreboardViewModel = koinViewModel<ScoreboardViewModel>()
 
     var showErrorDialog by remember { mutableStateOf(false) }
     var isLoggedIn by rememberSaveable { mutableStateOf(false) }
@@ -222,7 +223,11 @@ fun BrainBustersNavigation() {
                     quizViewModel = quizViewModel
                 )
             }
-            composable(Routes.scoreboard) { Scoreboard(navController = navController) }
+            composable(Routes.scoreboard) {
+                Scoreboard(
+                navController = navController,
+                scoreboardViewModel = scoreboardViewModel
+            ) }
             composable(Routes.profile) { Profile(navController = navController) }
             composable(Routes.settings) { Settings(navController = navController) }
             composable(Routes.notifications) { NotificationsScreen(navController = navController, notificationsViewModel) }

@@ -35,7 +35,6 @@ interface CareersDao {
     @Query("SELECT * FROM careers")
     fun getAllCareers(): Flow<List<Career>>
 
-    // Get Top 9 Careers
-    @Query("SELECT * FROM careers ORDER BY career_score LIMIT 9")
+    @Query("SELECT * FROM careers ORDER BY career_score DESC")
     fun getScoreBoardCareers(): Flow<List<Career>>
 }
