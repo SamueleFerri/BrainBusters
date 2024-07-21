@@ -32,7 +32,8 @@ fun Profile(navController: NavController) {
     val userEmail = UserViewModel.getEmail()
     var profileImageUri by remember { mutableStateOf<Uri?>(null) }
     var username by remember { mutableStateOf("") }
-    //var badgeColor by remember { mutableStateOf(Color.Gray) }
+    var userId by remember { mutableIntStateOf(1) }
+    var userBadge by remember { mutableStateOf("") }
     val viewModel: UserViewModel = koinViewModel()
 
     val launcher = rememberLauncherForActivityResult(
@@ -48,36 +49,21 @@ fun Profile(navController: NavController) {
         val user = viewModel.actions.getRepository().getUserByEmail(userEmail).firstOrNull()
         user?.let {
             Log.d("ProfileDebug", "User: $it")
-            profileImageUri = Uri.parse(it.userImage ?: "")
+            profileImageUri = Uri.parse(it.userImage)
             username = it.userUsername
-
-            val userId = it.userId
-
-//            val colorString = viewModel.actions.getHighestBadgeColor(userId)
-//            Log.d("ProfileDebug", "Badge color string: $colorString")
-//
-//            // Converte la stringa del colore in un oggetto Color
-//            badgeColor = try {
-//                Color(android.graphics.Color.parseColor(colorString))
-//            } catch (e: IllegalArgumentException) {
-//                // Gestisce il caso in cui la stringa del colore non sia valida
-//                Log.e("ProfileDebug", "Invalid color format: $colorString")
-//                Color.Gray // Imposta un colore di fallback
-//            }
         }
     }
 
-    // Utilizza produceState per ottenere il colore del badge al di fuori di LaunchedEffect
-    val badgeColor by produceState<Color>(initialValue = Color.Gray, key1 = userEmail) {
+    // Utilizza produceState per ottenere il colore del badge
+    val badgeColor by produceState(initialValue = Color.Gray, key1 = userEmail) {
         val user = viewModel.actions.getRepository().getUserByEmail(userEmail).firstOrNull()
         user?.let {
             Log.d("ProfileDebug", "User: $it")
-            profileImageUri = Uri.parse(it.userImage ?: "")
+            profileImageUri = Uri.parse(it.userImage)
             username = it.userUsername
-
-            val userId = it.userId
+            userId = it.userId
             Log.d("ProfileDebug", "UserId: $userId")
-            Log.d("ProfileDebug", "PORCDIOOOOOOO")
+            userBadge = viewModel.actions.getBadgeByUserId(userId)?.title ?: ""
 
             val colorString = viewModel.actions.getHighestBadgeColor(userId)
             Log.d("ProfileDebug", "Badge color string: $colorString")
@@ -92,6 +78,7 @@ fun Profile(navController: NavController) {
             }
         }
     }
+
 
 
     Column(
@@ -145,7 +132,7 @@ fun Profile(navController: NavController) {
                         color = MaterialTheme.colorScheme.onBackground
                     )
                     Text(
-                        text = "CEO OF BRAWLSTARS",
+                        text = userBadge,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onBackground
                     )
