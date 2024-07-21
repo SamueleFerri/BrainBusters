@@ -1,5 +1,6 @@
 package com.example.brainbusters.ui.views
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -10,10 +11,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
 import com.example.brainbusters.ui.viewModels.ScoreboardViewModel
 
 // Data class for scoreboard entry
@@ -21,6 +25,8 @@ data class ScoreboardEntry(
     val position: Int,
     val nickname: String,
     val quizzesCompleted: Int,
+    val profileImageUrl: String,
+    val level: Int,
     val isCurrentUser: Boolean = false // Aggiungi la proprietà isCurrentUser
 )
 
@@ -120,10 +126,29 @@ fun ScoreboardEntryDialog(entry: ScoreboardEntry, onDismiss: () -> Unit) {
         onDismissRequest = onDismiss,
         title = { Text(text = "Details for ${entry.nickname}") },
         text = {
-            Column {
+            Column(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth()
+            ) {
+                // Load image using Coil if the image URL is provided
+                Image(
+                    painter = rememberImagePainter(entry.profileImageUrl),
+                    contentDescription = "Profile Image",
+                    modifier = Modifier
+                        .size(100.dp)
+                        .clip(RoundedCornerShape(50.dp))
+                        .background(Color.Gray)
+                        .padding(8.dp),
+                    contentScale = ContentScale.Crop
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
                 Text(text = "Position: ${entry.position}")
                 Text(text = "Nickname: ${entry.nickname}")
                 Text(text = "Quizzes Completed: ${entry.quizzesCompleted}")
+                Text(text = "Level: ${entry.level}")
             }
         },
         confirmButton = {
