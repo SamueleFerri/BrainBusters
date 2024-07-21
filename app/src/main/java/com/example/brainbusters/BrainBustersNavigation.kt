@@ -23,6 +23,7 @@ import androidx.navigation.navArgument
 import com.example.brainbusters.Routes
 import com.example.brainbusters.ui.viewModels.*
 import com.example.brainbusters.ui.views.*
+import kotlinx.coroutines.flow.firstOrNull
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,6 +35,7 @@ fun BrainBustersNavigation() {
     val quizViewModel = koinViewModel<QuizViewModel>()
     val careerViewModel = koinViewModel<CareerViewModel>()
     val questionViewModel = koinViewModel<QuestionViewModel>()
+    val quizDoneViewModel = koinViewModel<QuizDoneViewModel>()
 
     var showErrorDialog by remember { mutableStateOf(false) }
     var isLoggedIn by rememberSaveable { mutableStateOf(false) }
@@ -234,21 +236,28 @@ fun BrainBustersNavigation() {
             ) { backStackEntry ->
                 val quizId = backStackEntry.arguments?.getInt("quizId") ?: return@composable
                 val quizTitle = backStackEntry.arguments?.getString("quizTitle") ?: return@composable
+
+                val user = userViewModel.actions.getUserIdByEmail(email)
                 QuizScreen(
                     navController = navController,
                     quizId = quizId,
                     quizTitle = quizTitle,
                     questionViewModel = questionViewModel,
-                    notificationsViewModel = notificationsViewModel // Pass NotificationsViewModel
+                    notificationsViewModel = notificationsViewModel, // Pass NotificationsViewModel
+                    quizDoneViewModel = quizDoneViewModel,
+                    userId = user
                 )
             }
             composable("quizScreen/restart") {
+                val user = userViewModel.actions.getUserIdByEmail(email)
                 QuizScreen(
                     navController = navController,
                     quizId = 0, // Provide a default or handle as needed
                     quizTitle = "Quiz",
                     questionViewModel = questionViewModel,
-                    notificationsViewModel = notificationsViewModel // Pass NotificationsViewModel
+                    notificationsViewModel = notificationsViewModel, // Pass NotificationsViewModel
+                    quizDoneViewModel = quizDoneViewModel,
+                    userId = user
                 )
             }
             composable(

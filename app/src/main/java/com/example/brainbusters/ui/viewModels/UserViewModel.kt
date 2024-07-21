@@ -25,6 +25,7 @@ interface UsersActions {
     fun removeUser(userId: Int): Job
     fun updateUser(user: User): Job
     fun getRepository(): UsersRepository
+    fun getUserIdByEmail(email: String): Int
     fun getProfileImageUri(userEmail: String): Flow<String>
     fun saveProfileImageUri(userEmail: String, uri: String): Job
     fun login(email: String, password: String): Boolean
@@ -101,6 +102,16 @@ class UserViewModel(
 
         override fun getRepository(): UsersRepository {
             return userRepository
+        }
+
+        override fun getUserIdByEmail(email: String): Int {
+            return runBlocking {
+                try {
+                    userRepository.getUserIdfromMail(email)
+                } catch (e: Exception) {
+                    0 // or handle the exception in a suitable way
+                }
+            }
         }
 
         override fun getProfileImageUri(userEmail: String): Flow<String> {

@@ -3,6 +3,7 @@ package com.example.brainbusters.data.repositories
 import com.example.brainbusters.data.daos.UsersDao
 import com.example.brainbusters.data.entities.User
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
 
 class UsersRepository(private val usersDAO: UsersDao) {
 
@@ -36,7 +37,7 @@ class UsersRepository(private val usersDAO: UsersDao) {
         return usersDAO.getUserByEmail(userEmail)
     }
 
-    fun getUserIdByEmail(userEmail: String): Flow<Int>{
+    fun getUserIdByEmail(userEmail: String): Flow<Int?>{
         return usersDAO.getUserIdByEmail(userEmail)
     }
 
@@ -44,7 +45,7 @@ class UsersRepository(private val usersDAO: UsersDao) {
         return usersDAO.getAllUsers()
     }
 
-    fun getUserIdfromMail(userEmail: String): Flow<Int>{
-        return usersDAO.getIdFromEmail(userEmail)
+    suspend fun getUserIdfromMail(userEmail: String): Int{
+        return usersDAO.getIdFromEmail(userEmail).firstOrNull()?:0
     }
 }

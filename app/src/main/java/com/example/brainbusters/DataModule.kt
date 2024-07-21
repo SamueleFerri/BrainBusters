@@ -3,11 +3,13 @@ import com.example.brainbusters.data.BrainBusterDatabase
 import com.example.brainbusters.data.repositories.BadgeRepository
 import com.example.brainbusters.data.repositories.CareerRepository
 import com.example.brainbusters.data.repositories.QuestionRepository
+import com.example.brainbusters.data.repositories.QuizDoneRepository
 import com.example.brainbusters.data.repositories.QuizRepository
 import com.example.brainbusters.data.repositories.ResponseRepository
 import com.example.brainbusters.data.repositories.UsersRepository
 import com.example.brainbusters.ui.viewModels.QuestionViewModel
 import com.example.brainbusters.ui.viewModels.CareerViewModel
+import com.example.brainbusters.ui.viewModels.QuizDoneViewModel
 import com.example.brainbusters.ui.viewModels.QuizViewModel
 import com.example.brainbusters.ui.viewModels.ResponseViewModel
 import com.example.brainbusters.ui.viewModels.UserViewModel
@@ -38,7 +40,8 @@ val dataModule = module {
     single { get<BrainBusterDatabase>().badgesDAO() }
     single { get<BrainBusterDatabase>().quizzesDAO() }
     single { get<BrainBusterDatabase>().questionsDAO() }
-    single { get<BrainBusterDatabase>().resposesDAO() }
+    single { get<BrainBusterDatabase>().responsesDAO() }
+    single { get<BrainBusterDatabase>().quizzesDoneDAO() }
 
     single { UsersRepository(get()) }
     single { BadgeRepository(get()) }
@@ -46,11 +49,13 @@ val dataModule = module {
     single { CareerRepository(get()) }
     single { QuestionRepository(get()) }
     single { ResponseRepository(get()) }
+    single { QuizDoneRepository(get()) }
 
     viewModel { UserViewModel(get(), get(), get()) }
     viewModel { QuizViewModel(get()) }
     viewModel { QuestionViewModel(get()) }
     viewModel { CareerViewModel(get()) }
     viewModel { ResponseViewModel(get()) }
+    viewModel { QuizDoneViewModel(get()) }
 
 }
