@@ -40,9 +40,9 @@ class CareerViewModel(
         try {
             val quizTaken = getQuizTaken(career.userId)
             val badge = badgeRepository.getAllBages().firstOrNull()
-            val badgeId = badge?.filter { it.requiredQuizes < quizTaken }
+            val badgeId = badge?.filter { it.requiredQuizes <= quizTaken }
                 ?.maxByOrNull { it.requiredQuizes }
-                ?.badgeId!!
+                ?.badgeId?:1
             val updatedCareer = career.copy(score = getUserScore(career.userId), badgeId = badgeId)
             Log.e("TAG", "user: $updatedCareer")
             careerRepository.updateCareer(updatedCareer)

@@ -35,6 +35,7 @@ import com.example.brainbusters.ui.viewModels.UsersState
 @Composable
 fun HomeScreen(navController: NavController, userState: State<UsersState>, userAction: UsersActions, quizViewModel: QuizViewModel) {
     val geographyQuizzes by quizViewModel.getQuizzesByCategory("Geography").collectAsStateWithLifecycle(emptyList())
+    val itQuizzes by quizViewModel.getQuizzesByCategory("It").collectAsStateWithLifecycle(emptyList())
     val favoriteQuizzes by quizViewModel.getFavoriteQuizzes().collectAsStateWithLifecycle(emptyList())
 
     Column(
@@ -42,9 +43,9 @@ fun HomeScreen(navController: NavController, userState: State<UsersState>, userA
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "", modifier = Modifier.padding(16.dp))
-
+        Text(text = "", modifier = Modifier.padding(2.dp))
         QuizCategory(navController = navController, title = "Geography", quizzes = geographyQuizzes, quizViewModel = quizViewModel)
+        QuizCategory(navController = navController, title = "Computer Science", quizzes = itQuizzes, quizViewModel = quizViewModel)
         Favorites(navController = navController, title = "Favorites", quizzes = favoriteQuizzes, quizViewModel = quizViewModel)
     }
 }
