@@ -22,6 +22,9 @@ interface QuizzesDao {
    @Insert(onConflict = OnConflictStrategy.REPLACE)
    suspend fun insertAll(allQuizzes: List<Quiz>)
 
+   @Query("SELECT DISTINCT quiz_category FROM quizzes")
+   fun getAllCategories(): Flow<List<String>>
+
    @Update
    suspend fun update(quiz: Quiz)
 

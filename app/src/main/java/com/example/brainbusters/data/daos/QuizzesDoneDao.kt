@@ -31,4 +31,18 @@ interface QuizzesDoneDao {
 
     @Query("DELETE FROM quizzes_done WHERE quizDone_id = :id")
     suspend fun delete(id: Int)
+
+    @Query("""
+        SELECT q.quiz_category AS category, COUNT(*) AS count 
+        FROM quizzes_done qd 
+        JOIN quizzes q ON qd.quizDone_quizId = q.quiz_id 
+        WHERE qd.quizDone_userId = :userId
+        GROUP BY q.quiz_category
+    """)
+    fun getQuizCountsByCategory(userId: Int): Flow<List<CategoryCount>>
 }
+
+data class CategoryCount(
+    val category: String,
+    val count: Int
+)

@@ -50,14 +50,14 @@ val dataModule = module {
     single { CareerRepository(get()) }
     single { QuestionRepository(get()) }
     single { ResponseRepository(get()) }
-    single { QuizDoneRepository(get()) }
+    single { QuizDoneRepository(get(), get()) }
 
     viewModel { UserViewModel(get(), get(), get()) }
     viewModel { QuizViewModel(get()) }
     viewModel { QuestionViewModel(get()) }
     viewModel { CareerViewModel(get(), get ()) }
     viewModel { ResponseViewModel(get()) }
-    viewModel { QuizDoneViewModel(get()) }
+    viewModel { QuizDoneViewModel(get(), get()) }
     viewModel { ScoreboardViewModel(get(), get(), get(), get()) }
 
 }

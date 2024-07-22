@@ -11,6 +11,9 @@ class QuizRepository(private val quizzesDAO: QuizzesDao) {
     suspend fun insertNewQuiz(quiz: Quiz) {
         quizzesDAO.insert(quiz)
     }
+    fun getAllCategories(): Flow<List<String>> {
+        return quizzesDAO.getAllCategories()
+    }
 
     suspend fun deleteQuizById(quizId: Int) {
         quizzesDAO.delete(quizId)
