@@ -24,6 +24,8 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.brainbusters.ui.components.PieChartScreen
 import com.example.brainbusters.ui.viewModels.CareerViewModel
+import com.example.brainbusters.ui.viewModels.QuizDoneViewModel
+import com.example.brainbusters.ui.viewModels.QuizViewModel
 import com.example.brainbusters.ui.viewModels.UserViewModel
 import kotlinx.coroutines.flow.firstOrNull
 import org.koin.androidx.compose.koinViewModel
@@ -39,6 +41,7 @@ fun Profile(navController: NavController) {
     var userLevel by remember { mutableIntStateOf(0) }
     val viewModel: UserViewModel = koinViewModel()
     val careerViewModel: CareerViewModel = koinViewModel()
+    val quizDoneViewModel: QuizDoneViewModel = koinViewModel()
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -174,7 +177,7 @@ fun Profile(navController: NavController) {
         Column(
             horizontalAlignment = Alignment.Start
         ) {
-            PieChartScreen()
+            PieChartScreen(userId = userId, viewModel = quizDoneViewModel)
         }
     }
 }
