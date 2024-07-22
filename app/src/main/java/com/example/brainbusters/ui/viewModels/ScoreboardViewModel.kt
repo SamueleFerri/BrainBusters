@@ -85,7 +85,6 @@ class ScoreboardViewModel(
 
     private suspend fun getQuizDoneById(userId: Int): Int {
         return try {
-            Log.d("ScoreboardViewModel", "Getting quiz done count for user $userId")
             val quizzes = quizDoneRepository.getQuizzesDoneByUserId(userId).first()
             quizzes.count()
         } catch (e: Exception) {

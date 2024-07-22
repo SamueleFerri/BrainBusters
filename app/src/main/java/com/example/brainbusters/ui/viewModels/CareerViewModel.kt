@@ -94,6 +94,9 @@ class CareerViewModel(
         var level = 1
         if(score >= 10){
             level = score / 10
+            val ff = score % 10
+            Log.d("CareerViewModel", "Level: $level")
+            Log.d("CareerViewModel", "Score: $ff")
             if (score % 10 >= 5){
                 level -= 1
             }

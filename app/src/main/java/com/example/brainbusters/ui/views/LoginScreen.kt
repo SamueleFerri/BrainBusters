@@ -79,7 +79,6 @@ fun LoginScreen(navController: NavController, onLoginSuccessful: () -> Unit) {
                 .height(48.dp)
                 .padding(horizontal = 16.dp),
             onClick = {
-                Log.i("Credential", "Email: $email Password: $password")
                 val loginSuccess = runBlocking {
                     userViewModel.actions.login(email, password)
                 }

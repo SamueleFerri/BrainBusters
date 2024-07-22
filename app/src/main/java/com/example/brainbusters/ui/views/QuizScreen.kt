@@ -15,7 +15,6 @@ import androidx.navigation.NavController
 import com.example.brainbusters.Notification
 import com.example.brainbusters.Routes
 import com.example.brainbusters.data.entities.QuizDone
-import com.example.brainbusters.ui.viewModels.CareerViewModel
 import com.example.brainbusters.ui.viewModels.QuestionViewModel
 import com.example.brainbusters.ui.viewModels.NotificationsViewModel
 import com.example.brainbusters.ui.viewModels.QuizDoneViewModel
@@ -23,7 +22,6 @@ import kotlinx.coroutines.delay
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import kotlin.math.log
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
