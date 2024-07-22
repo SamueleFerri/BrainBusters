@@ -14,19 +14,33 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import com.example.brainbusters.Routes
@@ -39,7 +53,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import java.io.ByteArrayOutputStream
 import java.io.IOException
-import java.util.*
+import java.util.Locale
 
 @Composable
 fun RegisterStepOneScreen(
@@ -55,7 +69,8 @@ fun RegisterStepOneScreen(
     onProceed: () -> Unit
 ) {
     val context = LocalContext.current
-    val fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
+    val fusedLocationClient: FusedLocationProviderClient =
+        LocationServices.getFusedLocationProviderClient(context)
 
     // Launcher to request location permissions
     val locationPermissionRequest = rememberLauncherForActivityResult(
@@ -74,11 +89,15 @@ fun RegisterStepOneScreen(
     // Check and request location permissions
     LaunchedEffect(Unit) {
         when {
-            ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED -> {
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED -> {
                 getLastKnownLocation(fusedLocationClient, context) { city ->
                     onPositionChange(city)
                 }
             }
+
             else -> {
                 locationPermissionRequest.launch(
                     arrayOf(
@@ -193,7 +212,9 @@ fun RegisterStepOneScreen(
 
         Button(
             onClick = onProceed,
-            modifier = Modifier.fillMaxWidth().height(48.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp)
         ) {
             Text(text = "Next")
         }
@@ -227,7 +248,12 @@ private fun getLastKnownLocation(
     }
 }
 
-private fun getCityNameAsync(context: Context, latitude: Double, longitude: Double, onCityNameReceived: (String) -> Unit) {
+private fun getCityNameAsync(
+    context: Context,
+    latitude: Double,
+    longitude: Double,
+    onCityNameReceived: (String) -> Unit
+) {
     val geocoder = Geocoder(context, Locale.getDefault())
     CoroutineScope(Dispatchers.IO).launch {
         try {
