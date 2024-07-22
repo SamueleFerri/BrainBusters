@@ -36,12 +36,24 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.util.*
 
 @Composable
-fun RegisterStepOneScreen(navController: NavController, profilePictureUri: Uri?, onProfilePictureChange: (Uri) -> Unit, firstName: String, onFirstNameChange: (String) -> Unit, lastName: String, onLastNameChange: (String) -> Unit, position: String, onPositionChange: (String) -> Unit, onProceed: () -> Unit) {
+fun RegisterStepOneScreen(
+    navController: NavController,
+    profilePictureUri: Uri?,
+    onProfilePictureChange: (Uri) -> Unit,
+    firstName: String,
+    onFirstNameChange: (String) -> Unit,
+    lastName: String,
+    onLastNameChange: (String) -> Unit,
+    position: String,
+    onPositionChange: (String) -> Unit,
+    onProceed: () -> Unit
+) {
     val context = LocalContext.current
     val fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
 
@@ -53,6 +65,9 @@ fun RegisterStepOneScreen(navController: NavController, profilePictureUri: Uri?,
             getLastKnownLocation(fusedLocationClient, context) { city ->
                 onPositionChange(city)
             }
+        } else {
+            // Handle the case where permissions are denied
+            onPositionChange("Location permission denied")
         }
     }
 
@@ -202,10 +217,13 @@ private fun getLastKnownLocation(
             getCityNameAsync(context, it.latitude, it.longitude) { city ->
                 onLocationReceived(city)
             }
+        } ?: run {
+            // Handle the case where location is null
+            onLocationReceived("Location not available")
         }
     }.addOnFailureListener {
         // Handle failure
-        onLocationReceived("Unknown city")
+        onLocationReceived("Failed to get location")
     }
 }
 
@@ -213,7 +231,10 @@ private fun getCityNameAsync(context: Context, latitude: Double, longitude: Doub
     val geocoder = Geocoder(context, Locale.getDefault())
     CoroutineScope(Dispatchers.IO).launch {
         try {
-            val addresses = geocoder.getFromLocation(latitude, longitude, 1)
+            // Increase the timeout if necessary by retrying the request or using alternative methods
+            val addresses = withTimeoutOrNull(10000L) { // 10 seconds timeout
+                geocoder.getFromLocation(latitude, longitude, 1)
+            }
             val cityName = addresses?.firstOrNull()?.locality ?: "Unknown city"
             withContext(Dispatchers.Main) {
                 onCityNameReceived(cityName)
@@ -221,7 +242,7 @@ private fun getCityNameAsync(context: Context, latitude: Double, longitude: Doub
         } catch (e: IOException) {
             e.printStackTrace()
             withContext(Dispatchers.Main) {
-                onCityNameReceived("Unknown city")
+                onCityNameReceived("Error getting city name")
             }
         }
     }
