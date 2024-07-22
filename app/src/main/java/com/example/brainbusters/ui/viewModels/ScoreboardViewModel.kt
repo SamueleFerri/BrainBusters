@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import org.koin.androidx.compose.koinViewModel
+import kotlin.math.floor
 
 data class ScoreboardEntry(
     val position: Int,
@@ -98,10 +99,7 @@ class ScoreboardViewModel(
         var level = 0
         if (career != null) {
             if (career.score >= 10) {
-                level = career.score / 10
-                if (career.score % 10 >= 5) {
-                    level -= 1
-                }
+                level = floor(career.score.toDouble() / 10).toInt()
             }
         }
         return level
