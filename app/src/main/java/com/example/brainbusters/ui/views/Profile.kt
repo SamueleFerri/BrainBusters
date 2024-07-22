@@ -18,14 +18,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
+import com.example.brainbusters.R
 import com.example.brainbusters.ui.components.PieChartScreen
 import com.example.brainbusters.ui.viewModels.CareerViewModel
 import com.example.brainbusters.ui.viewModels.QuizDoneViewModel
-import com.example.brainbusters.ui.viewModels.QuizViewModel
 import com.example.brainbusters.ui.viewModels.UserViewModel
 import kotlinx.coroutines.flow.firstOrNull
 import org.koin.androidx.compose.koinViewModel
@@ -33,12 +36,15 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun Profile(navController: NavController) {
     val userEmail = UserViewModel.getEmail()
-    var profileImageUri by remember { mutableStateOf<Uri?>(null) }
+    Log.e("LOG", "$userEmail")
+
     var username by remember { mutableStateOf("") }
-    var userId by remember { mutableIntStateOf(1) }
+    var userId by remember { mutableStateOf(0) }
     var userBadge by remember { mutableStateOf("") }
-    var quizTaken by remember { mutableIntStateOf(0) }
-    var userLevel by remember { mutableIntStateOf(0) }
+    var quizTaken by remember { mutableStateOf(0) }
+    var userLevel by remember { mutableStateOf(0) }
+    var profileImageUri by remember { mutableStateOf<Uri?>(null) }
+
     val viewModel: UserViewModel = koinViewModel()
     val careerViewModel: CareerViewModel = koinViewModel()
     val quizDoneViewModel: QuizDoneViewModel = koinViewModel()
@@ -57,35 +63,23 @@ fun Profile(navController: NavController) {
         user?.let {
             profileImageUri = Uri.parse(it.userImage)
             username = it.userUsername
-        }
-    }
-
-    // Utilizza produceState per ottenere il colore del badge
-    val badgeColor by produceState(initialValue = Color.Gray, key1 = userEmail) {
-        val user = viewModel.actions.getRepository().getUserByEmail(userEmail).firstOrNull()
-        user?.let {
-            profileImageUri = Uri.parse(it.userImage)
-            username = it.userUsername
             userId = it.userId
             userBadge = viewModel.actions.getBadgeByUserId(userId)?.title ?: ""
-
             quizTaken = careerViewModel.getQuizTaken(userId)
             userLevel = careerViewModel.getUserLevel(userId)
+
             Log.d("ProfileDebug", "Quiz taken: $quizTaken")
 
             val colorString = viewModel.actions.getHighestBadgeColor(userId)
-            // Converte la stringa del colore in un oggetto Color
-            value = try {
-                Color(android.graphics.Color.parseColor(colorString))
+            try {
+                val badgeColor = Color(android.graphics.Color.parseColor(colorString))
+                // Usa badgeColor dove necessario
             } catch (e: IllegalArgumentException) {
-                // Gestisce il caso in cui la stringa del colore non sia valida
                 Log.e("ProfileDebug", "Invalid color format: $colorString")
-                Color.Gray // Imposta un colore di fallback
+                // Gestisci il colore di fallback se necessario
             }
         }
     }
-
-
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -97,11 +91,14 @@ fun Profile(navController: NavController) {
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Box(modifier = Modifier.size(120.dp), contentAlignment = Alignment.BottomEnd) {
-                val painter = rememberAsyncImagePainter(
-                    model = profileImageUri ?: Uri.EMPTY
-                )
-                Image(
-                    painter = painter,
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(profileImageUri)
+                        .apply {
+                            placeholder(R.drawable.logo_brain_busters) // Immagine di placeholder
+                            error(R.drawable.logo_brain_busters) // Immagine in caso di errore
+                        }
+                        .build(),
                     contentDescription = "Profile Picture",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -114,7 +111,7 @@ fun Profile(navController: NavController) {
                     modifier = Modifier
                         .size(30.dp)
                         .clip(CircleShape)
-                        .background(badgeColor)
+                        .background(Color.Gray) // Modifica con il colore effettivo del badge
                         .border(2.dp, Color.White, CircleShape),
                     contentAlignment = Alignment.Center
                 ) {

@@ -48,10 +48,9 @@ fun PieChartScreen(userId: Int, viewModel: QuizDoneViewModel) {
                         label = category,
                         value = count.toFloat(),
                         color = when (category) {
-                            "Geography" -> Color.Green
-                            "Science" -> Color.Red
-                            "Math" -> Color.Blue
-                            else -> Color.Cyan
+                            "Geography" -> Color(0xFF004D40) // Blu scuro
+                            "It" -> Color(0xFFB71C1C) // Rosso scuro
+                            else -> Color(0xFF1E88E5) // Blu scuro
                         }
                     )
                 }
