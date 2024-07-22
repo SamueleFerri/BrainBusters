@@ -200,7 +200,7 @@ class UserViewModel(
                     return@launch
                 }
 
-                // Verifica se il badge con ID 0 esiste, altrimenti lo crea
+                // Verifica se il badge con ID 1 esiste, altrimenti lo crea
                 val badge = badgeRepository.getBadgeById(1)
 
                 if (badge != null) {
