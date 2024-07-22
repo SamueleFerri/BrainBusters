@@ -13,15 +13,15 @@
 
     -- Inserimento di 9 utenti
     INSERT INTO users (user_name, user_surname, user_username, user_email, user_password, user_image, user_position) VALUES
-    ('Mario', 'Rossi', 'mrossi', 'mario.rossi@example.com', 'password1', '/storage/emulated/0/Pictures/IMG_20240522_173553.jpg', 'Manager'),
-    ('Luigi', 'Verdi', 'lverdi', 'luigi.verdi@example.com', 'password2', 'content://media/picker/0/com.android.providers.media.photopicker/media/1000000035', 'Developer'),
-    ('Giulia', 'Bianchi', 'gbianchi', 'giulia.bianchi@example.com', 'password3', 'image3.png', 'Designer'),
-    ('Francesca', 'Neri', 'fneri', 'francesca.neri@example.com', 'password4', 'image4.png', 'Analyst'),
-    ('Alessandro', 'Gialli', 'agialli', 'alessandro.gialli@example.com', 'password5', 'image5.png', 'Manager'),
-    ('Lorenzo', 'Blu', 'lblu', 'lorenzo.blu@example.com', 'password6', 'image6.png', 'Developer'),
-    ('Elena', 'Marrone', 'emarrone', 'elena.marrone@example.com', 'password7', 'image7.png', 'Designer'),
-    ('Matteo', 'Viola', 'mviola', 'matteo.viola@example.com', 'password8', 'image8.png', 'Analyst'),
-    ('Sara', 'Rosa', 'srosa', 'sara.rosa@example.com', 'password9', 'image9.png', 'Manager');
+    ('Mario', 'Rossi', 'mrossi', 'mario.rossi@example.com', 'password1', '/storage/emulated/0/Pictures/IMG_20240522_173553.jpg', 'Cesena'),
+    ('Luigi', 'Verdi', 'lverdi', 'luigi.verdi@example.com', 'password2', 'content://media/picker/0/com.android.providers.media.photopicker/media/1000000035', 'Cesena'),
+    ('Giulia', 'Bianchi', 'gbianchi', 'giulia.bianchi@example.com', 'password3', 'image3.png', 'Cesena'),
+    ('Francesca', 'Neri', 'fneri', 'francesca.neri@example.com', 'password4', 'image4.png', 'Forli'),
+    ('Alessandro', 'Gialli', 'agialli', 'alessandro.gialli@example.com', 'password5', 'image5.png', 'Bologna'),
+    ('Lorenzo', 'Blu', 'lblu', 'lorenzo.blu@example.com', 'password6', 'image6.png', 'Milano'),
+    ('Elena', 'Marrone', 'emarrone', 'elena.marrone@example.com', 'password7', 'image7.png', 'Prato'),
+    ('Matteo', 'Viola', 'mviola', 'matteo.viola@example.com', 'password8', 'image8.png', 'Bologna'),
+    ('Sara', 'Rosa', 'srosa', 'sara.rosa@example.com', 'password9', 'image9.png', 'Bari');
 
     -- Creazione della tabella badges
     CREATE TABLE IF NOT EXISTS badges (
