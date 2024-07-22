@@ -206,7 +206,6 @@ class UserViewModel(
                 if (badge != null) {
                     val newCareer = Career(score = 0, userId = userId, badgeId = badge.badgeId)
                     careerRepository.insertNewCareer(newCareer)
-                    Log.d("UserViewModel", "Career created successfully")
                 } else {
                     Log.e("UserViewModel", "Failed to create badge with ID 0")
                 }
@@ -221,11 +220,8 @@ class UserViewModel(
                 // Assicurati che questa funzione venga chiamata in un contesto di coroutine
                 var badgeColor = "#808080" // Colore di fallback
                 careerRepository.getCareerByUserId(userId).firstOrNull()?.let { careers ->
-                    Log.d("UserViewModel", "Careers: $careers")
-
                     val badge = badgeRepository.getBadgeById(careers.badgeId)
                     badgeColor = badge?.color ?: "#808080"
-                    Log.d("UserViewModel", "Badge Color: $badgeColor")
                 }
                 badgeColor
             } catch (e: Exception) {

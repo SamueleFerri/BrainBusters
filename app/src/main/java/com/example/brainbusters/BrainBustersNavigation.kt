@@ -1,8 +1,6 @@
 package com.example.brainbusters
 
-import android.content.ContentValues
 import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -22,11 +20,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.brainbusters.Routes
-import com.example.brainbusters.data.entities.Career
 import com.example.brainbusters.ui.viewModels.*
 import com.example.brainbusters.ui.views.*
-import kotlinx.coroutines.flow.firstOrNull
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)

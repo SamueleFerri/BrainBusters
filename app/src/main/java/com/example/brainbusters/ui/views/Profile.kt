@@ -55,7 +55,6 @@ fun Profile(navController: NavController) {
     LaunchedEffect(userEmail) {
         val user = viewModel.actions.getRepository().getUserByEmail(userEmail).firstOrNull()
         user?.let {
-            Log.d("ProfileDebug", "User: $it")
             profileImageUri = Uri.parse(it.userImage)
             username = it.userUsername
         }
@@ -65,19 +64,16 @@ fun Profile(navController: NavController) {
     val badgeColor by produceState(initialValue = Color.Gray, key1 = userEmail) {
         val user = viewModel.actions.getRepository().getUserByEmail(userEmail).firstOrNull()
         user?.let {
-            Log.d("ProfileDebug", "User: $it")
             profileImageUri = Uri.parse(it.userImage)
             username = it.userUsername
             userId = it.userId
-            Log.d("ProfileDebug", "UserId: $userId")
             userBadge = viewModel.actions.getBadgeByUserId(userId)?.title ?: ""
 
             quizTaken = careerViewModel.getQuizTaken(userId)
             userLevel = careerViewModel.getUserLevel(userId)
+            Log.d("ProfileDebug", "Quiz taken: $quizTaken")
 
             val colorString = viewModel.actions.getHighestBadgeColor(userId)
-            Log.d("ProfileDebug", "Badge color string: $colorString")
-
             // Converte la stringa del colore in un oggetto Color
             value = try {
                 Color(android.graphics.Color.parseColor(colorString))
