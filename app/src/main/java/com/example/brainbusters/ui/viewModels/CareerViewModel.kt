@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.koin.androidx.compose.koinViewModel
+import kotlin.math.floor
 
 class CareerViewModel(
     private val careerRepository: CareerRepository,
@@ -90,18 +91,10 @@ class CareerViewModel(
 
     fun getUserLevel(userId: Int): Int {
         val score = getUserScore(userId)
-        Log.e("LOG", "$score")
         var level = 1
         if(score >= 10){
-            level = score / 10
-            val ff = score % 10
-            Log.d("CareerViewModel", "Level: $level")
-            Log.d("CareerViewModel", "Score: $ff")
-            if (score % 10 >= 5){
-                level -= 1
-            }
+            level = floor(score.toDouble() / 10).toInt()
         }
-        Log.e("LOG", "$level")
         return level
     }
 
