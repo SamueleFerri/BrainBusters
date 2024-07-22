@@ -13,8 +13,8 @@
 
     -- Inserimento di 9 utenti
     INSERT INTO users (user_name, user_surname, user_username, user_email, user_password, user_image, user_position) VALUES
-    ('Mario', 'Rossi', 'mrossi', 'mario.rossi@example.com', 'password1', 'image1.png', 'Manager'),
-    ('Luigi', 'Verdi', 'lverdi', 'luigi.verdi@example.com', 'password2', 'image2.png', 'Developer'),
+    ('Mario', 'Rossi', 'mrossi', 'mario.rossi@example.com', 'password1', '/storage/emulated/0/Pictures/IMG_20240522_173553.jpg', 'Manager'),
+    ('Luigi', 'Verdi', 'lverdi', 'luigi.verdi@example.com', 'password2', 'content://media/picker/0/com.android.providers.media.photopicker/media/1000000035', 'Developer'),
     ('Giulia', 'Bianchi', 'gbianchi', 'giulia.bianchi@example.com', 'password3', 'image3.png', 'Designer'),
     ('Francesca', 'Neri', 'fneri', 'francesca.neri@example.com', 'password4', 'image4.png', 'Analyst'),
     ('Alessandro', 'Gialli', 'agialli', 'alessandro.gialli@example.com', 'password5', 'image5.png', 'Manager'),
@@ -49,15 +49,15 @@
 
     -- Inserimento delle carriere
     INSERT INTO careers (career_score, career_user_id, career_badge_id) VALUES
-    (100, 1, 1), -- Carriera per Mario Rossi
-    (200, 2, 2), -- Carriera per Luigi Verdi
-    (150, 3, 3), -- Carriera per Giulia Bianchi
-    (180, 4, 1), -- Carriera per Francesca Neri
-    (220, 5, 2), -- Carriera per Alessandro Gialli
-    (160, 6, 3), -- Carriera per Lorenzo Blu
-    (140, 7, 1), -- Carriera per Elena Marrone
-    (170, 8, 2), -- Carriera per Matteo Viola
-    (210, 9, 3); -- Carriera per Sara Rosa
+    (10, 1, 1), -- Carriera per Mario Rossi
+    (20, 2, 2), -- Carriera per Luigi Verdi
+    (15, 3, 3), -- Carriera per Giulia Bianchi
+    (18, 4, 1), -- Carriera per Francesca Neri
+    (22, 5, 2), -- Carriera per Alessandro Gialli
+    (16, 6, 3), -- Carriera per Lorenzo Blu
+    (14, 7, 1), -- Carriera per Elena Marrone
+    (17, 8, 2), -- Carriera per Matteo Viola
+    (21, 9, 3); -- Carriera per Sara Rosa
 
     -- Creazione della tabella quizzes
     CREATE TABLE IF NOT EXISTS quizzes (

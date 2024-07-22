@@ -45,7 +45,7 @@ class ScoreboardViewModel(
     // Combine both flows to create a list of ScoreboardEntry
     val scoreboardEntries: Flow<List<ScoreboardEntry>> = combine(careersFlow, usersFlow) { careers, users ->
         val currentUser = users.find { it.userEmail == userEmail }
-        val top9Entries = careers.mapNotNull { career ->
+        val top10Entries = careers.mapNotNull { career ->
             val user = users.find { it.userId == career.userId }
             user?.let {
                 val badgeColor = runBlocking {
@@ -61,13 +61,13 @@ class ScoreboardViewModel(
                     isCurrentUser = user.userId == getCurrentUserId() // Add flag to identify current user
                 )
             }
-        }.take(9).toMutableList()
+        }.take(10).toMutableList()
 
         currentUser?.let { user ->
             val currentUserCareer = careers.find { it.userId == user.userId }
             currentUserCareer?.let { career ->
-                if (top9Entries.none { it.isCurrentUser }) {
-                    top9Entries.add(
+                if (top10Entries.none { it.isCurrentUser }) {
+                    top10Entries.add(
                         ScoreboardEntry(
                             position = careers.indexOf(career) + 1,
                             nickname = user.userUsername,
@@ -81,7 +81,7 @@ class ScoreboardViewModel(
                 }
             }
         }
-        top9Entries
+        top10Entries
     }
 
     private suspend fun getQuizDoneById(userId: Int): Int {
