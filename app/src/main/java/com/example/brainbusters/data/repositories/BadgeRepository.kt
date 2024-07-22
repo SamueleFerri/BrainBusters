@@ -12,8 +12,8 @@ class BadgeRepository(private val badgesDAO: BadgesDao) {
         badgesDAO.insertBadge(badge)
     }
 
-    fun getAllBages() {
-        badgesDAO.getAllbadges()
+    fun getAllBages(): Flow<List<Badge>> {
+        return badgesDAO.getAllbadges()
     }
 
     suspend fun getBadgeById(badgeId: Int): Badge?{

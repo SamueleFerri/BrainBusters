@@ -240,6 +240,7 @@ fun BrainBustersNavigation() {
                 val quizId = backStackEntry.arguments?.getInt("quizId") ?: return@composable
                 val quizTitle = backStackEntry.arguments?.getString("quizTitle") ?: return@composable
                 val user = userViewModel.actions.getUserIdByEmail(UserViewModel.getEmail())
+
                 QuizScreen(
                     navController = navController,
                     quizId = quizId,
@@ -247,6 +248,7 @@ fun BrainBustersNavigation() {
                     questionViewModel = questionViewModel,
                     notificationsViewModel = notificationsViewModel, // Pass NotificationsViewModel
                     quizDoneViewModel = quizDoneViewModel,
+                    careerViewModel = careerViewModel,
                     userId = user
                 )
             }

@@ -55,7 +55,7 @@ val dataModule = module {
     viewModel { UserViewModel(get(), get(), get()) }
     viewModel { QuizViewModel(get()) }
     viewModel { QuestionViewModel(get()) }
-    viewModel { CareerViewModel(get(), get ()) }
+    viewModel { CareerViewModel(get(), get(), get()) }
     viewModel { ResponseViewModel(get()) }
     viewModel { QuizDoneViewModel(get(), get()) }
     viewModel { ScoreboardViewModel(get(), get(), get(), get()) }

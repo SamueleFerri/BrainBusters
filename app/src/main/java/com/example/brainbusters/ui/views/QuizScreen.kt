@@ -33,12 +33,14 @@ fun QuizScreen(
     questionViewModel: QuestionViewModel,
     quizDoneViewModel: QuizDoneViewModel,
     notificationsViewModel: NotificationsViewModel,
+    careerViewModel: CareerViewModel,
     userId: Int
 ) {
     var currentQuestionIndex by remember { mutableStateOf(0) }
     var score by remember { mutableStateOf(0) }
     var selectedAnswerIndex by remember { mutableStateOf<Int?>(null) }
     var isAnswered by remember { mutableStateOf(false) }
+    val career by careerViewModel.getCareer(userId).collectAsStateWithLifecycle(null)
 
     // Retrieve questions from the database
     val questions by questionViewModel.getQuestionsByQuizId(quizId).collectAsStateWithLifecycle(emptyList())
@@ -75,7 +77,7 @@ fun QuizScreen(
                         score = score
                     )
                     quizDoneViewModel.insertOrUpdate(quizDone)
-
+                    careerViewModel.updateCareer(career!!)
                     // Create a notification
                     val timestampMillis = System.currentTimeMillis()
                     val instant = Instant.ofEpochMilli(timestampMillis)
@@ -114,7 +116,9 @@ fun QuizScreen(
                             }
                             isAnswered = true
                         },
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp),
                         colors = if (selectedAnswerIndex == index) {
                             ButtonDefaults.buttonColors(containerColor = if (response.score == 5) Color.Green else Color.Red)
                         } else {
