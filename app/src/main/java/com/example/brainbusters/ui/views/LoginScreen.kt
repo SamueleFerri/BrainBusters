@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -21,11 +22,16 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.brainbusters.R
 import com.example.brainbusters.Routes
+import com.example.brainbusters.ui.viewModels.UserViewModel
+import kotlinx.coroutines.runBlocking
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun LoginScreen(navController: NavController, onLoginSuccessful: () -> Unit) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var showErrorDialog by remember { mutableStateOf(false) }
+    val userViewModel = koinViewModel<UserViewModel>()
 
     Column(
         modifier = Modifier
@@ -73,9 +79,15 @@ fun LoginScreen(navController: NavController, onLoginSuccessful: () -> Unit) {
                 .height(48.dp)
                 .padding(horizontal = 16.dp),
             onClick = {
-                Log.i("Credential", "Email: $email Password: $password")
-                onLoginSuccessful()
-                navController.navigate(Routes.homeScreen)
+                val loginSuccess = runBlocking {
+                    userViewModel.actions.login(email, password)
+                }
+                if (loginSuccess) {
+                    onLoginSuccessful()
+                    navController.navigate(Routes.homeScreen)
+                }else{
+                    showErrorDialog = true
+                }
             }
         ) {
             Text(text = "Login")
@@ -100,6 +112,20 @@ fun LoginScreen(navController: NavController, onLoginSuccessful: () -> Unit) {
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.clickable {
                     navController.navigate(Routes.registerStepOne)
+                }
+            )
+        }
+        if (showErrorDialog) {
+            AlertDialog(
+                onDismissRequest = { showErrorDialog = false },
+                title = { Text(text = "Login Error") },
+                text = { Text(text = "Email or password error") },
+                confirmButton = {
+                    TextButton(
+                        onClick = { showErrorDialog = false }
+                    ) {
+                        Text("OK")
+                    }
                 }
             )
         }

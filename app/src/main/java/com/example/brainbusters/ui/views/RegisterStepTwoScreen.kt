@@ -24,7 +24,17 @@ import androidx.navigation.NavController
 import com.example.brainbusters.Routes
 
 @Composable
-fun RegisterStepTwoScreen(navController: NavController, profilePictureUri: Uri?, email: String, onEmailChange: (String) -> Unit, password: String, onPasswordChange: (String) -> Unit, onRegister: () -> Unit) {
+fun RegisterStepTwoScreen(
+    navController: NavController,
+    profilePictureUri: Uri?,
+    email: String,
+    username: String,
+    onEmailChange: (String) -> Unit,
+    password: String,
+    onPasswordChange: (String) -> Unit,
+    onRegister: () -> Unit,
+    onUsernameChange: (String) -> Unit,
+) {
     val context = LocalContext.current
 
     Column(
@@ -66,6 +76,15 @@ fun RegisterStepTwoScreen(navController: NavController, profilePictureUri: Uri?,
                 Text(text = "Add Photo", color = Color.White)
             }
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(
+            value = username,
+            onValueChange = onUsernameChange,
+            label = { Text("Username") },
+            modifier = Modifier.fillMaxWidth()
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 

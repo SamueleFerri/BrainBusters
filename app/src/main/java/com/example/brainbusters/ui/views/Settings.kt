@@ -3,22 +3,33 @@ package com.example.brainbusters.ui.views
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.brainbusters.Routes
+import com.example.brainbusters.ui.viewModels.UserViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.runBlocking
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun Settings(navController: NavController) {
     var showChangePasswordFields by remember { mutableStateOf(false) }
     var showDeleteAccountDialog by remember { mutableStateOf(false) }
+    var oldPassword by remember { mutableStateOf("") }
+    var newPassword by remember { mutableStateOf("") }
+    var showErrorDialog by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
+
+    val userViewModel = koinViewModel<UserViewModel>()
+    val userEmail = UserViewModel.getEmail()
+    var passwordChangedSuccessfully by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -41,7 +52,6 @@ fun Settings(navController: NavController) {
             )
         }
 
-
         Spacer(modifier = Modifier.height(24.dp))
 
         // Change Password Button and Fields
@@ -61,18 +71,43 @@ fun Settings(navController: NavController) {
             if (showChangePasswordFields) {
                 Spacer(modifier = Modifier.height(16.dp))
                 OutlinedTextField(
-                    value = "",
-                    onValueChange = {},
+                    value = oldPassword,
+                    onValueChange = { oldPassword = it },
                     label = { Text("Old Password") },
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
-                    value = "",
-                    onValueChange = {},
+                    value = newPassword,
+                    onValueChange = { newPassword = it },
                     label = { Text("New Password") },
                     modifier = Modifier.fillMaxWidth()
                 )
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(
+                    onClick = {
+                        val success = runBlocking {
+                            userViewModel.actions.changePassword(
+                                oldPassword = oldPassword,
+                                newPassword = newPassword
+                            )
+                        }
+                        if (success) {
+                            passwordChangedSuccessfully = true
+                            oldPassword = ""
+                            newPassword = ""
+                        } else {
+                            errorMessage = "Failed to change password. Please check your old password and try again."
+                            showErrorDialog = true
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .clip(RoundedCornerShape(50))
+                ) {
+                    Text(text = "Confirm Change")
+                }
             }
         }
 
@@ -80,7 +115,12 @@ fun Settings(navController: NavController) {
 
         // Delete Account Button
         Button(
-            onClick = { showDeleteAccountDialog = true },
+            onClick = {
+                runBlocking {
+                    userViewModel.actions.removeUser(userViewModel.actions.getRepository().getUserIdByEmail(userEmail).firstOrNull()?:0)
+                }
+                showDeleteAccountDialog = true
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
@@ -90,6 +130,26 @@ fun Settings(navController: NavController) {
             )
         ) {
             Text(text = "Delete Account", color = MaterialTheme.colorScheme.onError)
+        }
+
+        if (passwordChangedSuccessfully) {
+            LaunchedEffect(key1 = true) {
+                // Delay per mostrare il messaggio di successo per un breve periodo
+                delay(3000) // Tempo in millisecondi (ad esempio 3000 per 3 secondi)
+                passwordChangedSuccessfully = false
+            }
+            AlertDialog(
+                onDismissRequest = { passwordChangedSuccessfully = false },
+                title = { Text("Success") },
+                text = { Text("Password changed successfully") },
+                confirmButton = {
+                    TextButton(
+                        onClick = { passwordChangedSuccessfully = false }
+                    ) {
+                        Text("OK")
+                    }
+                }
+            )
         }
 
         // Delete Account Confirmation Dialog
@@ -102,7 +162,8 @@ fun Settings(navController: NavController) {
                     TextButton(
                         onClick = {
                             showDeleteAccountDialog = false
-                            // Handle account deletion
+
+                            navController.navigate(Routes.loginScreen)
                         }
                     ) {
                         Text("Confirm", color = MaterialTheme.colorScheme.error)
@@ -113,6 +174,22 @@ fun Settings(navController: NavController) {
                         onClick = { showDeleteAccountDialog = false }
                     ) {
                         Text("Cancel")
+                    }
+                }
+            )
+        }
+
+        // Error Dialog
+        if (showErrorDialog) {
+            AlertDialog(
+                onDismissRequest = { showErrorDialog = false },
+                title = { Text("Error") },
+                text = { Text(errorMessage) },
+                confirmButton = {
+                    TextButton(
+                        onClick = { showErrorDialog = false }
+                    ) {
+                        Text("OK")
                     }
                 }
             )

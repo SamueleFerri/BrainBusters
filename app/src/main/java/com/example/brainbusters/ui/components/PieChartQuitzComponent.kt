@@ -6,9 +6,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -16,28 +18,52 @@ import co.yml.charts.common.model.PlotType
 import co.yml.charts.ui.piechart.charts.PieChart
 import co.yml.charts.ui.piechart.models.PieChartConfig
 import co.yml.charts.ui.piechart.models.PieChartData
+import com.example.brainbusters.ui.viewModels.QuizDoneViewModel
 
 @SuppressLint("SuspiciousIndentation")
 @Composable
-fun PieChartScreen() {
+fun PieChartScreen(userId: Int, viewModel: QuizDoneViewModel) {
+    val numQuizDoneByCategory by viewModel.numQuizDoneByCategory.collectAsState()
+
+    LaunchedEffect(userId) {
+        viewModel.loadNumQuizDoneByCategory(userId)
+    }
+
     val pieChartData = PieChartData(
-        slices = listOf(
-            PieChartData.Slice(
-                label = "storia",
-                value = 50f,
-                color = Color.Red
-            ),
-            PieChartData.Slice(
-                label = "informatica",
-                value = 30f,
-                color = Color.Blue
-            ),
-            PieChartData.Slice(
-                label = "matematica",
-                value = 30f,
-                color = Color.Yellow
+        slices = if (numQuizDoneByCategory.isNotEmpty()) {
+            // Controlla se tutti i valori sono zero
+            val allZero = numQuizDoneByCategory.all { (_, count) -> count == 0 }
+
+            if (allZero) {
+                listOf(
+                    PieChartData.Slice(
+                        label = "No Data",
+                        value = 1f,
+                        color = Color.Gray
+                    )
+                )
+            } else {
+                numQuizDoneByCategory.map { (category, count) ->
+                    PieChartData.Slice(
+                        label = category,
+                        value = count.toFloat(),
+                        color = when (category) {
+                            "Geography" -> Color(0xFF004D40) // Blu scuro
+                            "It" -> Color(0xFFB71C1C) // Rosso scuro
+                            else -> Color(0xFF1E88E5) // Blu scuro
+                        }
+                    )
+                }
+            }
+        } else {
+            listOf(
+                PieChartData.Slice(
+                    label = "No Data",
+                    value = 1f,
+                    color = Color.Gray
+                )
             )
-        ),
+        },
         plotType = PlotType.Pie
     )
 
@@ -59,10 +85,9 @@ fun PieChartScreen() {
             modifier = Modifier
                 .fillMaxSize()
                 .background(color = Color.Transparent)
-                .padding(16.dp), // Regola il padding a tuo piacimento
+                .padding(16.dp),
             pieChartData = pieChartData,
             pieChartConfig = pieChartConfig
         )
     }
-
 }

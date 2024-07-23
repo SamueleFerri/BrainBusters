@@ -1,6 +1,7 @@
 package com.example.brainbusters.ui.views
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -13,31 +14,63 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import com.example.brainbusters.Routes
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import java.io.ByteArrayOutputStream
-import java.util.*
+import java.io.IOException
+import java.util.Locale
 
 @Composable
-fun RegisterStepOneScreen(navController: NavController, profilePictureUri: Uri?, onProfilePictureChange: (Uri) -> Unit, firstName: String, onFirstNameChange: (String) -> Unit, lastName: String, onLastNameChange: (String) -> Unit, position: String, onPositionChange: (String) -> Unit, onProceed: () -> Unit) {
+fun RegisterStepOneScreen(
+    navController: NavController,
+    profilePictureUri: Uri?,
+    onProfilePictureChange: (Uri) -> Unit,
+    firstName: String,
+    onFirstNameChange: (String) -> Unit,
+    lastName: String,
+    onLastNameChange: (String) -> Unit,
+    position: String,
+    onPositionChange: (String) -> Unit,
+    onProceed: () -> Unit
+) {
     val context = LocalContext.current
-    val fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
+    val fusedLocationClient: FusedLocationProviderClient =
+        LocationServices.getFusedLocationProviderClient(context)
 
     // Launcher to request location permissions
     val locationPermissionRequest = rememberLauncherForActivityResult(
@@ -47,17 +80,24 @@ fun RegisterStepOneScreen(navController: NavController, profilePictureUri: Uri?,
             getLastKnownLocation(fusedLocationClient, context) { city ->
                 onPositionChange(city)
             }
+        } else {
+            // Handle the case where permissions are denied
+            onPositionChange("Location permission denied")
         }
     }
 
     // Check and request location permissions
     LaunchedEffect(Unit) {
         when {
-            ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED -> {
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED -> {
                 getLastKnownLocation(fusedLocationClient, context) { city ->
                     onPositionChange(city)
                 }
             }
+
             else -> {
                 locationPermissionRequest.launch(
                     arrayOf(
@@ -172,7 +212,9 @@ fun RegisterStepOneScreen(navController: NavController, profilePictureUri: Uri?,
 
         Button(
             onClick = onProceed,
-            modifier = Modifier.fillMaxWidth().height(48.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp)
         ) {
             Text(text = "Next")
         }
@@ -185,6 +227,7 @@ fun RegisterStepOneScreen(navController: NavController, profilePictureUri: Uri?,
     }
 }
 
+@SuppressLint("MissingPermission")
 private fun getLastKnownLocation(
     fusedLocationClient: FusedLocationProviderClient,
     context: Context,
@@ -192,16 +235,43 @@ private fun getLastKnownLocation(
 ) {
     fusedLocationClient.lastLocation.addOnSuccessListener { location ->
         location?.let {
-            val city = getCityName(context, it.latitude, it.longitude)
-            onLocationReceived(city)
+            getCityNameAsync(context, it.latitude, it.longitude) { city ->
+                onLocationReceived(city)
+            }
+        } ?: run {
+            // Handle the case where location is null
+            onLocationReceived("Location not available")
         }
+    }.addOnFailureListener {
+        // Handle failure
+        onLocationReceived("Failed to get location")
     }
 }
 
-private fun getCityName(context: Context, latitude: Double, longitude: Double): String {
+private fun getCityNameAsync(
+    context: Context,
+    latitude: Double,
+    longitude: Double,
+    onCityNameReceived: (String) -> Unit
+) {
     val geocoder = Geocoder(context, Locale.getDefault())
-    val addresses = geocoder.getFromLocation(latitude, longitude, 1)
-    return addresses?.get(0)?.locality ?: "Unknown city"
+    CoroutineScope(Dispatchers.IO).launch {
+        try {
+            // Increase the timeout if necessary by retrying the request or using alternative methods
+            val addresses = withTimeoutOrNull(10000L) { // 10 seconds timeout
+                geocoder.getFromLocation(latitude, longitude, 1)
+            }
+            val cityName = addresses?.firstOrNull()?.locality ?: "Unknown city"
+            withContext(Dispatchers.Main) {
+                onCityNameReceived(cityName)
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+            withContext(Dispatchers.Main) {
+                onCityNameReceived("Error getting city name")
+            }
+        }
+    }
 }
 
 private fun bitmapToUri(context: Context, bitmap: Bitmap): Uri {

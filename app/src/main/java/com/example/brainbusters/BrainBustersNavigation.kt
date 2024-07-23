@@ -2,61 +2,46 @@ package com.example.brainbusters
 
 import android.net.Uri
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.brainbusters.ui.views.HomeScreen
-import com.example.brainbusters.ui.views.LoginScreen
-import com.example.brainbusters.ui.views.NotificationsScreen
-import com.example.brainbusters.ui.views.Profile
-import com.example.brainbusters.ui.views.QuizScreen
-import com.example.brainbusters.ui.views.RegisterStepOneScreen
-import com.example.brainbusters.ui.views.RegisterStepTwoScreen
-import com.example.brainbusters.ui.views.ScoreScreen
-import com.example.brainbusters.ui.views.Scoreboard
-import com.example.brainbusters.ui.views.Settings
+import com.example.brainbusters.ui.viewModels.*
+import com.example.brainbusters.ui.views.*
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BrainBustersNavigation() {
     val navController = rememberNavController()
+    val notificationsViewModel: NotificationsViewModel = viewModel()
+    val userViewModel = koinViewModel<UserViewModel>()
+    val quizViewModel = koinViewModel<QuizViewModel>()
+    val careerViewModel = koinViewModel<CareerViewModel>()
+    val questionViewModel = koinViewModel<QuestionViewModel>()
+    val quizDoneViewModel = koinViewModel<QuizDoneViewModel>()
+    val scoreboardViewModel = koinViewModel<ScoreboardViewModel>()
+
+    var showErrorDialog by remember { mutableStateOf(false) }
     var isLoggedIn by rememberSaveable { mutableStateOf(false) }
     val selected = remember { mutableStateOf(Icons.Default.Home) }
 
     var profilePictureUri by rememberSaveable { mutableStateOf<Uri?>(null) }
+    var username by rememberSaveable { mutableStateOf("") }
     var firstName by rememberSaveable { mutableStateOf("") }
     var lastName by rememberSaveable { mutableStateOf("") }
     var position by rememberSaveable { mutableStateOf("") }
@@ -172,9 +157,15 @@ fun BrainBustersNavigation() {
             modifier = Modifier.padding(paddingValues)
         ) {
             composable(Routes.loginScreen) {
+                LaunchedEffect(Unit) {
+                    isLoggedIn = false
+                }
                 LoginScreen(
                     navController = navController,
-                    onLoginSuccessful = { isLoggedIn = true })
+                    onLoginSuccessful = {
+                        isLoggedIn = true
+                    }
+                )
             }
             composable(Routes.registerStepOne) {
                 RegisterStepOneScreen(
@@ -198,32 +189,107 @@ fun BrainBustersNavigation() {
                     onEmailChange = { email = it },
                     password = password,
                     onPasswordChange = { password = it },
+                    username = username,
+                    onUsernameChange = { username = it },
                     onRegister = {
                         // Handle registration logic here
-                        isLoggedIn = true
-                        navController.navigate(Routes.homeScreen)
+                        val success = userViewModel.actions.register(
+                            name = firstName,
+                            surname = lastName,
+                            username = username,
+                            email = email,
+                            password = password,
+                            image = profilePictureUri.toString(),
+                            position = position
+                        )
+                        if (success) {
+                            isLoggedIn = true
+                            navController.navigate(Routes.homeScreen)
+                        } else {
+                            isLoggedIn = false
+                            showErrorDialog = true
+                        }
                     }
                 )
             }
-            composable(Routes.homeScreen) { HomeScreen(navController = navController) }
-            composable(Routes.scoreboard) { Scoreboard(navController = navController) }
+
+            composable(Routes.homeScreen) {
+                HomeScreen(
+                    navController = navController,
+                    userState = userViewModel.state.collectAsStateWithLifecycle(),
+                    userAction = userViewModel.actions,
+                    quizViewModel = quizViewModel
+                )
+            }
+            composable(Routes.scoreboard) {
+                Scoreboard(
+                navController = navController,
+                scoreboardViewModel = scoreboardViewModel
+            ) }
             composable(Routes.profile) { Profile(navController = navController) }
             composable(Routes.settings) { Settings(navController = navController) }
-            composable(Routes.notifications) { NotificationsScreen(navController = navController) }
+            composable(Routes.notifications) { NotificationsScreen(navController = navController, notificationsViewModel) }
+
             composable(
-                route = "quizScreen/{quizTitle}",
-                arguments = listOf(navArgument("quizTitle") { type = NavType.StringType })
+                route = "quizScreen/{quizId}/{quizTitle}",
+                arguments = listOf(
+                    navArgument("quizId") { type = NavType.IntType },
+                    navArgument("quizTitle") { type = NavType.StringType }
+                )
             ) { backStackEntry ->
-                val quizTitle = backStackEntry.arguments?.getString("quizTitle") ?: "Quiz"
-                QuizScreen(navController = navController, quizTitle = quizTitle)
+                val quizId = backStackEntry.arguments?.getInt("quizId") ?: return@composable
+                val quizTitle = backStackEntry.arguments?.getString("quizTitle") ?: return@composable
+                val user = userViewModel.actions.getUserIdByEmail(UserViewModel.getEmail())
+
+                QuizScreen(
+                    navController = navController,
+                    quizId = quizId,
+                    quizTitle = quizTitle,
+                    questionViewModel = questionViewModel,
+                    notificationsViewModel = notificationsViewModel, // Pass NotificationsViewModel
+                    quizDoneViewModel = quizDoneViewModel,
+                    careerViewModel = careerViewModel,
+                    userId = user
+                )
             }
-            composable("quiz_screen/restart") {
-                QuizScreen(navController = navController, quizTitle = "Quiz")
+            composable(
+                route = "scoreScreen/{score}/{quizTitle}",
+                arguments = listOf(
+                    navArgument("score") { type = NavType.IntType },
+                    navArgument("quizTitle") { type = NavType.StringType }
+                )
+            ) { backStackEntry ->
+                val score = backStackEntry.arguments?.getInt("score") ?: return@composable
+                val quizTitle = backStackEntry.arguments?.getString("quizTitle") ?: return@composable
+                var quizId by remember { mutableStateOf<Int>(0) }
+
+                LaunchedEffect(quizTitle) {
+                    quizId = quizViewModel.getIdQuizByTitle(quizTitle)?:0
+                }
+
+
+                ScoreScreen(
+                    navController = navController,
+                    score = score,
+                    quizTitle = quizTitle,
+                    quizId = quizId
+                )
             }
-            composable("score_screen/{score}") { backStackEntry ->
-                val score = backStackEntry.arguments?.getString("score")?.toInt() ?: 0
-                ScoreScreen(navController = navController, score = score)
-            }
+        }
+        // Dialog di errore per la registrazione fallita
+        if (showErrorDialog) {
+            AlertDialog(
+                onDismissRequest = { showErrorDialog = false },
+                title = { Text("Registration Error") },
+                text = { Text("There was an error during registration. Please try again.") },
+                confirmButton = {
+                    Button(
+                        onClick = { showErrorDialog = false }
+                    ) {
+                        Text("OK")
+                    }
+                }
+            )
         }
     }
 }
