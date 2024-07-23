@@ -1,4 +1,5 @@
 package com.example.brainbusters.data.repositories
+<<<<<<< HEAD
 
 import com.example.brainbusters.data.daos.UsersDao
 import com.example.brainbusters.data.entities.User
@@ -49,3 +50,19 @@ class UsersRepository(private val usersDAO: UsersDao) {
         return usersDAO.getIdFromEmail(userEmail).firstOrNull()?:0
     }
 }
+=======
+import com.example.brainbusters.data.daos.UserDao
+import com.example.brainbusters.data.entities.User
+import javax.inject.Inject
+
+class UserRepository @Inject constructor(private val userDao: UserDao) {
+
+    suspend fun addUser(user: User) {
+        userDao.insertUser(user)
+    }
+
+
+    // Altre funzioni per ottenere, aggiornare o eliminare utenti dal database,
+    // a seconda delle tue esigenze
+}
+>>>>>>> f0c589755a7f82f7fa92bb46625664d64c36bca9

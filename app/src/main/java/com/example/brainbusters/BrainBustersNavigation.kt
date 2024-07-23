@@ -1,6 +1,5 @@
 package com.example.brainbusters
 
-import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -18,7 +17,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.brainbusters.ui.viewModels.*
 import com.example.brainbusters.ui.views.*
@@ -152,7 +150,7 @@ fun BrainBustersNavigation() {
         }
     ) { paddingValues ->
         NavHost(
-            navController = navController,
+            navController = navController as NavHostController,
             startDestination = if (isLoggedIn) Routes.homeScreen else Routes.loginScreen,
             modifier = Modifier.padding(paddingValues)
         ) {
@@ -170,15 +168,7 @@ fun BrainBustersNavigation() {
             composable(Routes.registerStepOne) {
                 RegisterStepOneScreen(
                     navController = navController,
-                    profilePictureUri = profilePictureUri,
-                    onProfilePictureChange = { profilePictureUri = it },
-                    firstName = firstName,
-                    onFirstNameChange = { firstName = it },
-                    lastName = lastName,
-                    onLastNameChange = { lastName = it },
-                    position = position,
-                    onPositionChange = { position = it },
-                    onProceed = { navController.navigate(Routes.registerStepTwo) }
+                    registrationViewModel = registrationViewModel
                 )
             }
             composable(Routes.registerStepTwo) {

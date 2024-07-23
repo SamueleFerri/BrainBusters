@@ -11,8 +11,17 @@
   <component name="ChangeListManager">
     <list default="true" id="28960bd1-3d77-45a8-867c-22c40b09ddfe" name="Changes" comment="">
 <<<<<<< HEAD
+<<<<<<< HEAD
       <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/brainbusters/Notification.kt" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/brainbusters/ui/viewModels/ViewModelNotifications.kt" afterDir="false" />
+=======
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/brainbusters/data/AppDatabase.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/brainbusters/data/daos/UserDao.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/brainbusters/data/entities/User.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/brainbusters/data/repositories/UserRepository.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/brainbusters/data/viewmodels/RegistrationViewModel.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/brainbusters/di/UserRepositoryModule.kt" afterDir="false" />
+>>>>>>> f0c589755a7f82f7fa92bb46625664d64c36bca9
       <change beforePath="$PROJECT_DIR$/.gradle/8.6/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.6/checksums/checksums.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/8.6/checksums/md5-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.6/checksums/md5-checksums.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/8.6/checksums/sha1-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.6/checksums/sha1-checksums.bin" afterDir="false" />
@@ -24,7 +33,9 @@
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/deploymentTargetSelector.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deploymentTargetSelector.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+<<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/brainbusters/BrainBustersNavigation.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/brainbusters/BrainBustersNavigation.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/brainbusters/ui/views/NotificationsScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/brainbusters/ui/views/NotificationsScreen.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/brainbusters/ui/views/QuizScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/brainbusters/ui/views/QuizScreen.kt" afterDir="false" />
@@ -39,6 +50,14 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
 >>>>>>> 99fbaae85beb06b3de962008189c7096486c243b
+=======
+      <change beforePath="$PROJECT_DIR$/app/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/brainbusters/BrainBustersNavigation.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/brainbusters/BrainBustersNavigation.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/brainbusters/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/brainbusters/MainActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/brainbusters/ui/views/RegisterStepOneScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/brainbusters/ui/views/RegisterStepOneScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/brainbusters/ui/views/RegisterStepTwoScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/brainbusters/ui/views/RegisterStepTwoScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradle/libs.versions.toml" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/libs.versions.toml" afterDir="false" />
+>>>>>>> f0c589755a7f82f7fa92bb46625664d64c36bca9
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,7 +67,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=/Users/samueleferri/.android/avd/Pixel_4_API_33.avd)]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=/Users/lucaferar/.android/avd/Pixel_3a_API_34.avd)]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -98,12 +117,17 @@
         <option value="Kotlin Object" />
         <option value="Kotlin File" />
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         <option value="Kotlin Data Class" />
 >>>>>>> 99fbaae85beb06b3de962008189c7096486c243b
         <option value="Kotlin Class" />
         <option value="Kotlin Data Class" />
         <option value="Kotlin File" />
+=======
+        <option value="Kotlin Data Class" />
+        <option value="Kotlin Class" />
+>>>>>>> f0c589755a7f82f7fa92bb46625664d64c36bca9
       </list>
     </option>
   </component>
@@ -112,6 +136,9 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/app/src/main/java/com/example/brainbusters/ui/views/Settings.kt" root0="SKIP_HIGHLIGHTING" />
+  </component>
+  <component name="KotlinCodeInsightWorkspaceSettings">
+    <option name="optimizeImportsOnTheFly" value="true" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />

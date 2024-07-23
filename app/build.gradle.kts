@@ -1,7 +1,14 @@
 plugins {
+<<<<<<< HEAD
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
+=======
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.jetbrains.kotlin.android)
+
+    kotlin("kapt")
+>>>>>>> f0c589755a7f82f7fa92bb46625664d64c36bca9
 }
 
 android {
@@ -65,6 +72,7 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation("io.insert-koin:koin-androidx-compose:3.5.3")
     implementation(libs.play.services.location)
+<<<<<<< HEAD
     implementation(libs.androidx.material3.android)
     val roomVersion = "2.6.1"
     implementation("androidx.room:room-runtime:$roomVersion")
@@ -73,7 +81,35 @@ dependencies {
     //our implementation
     val nav_version = "2.7.7"
     implementation("androidx.navigation:navigation-compose:$nav_version")
+=======
+    implementation(libs.androidx.room.common)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.navigation.common.ktx)
+    implementation(libs.androidx.navigation.compose)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
 
+    implementation ("com.google.dagger:hilt-android:2.44.2")
+>>>>>>> f0c589755a7f82f7fa92bb46625664d64c36bca9
+
+    implementation ("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
+    kapt ("androidx.hilt:hilt-compiler:1.0.0")
     implementation("co.yml:ycharts:2.1.0")
+<<<<<<< HEAD
     implementation("io.coil-kt:coil-compose:2.1.0")
 }
+=======
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
+
+
+}
+
+kapt {
+    correctErrorTypes = true
+}
+>>>>>>> f0c589755a7f82f7fa92bb46625664d64c36bca9

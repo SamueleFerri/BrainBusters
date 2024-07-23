@@ -44,8 +44,10 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import com.example.brainbusters.Routes
+import com.example.brainbusters.data.viewmodels.RegistrationViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+<<<<<<< HEAD
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -54,10 +56,20 @@ import kotlinx.coroutines.withTimeoutOrNull
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.util.Locale
+=======
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
+import java.io.ByteArrayOutputStream
+import java.io.IOException
+import java.util.*
+>>>>>>> f0c589755a7f82f7fa92bb46625664d64c36bca9
 
 @Composable
 fun RegisterStepOneScreen(
     navController: NavController,
+<<<<<<< HEAD
     profilePictureUri: Uri?,
     onProfilePictureChange: (Uri) -> Unit,
     firstName: String,
@@ -71,14 +83,23 @@ fun RegisterStepOneScreen(
     val context = LocalContext.current
     val fusedLocationClient: FusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(context)
+=======
+    registrationViewModel: RegistrationViewModel
+) {
+    val context = LocalContext.current
+    val fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
+    val coroutineScope = rememberCoroutineScope()
+>>>>>>> f0c589755a7f82f7fa92bb46625664d64c36bca9
 
     // Launcher to request location permissions
     val locationPermissionRequest = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
         if (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true || permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true) {
-            getLastKnownLocation(fusedLocationClient, context) { city ->
-                onPositionChange(city)
+            coroutineScope.launch {
+                getLastKnownLocation(fusedLocationClient, context) { city ->
+                    registrationViewModel.setPosition(city)
+                }
             }
         } else {
             // Handle the case where permissions are denied
@@ -89,12 +110,20 @@ fun RegisterStepOneScreen(
     // Check and request location permissions
     LaunchedEffect(Unit) {
         when {
+<<<<<<< HEAD
             ContextCompat.checkSelfPermission(
                 context,
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED -> {
                 getLastKnownLocation(fusedLocationClient, context) { city ->
                     onPositionChange(city)
+=======
+            ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED -> {
+                coroutineScope.launch {
+                    getLastKnownLocation(fusedLocationClient, context) { city ->
+                        registrationViewModel.setPosition(city)
+                    }
+>>>>>>> f0c589755a7f82f7fa92bb46625664d64c36bca9
                 }
             }
 
@@ -113,7 +142,7 @@ fun RegisterStepOneScreen(
     val pickImageLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
-        uri?.let { onProfilePictureChange(it) }
+        uri?.let { registrationViewModel.setProfilePictureUri(it) }
     }
 
     // Launcher to take a photo using the camera
@@ -122,7 +151,7 @@ fun RegisterStepOneScreen(
     ) { bitmap: Bitmap? ->
         bitmap?.let {
             val uri = bitmapToUri(context, it)
-            onProfilePictureChange(uri)
+            registrationViewModel.setProfilePictureUri(uri)
         }
     }
 
@@ -133,12 +162,12 @@ fun RegisterStepOneScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(text = "Create Account", fontSize = 28.sp, fontWeight = FontWeight.Bold)
+        Text(text = "Create Account - Step 1", fontSize = 28.sp, fontWeight = FontWeight.Bold)
 
         Spacer(modifier = Modifier.height(16.dp))
 
         // Profile Picture
-        profilePictureUri?.let {
+        registrationViewModel.profilePictureUri.value?.let {
             Image(
                 bitmap = if (Build.VERSION.SDK_INT < 28) {
                     MediaStore.Images.Media.getBitmap(context.contentResolver, it).asImageBitmap()
@@ -183,8 +212,8 @@ fun RegisterStepOneScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
-            value = firstName,
-            onValueChange = onFirstNameChange,
+            value = registrationViewModel.firstName.value,
+            onValueChange = { registrationViewModel.setFirstName(it) },
             label = { Text("First Name") },
             modifier = Modifier.fillMaxWidth()
         )
@@ -192,8 +221,8 @@ fun RegisterStepOneScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
-            value = lastName,
-            onValueChange = onLastNameChange,
+            value = registrationViewModel.lastName.value,
+            onValueChange = { registrationViewModel.setLastName(it) },
             label = { Text("Last Name") },
             modifier = Modifier.fillMaxWidth()
         )
@@ -201,8 +230,17 @@ fun RegisterStepOneScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
-            value = position,
-            onValueChange = onPositionChange,
+            value = registrationViewModel.username.value,
+            onValueChange = { registrationViewModel.setUsername(it) },
+            label = { Text("Username") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = registrationViewModel.position.value,
+            onValueChange = { /* No-op, position is updated automatically */ },
             label = { Text("Position") },
             modifier = Modifier.fillMaxWidth(),
             enabled = false // Disable manual editing of the position
@@ -211,10 +249,17 @@ fun RegisterStepOneScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
+<<<<<<< HEAD
             onClick = onProceed,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp)
+=======
+            onClick = {
+                navController.navigate(Routes.registerStepTwo)
+            },
+            modifier = Modifier.fillMaxWidth().height(48.dp)
+>>>>>>> f0c589755a7f82f7fa92bb46625664d64c36bca9
         ) {
             Text(text = "Next")
         }
@@ -227,12 +272,18 @@ fun RegisterStepOneScreen(
     }
 }
 
+<<<<<<< HEAD
 @SuppressLint("MissingPermission")
 private fun getLastKnownLocation(
+=======
+
+suspend fun getLastKnownLocation(
+>>>>>>> f0c589755a7f82f7fa92bb46625664d64c36bca9
     fusedLocationClient: FusedLocationProviderClient,
     context: Context,
-    onLocationReceived: (String) -> Unit
+    onSuccess: (String) -> Unit
 ) {
+<<<<<<< HEAD
     fusedLocationClient.lastLocation.addOnSuccessListener { location ->
         location?.let {
             getCityNameAsync(context, it.latitude, it.longitude) { city ->
@@ -241,6 +292,18 @@ private fun getLastKnownLocation(
         } ?: run {
             // Handle the case where location is null
             onLocationReceived("Location not available")
+=======
+    withContext(Dispatchers.IO) {
+        try {
+            val location = fusedLocationClient.lastLocation.await()
+            val geocoder = Geocoder(context, Locale.getDefault())
+            val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
+            val city = addresses?.firstOrNull()?.locality ?: "Unknown"
+            onSuccess(city)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            onSuccess("Unknown")
+>>>>>>> f0c589755a7f82f7fa92bb46625664d64c36bca9
         }
     }.addOnFailureListener {
         // Handle failure
@@ -248,6 +311,7 @@ private fun getLastKnownLocation(
     }
 }
 
+<<<<<<< HEAD
 private fun getCityNameAsync(
     context: Context,
     latitude: Double,
@@ -273,10 +337,17 @@ private fun getCityNameAsync(
         }
     }
 }
+=======
+>>>>>>> f0c589755a7f82f7fa92bb46625664d64c36bca9
 
-private fun bitmapToUri(context: Context, bitmap: Bitmap): Uri {
+fun bitmapToUri(context: Context, bitmap: Bitmap): Uri {
     val bytes = ByteArrayOutputStream()
     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
     val path = MediaStore.Images.Media.insertImage(context.contentResolver, bitmap, "Title", null)
     return Uri.parse(path)
+<<<<<<< HEAD
 }
+=======
+}
+
+>>>>>>> f0c589755a7f82f7fa92bb46625664d64c36bca9
